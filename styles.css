@@ -35,6 +35,7 @@
     --cat-d1: #dc2626;
     --cat-servicios: #0284c7;
     --cat-arriendo: #2563eb;
+    --cat-casa: #10b981;
     --cat-carne: #e11d48;
     --cat-internet: #6366f1;
     --cat-gas: #ea580c;
@@ -509,6 +510,7 @@ select.input-control {
 .cat-icon-d1 { background-color: var(--cat-d1); }
 .cat-icon-servicios { background-color: var(--cat-servicios); }
 .cat-icon-arriendo { background-color: var(--cat-arriendo); }
+.cat-icon-casa { background-color: var(--cat-casa); }
 .cat-icon-carne { background-color: var(--cat-carne); }
 .cat-icon-internet { background-color: var(--cat-internet); }
 .cat-icon-gas { background-color: var(--cat-gas); }

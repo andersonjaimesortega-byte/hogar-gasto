@@ -12,6 +12,7 @@ const categoryColors = {
     'D1': '#ef4444',
     'Servicios Públicos': '#0ea5e9',
     'Arriendo': '#3b82f6',
+    'Casa': '#10b981',
     'Carne': '#f43f5e',
     'Internet': '#6366f1',
     'Gas': '#f97316',
@@ -26,6 +27,7 @@ const categoryEmojis = {
     'D1': '🔴',
     'Servicios Públicos': '⚡',
     'Arriendo': '🏠',
+    'Casa': '🏡',
     'Carne': '🥩',
     'Internet': '🌐',
     'Gas': '🔥',
@@ -41,6 +43,7 @@ function getCategoryIconClass(cat) {
         case 'D1': return 'cat-icon-d1';
         case 'Servicios Públicos': return 'cat-icon-servicios';
         case 'Arriendo': return 'cat-icon-arriendo';
+        case 'Casa': return 'cat-icon-casa';
         case 'Carne': return 'cat-icon-carne';
         case 'Internet': return 'cat-icon-internet';
         case 'Gas': return 'cat-icon-gas';

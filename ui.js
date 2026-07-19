@@ -67,8 +67,8 @@ function updateDashboardStats(filteredExpenses, monthlyBudget, currentFilterMont
     dom.valSpent.textContent = formatCOP.format(totalSpent);
     dom.valSpentSubtext.textContent = `${expensesOnly.length} transacciones este mes`;
     
-    // Saldo Disponible: Presupuesto base + Ingresos - Gastos
-    const balance = monthlyBudget + totalIncome - totalSpent;
+    // Saldo Disponible: Ingresos - Gastos
+    const balance = totalIncome - totalSpent;
     dom.valBalance.textContent = formatCOP.format(balance);
     
     // Modificar estilos según saldo positivo/negativo
@@ -83,7 +83,7 @@ function updateDashboardStats(filteredExpenses, monthlyBudget, currentFilterMont
         dom.iconBalance.innerHTML = '<i data-lucide="alert-triangle"></i>';
         dom.iconBalance.style.color = 'var(--danger)';
     } else {
-        dom.valBalanceSubtext.textContent = 'Dentro del presupuesto establecido';
+        dom.valBalanceSubtext.textContent = 'Saldo a favor';
         dom.valBalanceSubtext.style.color = '';
         dom.iconBalance.innerHTML = '<i data-lucide="check-circle-2"></i>';
         dom.iconBalance.style.color = 'var(--success)';
@@ -206,6 +206,7 @@ function updateCategoryOptions() {
             <option value="D1">D1 🔴</option>
             <option value="Servicios Públicos">Servicios Públicos ⚡</option>
             <option value="Arriendo">Arriendo 🏠</option>
+            <option value="Casa">Casa 🏡</option>
             <option value="Carne">Carne 🥩</option>
             <option value="Internet">Internet 🌐</option>
             <option value="Gas">Gas 🔥</option>
