@@ -372,16 +372,25 @@ const _dbDeleteExpense = deleteExpense;
 window.deleteExpense = async function(id) {
     if (confirm('¿Estás seguro de que deseas eliminar esta transacción?')) {
         try {
+            // 1. Borrar localmente primero (operación local siempre garantizada)
             await _dbDeleteExpense(isNaN(id) ? id : Number(id));
-            
-            // Si está conectado a Supabase, borrar de la nube.
+
+            // 2. Registrar siempre el ID como "pendiente de borrar en la nube"
+            //    Esto funciona como cola offline: si la red falla, el próximo sync lo procesa
+            const deletedIds = await getSetting('deleted_ids', []);
+            const idStr = String(id);
+            if (!deletedIds.includes(idStr)) {
+                deletedIds.push(idStr);
+                await saveSetting('deleted_ids', deletedIds);
+            }
+
+            // 3. Si hay conexión con Supabase, intentar borrar en la nube inmediatamente
             if (supabaseClient) {
                 await deleteFromSupabase(id);
-            } else {
-                // Registrar eliminación en los pendientes offline
-                const deletedIds = await getSetting('deleted_ids', []);
-                deletedIds.push(String(id));
-                await saveSetting('deleted_ids', deletedIds);
+                // Si el borrado en la nube tuvo éxito, limpiar de la cola pendiente
+                const remainingIds = await getSetting('deleted_ids', []);
+                const filtered = remainingIds.filter(existingId => existingId !== idStr);
+                await saveSetting('deleted_ids', filtered);
             }
             
             await loadPeriodFilters();

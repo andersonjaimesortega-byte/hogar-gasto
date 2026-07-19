@@ -117,16 +117,17 @@ async function syncWithSupabase() {
         // 3. Traer todos los registros locales de IndexedDB
         const localItems = await getAllExpenses();
         
-        const cloudMap = new Map(cloudItems.map(item => [item.id, item]));
+        const cloudMap = new Map(cloudItems.map(item => [String(item.id), item]));
         const localMap = new Map(localItems.map(item => [String(item.id), item]));
         
-        // 4. Sincronizar de la nube hacia local (Pulls / Updates)
+        // 4. Sincronizar de la nube hacia local (agregar o actualizar)
         for (const cloudItem of cloudItems) {
-            const localItem = localMap.get(cloudItem.id);
+            const cloudIdStr = String(cloudItem.id);
+            const localItem = localMap.get(cloudIdStr);
             
             // Mapear campos de base de datos relacional a IndexedDB
             const mappedItem = {
-                id: cloudItem.id, // Guardar el string ID
+                id: cloudItem.id,
                 amount: Number(cloudItem.amount),
                 desc: cloudItem.description || '',
                 category: cloudItem.category,
@@ -152,9 +153,23 @@ async function syncWithSupabase() {
                 }
             }
         }
-        
-        // 5. Sincronizar de local hacia la nube (Pushes)
+
+        // 5. CRÍTICO: Eliminar localmente los registros que ya NO están en la nube
+        // (fueron borrados desde otro dispositivo)
         for (const localItem of localItems) {
+            const localIdStr = String(localItem.id);
+            if (!cloudMap.has(localIdStr)) {
+                // Este item ya no existe en la nube → borrarlo de local también
+                const _db = deleteExpense; // Referencia directa a la función de db.js
+                await _db(isNaN(localItem.id) ? localItem.id : Number(localItem.id));
+                console.log(`Eliminado localmente (borrado en otro dispositivo): ${localItem.id}`);
+            }
+        }
+        
+        // 6. Sincronizar de local hacia la nube (subir items nuevos que no están en la nube)
+        // Refrescar localItems DESPUÉS de las eliminaciones del paso 5
+        const localItemsAfterSync = await getAllExpenses();
+        for (const localItem of localItemsAfterSync) {
             const localIdStr = String(localItem.id);
             if (!cloudMap.has(localIdStr)) {
                 // Si el item local no está en la nube, lo subimos
@@ -172,3 +187,4 @@ async function syncWithSupabase() {
         throw err;
     }
 }
+
