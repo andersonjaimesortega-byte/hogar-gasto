@@ -57,7 +57,7 @@ function updateCategoryChart(ctx, filteredExpenses, currentChartInstance, legend
                 data: dataValues,
                 backgroundColor: backgroundColors,
                 borderWidth: 2,
-                borderColor: '#111827',
+                borderColor: '#ffffff',
                 hoverOffset: 12
             }]
         },

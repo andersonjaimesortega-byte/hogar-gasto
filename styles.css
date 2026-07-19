@@ -71,14 +71,14 @@ body {
     height: 8px;
 }
 ::-webkit-scrollbar-track {
-    background: rgba(230, 232, 245, 0.8);
+    background: rgba(245, 245, 240, 0.8);
 }
 ::-webkit-scrollbar-thumb {
-    background: rgba(99, 102, 241, 0.25);
+    background: rgba(45, 89, 79, 0.25);
     border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: rgba(99, 102, 241, 0.45);
+    background: rgba(45, 89, 79, 0.45);
 }
 
 .container {

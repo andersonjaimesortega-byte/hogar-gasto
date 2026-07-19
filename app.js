@@ -145,36 +145,7 @@ function setupEventListeners() {
             setTimeout(() => dom.expenseAmount.focus(), 300);
         });
     }
-    
-    // Modal de presupuesto
-    if (dom.btnEditBudget) {
-        dom.btnEditBudget.addEventListener('click', () => {
-            dom.budgetInput.value = monthlyBudget;
-            dom.modalBudget.classList.add('active');
-        });
-    }
-    
-    const closeModal = () => {
-        dom.modalBudget.classList.remove('active');
-    };
-    
-    if (dom.btnCloseBudgetModal) dom.btnCloseBudgetModal.addEventListener('click', closeModal);
-    if (dom.btnCancelBudget) dom.btnCancelBudget.addEventListener('click', closeModal);
-    
-    if (dom.btnSaveBudget) {
-        dom.btnSaveBudget.addEventListener('click', async () => {
-            const val = Number(dom.budgetInput.value);
-            if (isNaN(val) || val < 0) {
-                alert('Por favor introduce un valor válido superior o igual a 0.');
-                return;
-            }
-            
-            monthlyBudget = val;
-            await saveSetting('monthly_budget', monthlyBudget);
-            closeModal();
-            await refreshUI();
-        });
-    }
+
 
     // Reiniciar / Limpiar todos los datos
     dom.btnClearDb.addEventListener('click', clearAllDatabase);
