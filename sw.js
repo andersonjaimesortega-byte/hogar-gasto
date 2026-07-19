@@ -1,10 +1,11 @@
-const CACHE_NAME = 'hogargasto-cache-v2';
+const CACHE_NAME = 'hogargasto-cache-v3';
 const ASSETS_TO_CACHE = [
   './',
   'index.html',
   'styles.css',
   'app.js',
   'db.js',
+  'sync.js',
   'ui.js',
   'utils.js',
   'chart.js',

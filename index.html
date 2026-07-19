@@ -42,6 +42,10 @@
                     <div class="status-dot"></div>
                     <span id="status-text">En línea</span>
                 </div>
+                <button id="btn-sync-settings" class="btn btn-secondary btn-icon" title="Sincronización en la nube" style="position: relative;">
+                    <i data-lucide="cloud"></i>
+                    <span id="sync-active-dot" style="display: none; position: absolute; top: 2px; right: 2px; width: 6px; height: 6px; background-color: var(--success); border-radius: 50%;"></span>
+                </button>
                 <button id="btn-install" class="btn btn-secondary btn-icon" style="display: none;" title="Instalar App">
                     <i data-lucide="download"></i>
                 </button>
@@ -333,11 +337,42 @@
         </div>
     </div>
 
+    <!-- Supabase Sync Modal -->
+    <div id="modal-sync" class="modal-overlay">
+        <div class="glass-panel modal-container">
+            <div class="panel-header">
+                <h3 class="panel-title">Sincronización en la Nube</h3>
+                <button id="btn-close-sync-modal" class="btn btn-secondary btn-icon" style="padding: 0.25rem; border-radius: 6px;">
+                    <i data-lucide="x" style="width: 16px; height: 16px;"></i>
+                </button>
+            </div>
+            <div class="panel-content">
+                <div class="form-group">
+                    <label for="sync-url">Supabase Project URL</label>
+                    <input type="text" id="sync-url" class="input-control" placeholder="https://xxxxxxxxxxxxxx.supabase.co">
+                </div>
+                <div class="form-group">
+                    <label for="sync-key">Supabase Anon Key</label>
+                    <input type="password" id="sync-key" class="input-control" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+                </div>
+                <div id="sync-status-msg" style="font-size: 0.85rem; margin-top: 0.5rem; display: none; font-weight: 500;"></div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-disconnect-sync" class="btn btn-danger" style="margin-right: auto; display: none;">Desconectar</button>
+                <button id="btn-cancel-sync" class="btn btn-secondary">Cancelar</button>
+                <button id="btn-save-sync" class="btn btn-primary">Conectar y Sincronizar</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Lucide Icons Script -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- App Logic Scripts -->
     <script src="utils.js"></script>
     <script src="db.js"></script>
+    <script src="sync.js"></script>
     <script src="chart.js"></script>
     <script src="ui.js"></script>
     <script src="pwa.js"></script>

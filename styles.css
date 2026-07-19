@@ -806,3 +806,19 @@ footer.app-footer {
     color: var(--text-muted);
     font-size: 0.8rem;
 }
+
+#btn-sync-settings.connected {
+    color: var(--success) !important;
+    border-color: rgba(5, 150, 105, 0.3) !important;
+    background: var(--success-glow) !important;
+}
+
+#sync-status-msg.success {
+    color: var(--success);
+}
+#sync-status-msg.error {
+    color: var(--danger);
+}
+#sync-status-msg.info {
+    color: var(--info);
+}

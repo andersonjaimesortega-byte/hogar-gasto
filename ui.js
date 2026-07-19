@@ -175,10 +175,10 @@ function renderExpensesList(expenses, currentFilterMonth, categoryVal, searchVal
             <div class="expense-right">
                 <span class="${amountClass}">${amountSign} ${formatCOP.format(exp.amount)}</span>
                 <div class="expense-actions">
-                    <button class="btn btn-secondary btn-icon" onclick="editExpense(${exp.id})" title="Editar">
+                    <button class="btn btn-secondary btn-icon" onclick="editExpense('${exp.id}')" title="Editar">
                         <i data-lucide="edit" style="width: 14px; height: 14px; color: var(--text-secondary);"></i>
                     </button>
-                    <button class="btn btn-danger btn-icon" onclick="deleteExpense(${exp.id})" title="Eliminar">
+                    <button class="btn btn-danger btn-icon" onclick="deleteExpense('${exp.id}')" title="Eliminar">
                         <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
                     </button>
                 </div>

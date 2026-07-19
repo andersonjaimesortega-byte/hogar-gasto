@@ -20,6 +20,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         await loadPeriodFilters();
         await refreshUI();
         
+        // Inicializar Supabase y sincronizar si está configurado
+        const isConfigured = await initSupabase();
+        if (isConfigured) {
+            try {
+                await syncWithSupabase();
+                // Recargar filtros y refrescar UI después de sincronizar la primera vez
+                await loadPeriodFilters();
+                await refreshUI();
+            } catch (err) {
+                console.warn('Sincronización inicial fallida (posiblemente offline):', err);
+            }
+        }
+        
         // Configurar controladores de eventos
         setupEventListeners();
         
@@ -156,6 +169,93 @@ function setupEventListeners() {
 
     // Reiniciar / Limpiar todos los datos
     dom.btnClearDb.addEventListener('click', clearAllDatabase);
+
+    // Modal de Sincronización en la Nube
+    const modalSync = document.getElementById('modal-sync');
+    const btnSyncSettings = document.getElementById('btn-sync-settings');
+    const btnCloseSyncModal = document.getElementById('btn-close-sync-modal');
+    const btnCancelSync = document.getElementById('btn-cancel-sync');
+    const btnSaveSync = document.getElementById('btn-save-sync');
+    const btnDisconnectSync = document.getElementById('btn-disconnect-sync');
+    const inputSyncUrl = document.getElementById('sync-url');
+    const inputSyncKey = document.getElementById('sync-key');
+    const syncStatusMsg = document.getElementById('sync-status-msg');
+
+    const showSyncStatus = (text, type) => {
+        syncStatusMsg.textContent = text;
+        syncStatusMsg.className = type;
+        syncStatusMsg.style.display = 'block';
+    };
+
+    if (btnSyncSettings) {
+        btnSyncSettings.addEventListener('click', async () => {
+            const url = await getSetting('supabase_url', '');
+            const key = await getSetting('supabase_key', '');
+            inputSyncUrl.value = url;
+            inputSyncKey.value = key;
+            
+            syncStatusMsg.style.display = 'none';
+            if (url && key) {
+                btnDisconnectSync.style.display = 'block';
+            } else {
+                btnDisconnectSync.style.display = 'none';
+            }
+            modalSync.classList.add('active');
+        });
+    }
+
+    const closeSyncModal = () => {
+        modalSync.classList.remove('active');
+    };
+
+    if (btnCloseSyncModal) btnCloseSyncModal.addEventListener('click', closeSyncModal);
+    if (btnCancelSync) btnCancelSync.addEventListener('click', closeSyncModal);
+
+    if (btnDisconnectSync) {
+        btnDisconnectSync.addEventListener('click', async () => {
+            if (confirm('¿Estás seguro de que deseas desconectar la sincronización en la nube? Tu base de datos local no se borrará.')) {
+                await disconnectSupabase();
+                closeSyncModal();
+                await refreshUI();
+            }
+        });
+    }
+
+    if (btnSaveSync) {
+        btnSaveSync.addEventListener('click', async () => {
+            const url = inputSyncUrl.value.trim();
+            const key = inputSyncKey.value.trim();
+            
+            if (!url || !key) {
+                showSyncStatus('Por favor completa ambos campos.', 'error');
+                return;
+            }
+            
+            showSyncStatus('Conectando y sincronizando por primera vez...', 'info');
+            btnSaveSync.disabled = true;
+            
+            try {
+                const connected = await saveSupabaseConfig(url, key);
+                if (connected) {
+                    await syncWithSupabase();
+                    showSyncStatus('¡Conectado y sincronizado con éxito!', 'success');
+                    setTimeout(async () => {
+                        closeSyncModal();
+                        btnSaveSync.disabled = false;
+                        await loadPeriodFilters();
+                        await refreshUI();
+                    }, 1000);
+                } else {
+                    showSyncStatus('Error al conectar. Verifica la URL y la Key.', 'error');
+                    btnSaveSync.disabled = false;
+                }
+            } catch (err) {
+                console.error(err);
+                showSyncStatus(`Fallo en la sincronización: ${err.message || err}`, 'error');
+                btnSaveSync.disabled = false;
+            }
+        });
+    }
 }
 
 // Limpieza completa de todos los datos
@@ -213,11 +313,17 @@ async function handleExpenseFormSubmit(e) {
     try {
         if (idVal) {
             // Modo edición
-            transactionData.id = Number(idVal);
+            transactionData.id = isNaN(idVal) ? idVal : Number(idVal);
             await updateExpense(transactionData);
         } else {
-            // Modo creación
+            // Modo creación (generamos un ID string único para evitar colisiones entre dispositivos)
+            transactionData.id = Date.now().toString() + '-' + Math.random().toString(36).substr(2, 9);
             await addExpense(transactionData);
+        }
+        
+        // Intentar sincronizar el cambio con Supabase
+        if (supabaseClient) {
+            await uploadToSupabase(transactionData);
         }
         
         resetExpenseForm();
@@ -257,7 +363,7 @@ function resetExpenseForm() {
 
 // Cargar un gasto en el formulario para editar (disponible en window para llamadas onclick inline)
 window.editExpense = function(id) {
-    const exp = expenses.find(e => e.id === id);
+    const exp = expenses.find(e => String(e.id) === String(id));
     if (!exp) return;
     
     dom.expenseIdInput.value = exp.id;
@@ -286,7 +392,18 @@ const _dbDeleteExpense = deleteExpense;
 window.deleteExpense = async function(id) {
     if (confirm('¿Estás seguro de que deseas eliminar esta transacción?')) {
         try {
-            await _dbDeleteExpense(id);
+            await _dbDeleteExpense(isNaN(id) ? id : Number(id));
+            
+            // Si está conectado a Supabase, borrar de la nube.
+            if (supabaseClient) {
+                await deleteFromSupabase(id);
+            } else {
+                // Registrar eliminación en los pendientes offline
+                const deletedIds = await getSetting('deleted_ids', []);
+                deletedIds.push(String(id));
+                await saveSetting('deleted_ids', deletedIds);
+            }
+            
             await loadPeriodFilters();
             await refreshUI();
         } catch (err) {
