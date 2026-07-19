@@ -137,6 +137,15 @@ function setupEventListeners() {
     dom.expenseForm.addEventListener('submit', handleExpenseFormSubmit);
     dom.btnCancelEdit.addEventListener('click', resetExpenseForm);
     
+    const fabAdd = document.getElementById('fab-add');
+    if (fabAdd) {
+        fabAdd.addEventListener('click', () => {
+            dom.expenseForm.scrollIntoView({ behavior: 'smooth' });
+            // Small delay to allow scroll before focus
+            setTimeout(() => dom.expenseAmount.focus(), 300);
+        });
+    }
+    
     // Modal de presupuesto
     if (dom.btnEditBudget) {
         dom.btnEditBudget.addEventListener('click', () => {

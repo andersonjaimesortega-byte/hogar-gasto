@@ -47,15 +47,7 @@ function updateDashboardStats(filteredExpenses, monthlyBudget, currentFilterMont
     const incomesOnly = filteredExpenses.filter(exp => exp.type === 'ingreso' || ['Juni', 'Isa'].includes(exp.category));
     const expensesOnly = filteredExpenses.filter(exp => exp.type === 'gasto' || (!exp.type && !['Juni', 'Isa'].includes(exp.category)));
 
-    // Presupuesto
-    dom.valBudget.textContent = formatCOP.format(monthlyBudget);
-    
-    if (currentFilterMonth) {
-        const [year, month] = currentFilterMonth.split('-');
-        const dateObj = new Date(year, parseInt(month) - 1, 1);
-        const periodName = dateObj.toLocaleDateString('es-CO', { month: 'long' });
-        dom.txtBudgetPeriod.textContent = `Periodo: ${periodName.charAt(0).toUpperCase() + periodName.slice(1)}`;
-    }
+
     
     // Ingresos Adicionales
     const totalIncome = incomesOnly.reduce((sum, item) => sum + Number(item.amount), 0);
@@ -89,27 +81,6 @@ function updateDashboardStats(filteredExpenses, monthlyBudget, currentFilterMont
         dom.iconBalance.style.color = 'var(--success)';
     }
     
-    // Progreso global (relativo al presupuesto base)
-    let percent = 0;
-    if (monthlyBudget > 0) {
-        percent = Math.round((totalSpent / monthlyBudget) * 100);
-    }
-    
-    dom.valProgressPercent.textContent = `${percent}%`;
-    dom.valProgressBar.style.width = `${Math.min(percent, 100)}%`;
-    
-    // Colores de la barra
-    dom.valProgressBar.className = 'progress-bar-fill';
-    if (percent <= 75) {
-        dom.valProgressBar.classList.add('normal');
-        dom.valProgressPercent.style.color = 'var(--success)';
-    } else if (percent <= 100) {
-        dom.valProgressBar.classList.add('warning');
-        dom.valProgressPercent.style.color = 'var(--warning)';
-    } else {
-        dom.valProgressBar.classList.add('danger');
-        dom.valProgressPercent.style.color = 'var(--danger)';
-    }
 }
 
 // Renderizar la lista de gastos con filtros aplicados
@@ -278,7 +249,7 @@ function renderMonthlySummary(allExpenses, monthlyBudget) {
 
     sortedMonths.forEach(monthKey => {
         const { income, expenses } = monthMap[monthKey];
-        const balance = monthlyBudget + income - expenses;
+        const balance = income - expenses;
         const balanceClass = balance >= 0 ? 'balance-positive' : 'balance-negative';
         const balancePrefix = balance >= 0 ? '+' : '';
 
