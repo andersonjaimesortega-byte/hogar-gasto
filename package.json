@@ -1,0 +1,17 @@
+{
+  "name": "hogargasto",
+  "version": "1.0.0",
+  "description": "Gestor de Gastos del Hogar - PWA local-first",
+  "main": "app.js",
+  "scripts": {
+    "dev": "npx -y http-server -p 3000 -c-1",
+    "start": "npx -y http-server -p 3000 -c-1"
+  },
+  "keywords": [
+    "pwa",
+    "expenses",
+    "finance",
+    "colombia"
+  ],
+  "license": "MIT"
+}

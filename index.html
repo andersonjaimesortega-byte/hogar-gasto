@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HogarGasto - Gestor de Gastos</title>
+    
+    <!-- SEO & Metadata -->
+    <meta name="description" content="Una aplicación web progresiva y privada para llevar el control de los gastos del hogar en pesos colombianos.">
+    <meta name="theme-color" content="#080c14">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="HogarGasto">
+    
+    <!-- PWA Manifest & Icons -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192.svg">
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        
+        <!-- Header -->
+        <header class="glass-panel">
+            <div class="logo-area">
+                <div class="logo-icon">
+                    <i data-lucide="wallet"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>HogarGasto</h1>
+                    <span>Gestor de Finanzas</span>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <div id="connection-status" class="status-badge online">
+                    <div class="status-dot"></div>
+                    <span id="status-text">En línea</span>
+                </div>
+                <button id="btn-install" class="btn btn-secondary btn-icon" style="display: none;" title="Instalar App">
+                    <i data-lucide="download"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Install Banner Promo -->
+        <div id="install-promo" class="install-promo">
+            <div class="install-promo-text">
+                <h4>¡Instala HogarGasto en tu celular!</h4>
+                <p>Accede rápidamente desde tu pantalla de inicio y úsala sin internet.</p>
+            </div>
+            <button id="btn-promo-install" class="btn btn-primary">
+                Instalar
+            </button>
+        </div>
+
+        <!-- Summary Statistics Grid -->
+        <div class="summary-grid">
+            <!-- Budget Card -->
+            <div class="glass-panel summary-card budget">
+                <div class="card-header-flex">
+                    <span>Presupuesto Mensual</span>
+                    <div class="card-icon">
+                        <i data-lucide="piggy-bank"></i>
+                    </div>
+                </div>
+                <div id="val-budget" class="card-value">$ 0</div>
+                <div class="card-header-flex" style="margin-top: 0.5rem; margin-bottom: 0;">
+                    <span id="txt-budget-period" class="card-subtext">Cargando...</span>
+                    <button id="btn-edit-budget" class="btn btn-secondary btn-icon" style="padding: 0.25rem; border-radius: 6px;" title="Editar Presupuesto">
+                        <i data-lucide="edit-3" style="width: 14px; height: 14px; color: var(--text-secondary);"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Income Card -->
+            <div class="glass-panel summary-card income">
+                <div class="card-header-flex">
+                    <span>Ingresos Adicionales</span>
+                    <div class="card-icon">
+                        <i data-lucide="plus-circle"></i>
+                    </div>
+                </div>
+                <div id="val-income" class="card-value">$ 0</div>
+                <span id="val-income-subtext" class="card-subtext">0 aportes registrados</span>
+            </div>
+
+            <!-- Spent Card -->
+            <div class="glass-panel summary-card spent">
+                <div class="card-header-flex">
+                    <span>Gastos Totales</span>
+                    <div class="card-icon">
+                        <i data-lucide="trending-up"></i>
+                    </div>
+                </div>
+                <div id="val-spent" class="card-value">$ 0</div>
+                <span id="val-spent-subtext" class="card-subtext">0 transacciones registradas</span>
+            </div>
+
+            <!-- Balance Card -->
+            <div id="card-balance" class="glass-panel summary-card balance">
+                <div class="card-header-flex">
+                    <span>Saldo Disponible</span>
+                    <div id="icon-balance" class="card-icon">
+                        <i data-lucide="check-circle-2"></i>
+                    </div>
+                </div>
+                <div id="val-balance" class="card-value">$ 0</div>
+                <span id="val-balance-subtext" class="card-subtext">Dentro del presupuesto</span>
+            </div>
+        </div>
+
+        <!-- Global Progress Bar -->
+        <div class="glass-panel global-progress-card">
+            <div class="progress-header">
+                <span class="progress-title">Progreso del Presupuesto Mensual</span>
+                <span id="val-progress-percent" class="progress-percentage">0%</span>
+            </div>
+            <div class="progress-bar-container">
+                <div id="val-progress-bar" class="progress-bar-fill"></div>
+            </div>
+        </div>
+
+        <!-- Main Dashboard Layout -->
+        <main class="main-layout">
+            
+            <!-- Left Side: Expense list & Filters -->
+            <section class="glass-panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">
+                        <i data-lucide="list-ordered" style="color: var(--primary);"></i>
+                        Historial de Gastos
+                    </h2>
+                    <!-- Period Filter -->
+                    <select id="filter-month" class="input-control" style="width: auto; padding: 0.4rem 2rem 0.4rem 1rem; font-size: 0.85rem; border-radius: 8px;">
+                        <!-- Options generated in JS -->
+                    </select>
+                </div>
+                
+                <div class="panel-content">
+                    <!-- Filters Bar -->
+                    <div class="filters-bar">
+                        <select id="filter-category" class="input-control" style="width: auto; min-width: 150px;">
+                            <option value="all">Todas las categorías</option>
+                            <optgroup label="Gastos">
+                                <option value="Mercado">Mercado</option>
+                                <option value="D1">D1</option>
+                                <option value="Servicios Públicos">Servicios Públicos</option>
+                                <option value="Arriendo">Arriendo</option>
+                                <option value="Carne">Carne</option>
+                                <option value="Internet">Internet</option>
+                                <option value="Gas">Gas</option>
+                                <option value="Otros">Otros</option>
+                            </optgroup>
+                            <optgroup label="Ingresos">
+                                <option value="Juni">Aporte Juni</option>
+                                <option value="Isa">Aporte Isa</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <!-- Expenses List -->
+                    <div id="expenses-list" class="expenses-list-container">
+                        <!-- Items dynamically loaded from DB -->
+                        <div class="empty-state">
+                            <div class="empty-state-icon">
+                                <i data-lucide="receipt"></i>
+                            </div>
+                            <p>No se han registrado gastos en este período.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Side: Charts & Add Form -->
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                
+                <!-- Chart Panel -->
+                <section class="glass-panel">
+                    <div class="panel-header">
+                        <h2 class="panel-title">
+                            <i data-lucide="pie-chart" style="color: var(--secondary);"></i>
+                            Distribución por Categoría
+                        </h2>
+                    </div>
+                    <div class="panel-content" style="display: flex; flex-direction: column; align-items: center;">
+                        <div class="chart-container">
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                        <div id="chart-legend" class="category-legend-list">
+                            <!-- Custom legends rendered via JS -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Add Expense Form Panel -->
+                <section class="glass-panel">
+                    <div class="panel-header">
+                        <h2 id="form-title" class="panel-title">
+                            <i data-lucide="plus-circle" style="color: var(--success);"></i>
+                            Registrar Nuevo Gasto
+                        </h2>
+                    </div>
+                    <div class="panel-content">
+                        <form id="expense-form" novalidate>
+                            <input type="hidden" id="expense-id">
+                            
+                            <div class="form-group">
+                                <label for="expense-type">Tipo de Transacción</label>
+                                <select id="expense-type" class="input-control" required>
+                                    <option value="gasto" selected>Gasto (Egreso) 📉</option>
+                                    <option value="ingreso">Ingreso (Aporte) 📈</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="expense-amount">Valor (COP)</label>
+                                <input type="number" id="expense-amount" class="input-control" placeholder="Ej. 45000" min="1" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="expense-desc">Descripción</label>
+                                <input type="text" id="expense-desc" class="input-control" placeholder="Ej. Compras supermercado">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="expense-category">Categoría</label>
+                                <select id="expense-category" class="input-control" required>
+                                    <option value="" disabled selected>Selecciona una categoría</option>
+                                    <option value="Mercado">Mercado 🛒</option>
+                                    <option value="D1">D1 🔴</option>
+                                    <option value="Servicios Públicos">Servicios Públicos ⚡</option>
+                                    <option value="Arriendo">Arriendo 🏠</option>
+                                    <option value="Carne">Carne 🥩</option>
+                                    <option value="Internet">Internet 🌐</option>
+                                    <option value="Gas">Gas 🔥</option>
+                                    <option value="Otros">Otros ⚙️</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="expense-date">Fecha</label>
+                                <input type="date" id="expense-date" class="input-control" required>
+                            </div>
+
+                            <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+                                <button type="submit" id="btn-save-expense" class="btn btn-primary" style="flex: 1;">
+                                    Guardar Gasto
+                                </button>
+                                <button type="button" id="btn-cancel-edit" class="btn btn-secondary" style="display: none;">
+                                    Cancelar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+
+        <!-- Monthly Summary Panel -->
+        <section class="glass-panel monthly-summary-panel">
+            <div class="panel-header">
+                <h2 class="panel-title">
+                    <i data-lucide="calendar-days" style="color: var(--primary);"></i>
+                    Resumen Acumulado por Mes
+                </h2>
+                <button id="btn-clear-db" class="btn btn-danger btn-icon" title="Borrar todos los datos" style="display: flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.9rem; font-size: 0.8rem; border-radius: 8px;">
+                    <i data-lucide="trash-2" style="width:14px;height:14px;"></i>
+                    Reiniciar datos
+                </button>
+            </div>
+            <div class="panel-content" style="margin-top: 1rem;">
+                <div class="table-responsive">
+                    <table class="summary-table">
+                        <thead>
+                            <tr>
+                                <th>Mes</th>
+                                <th class="text-right">Ingresos</th>
+                                <th class="text-right">Gastos</th>
+                                <th class="text-right">Balance Neto</th>
+                            </tr>
+                        </thead>
+                        <tbody id="monthly-summary-body">
+                            <!-- Carga dinámica -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Gráfica mensual -->
+                <div style="margin-top: 2rem;">
+                    <p style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 1rem;">Ingresos vs Gastos por Mes</p>
+                    <div style="position: relative; height: 280px;">
+                        <canvas id="monthlyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>HogarGasto v1.0.0 • Local-First PWA • Guardado Seguro en Dispositivo</p>
+        </footer>
+    </div>
+
+    <!-- Edit Budget Modal -->
+    <div id="modal-budget" class="modal-overlay">
+        <div class="glass-panel modal-container">
+            <div class="panel-header">
+                <h3 class="panel-title">Ajustar Presupuesto Mensual</h3>
+                <button id="btn-close-budget-modal" class="btn btn-secondary btn-icon" style="padding: 0.25rem; border-radius: 6px;">
+                    <i data-lucide="x" style="width: 16px; height: 16px;"></i>
+                </button>
+            </div>
+            <div class="panel-content">
+                <div class="form-group">
+                    <label for="budget-input">Presupuesto Mensual (COP)</label>
+                    <input type="number" id="budget-input" class="input-control" placeholder="Ej. 3000000" min="0">
+                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">
+                        Este valor se utilizará como límite mensual para medir tu nivel de ahorro.
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-cancel-budget" class="btn btn-secondary">Cancelar</button>
+                <button id="btn-save-budget" class="btn btn-primary">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lucide Icons Script -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- App Logic Scripts -->
+    <script src="utils.js"></script>
+    <script src="db.js"></script>
+    <script src="chart.js"></script>
+    <script src="ui.js"></script>
+    <script src="pwa.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
