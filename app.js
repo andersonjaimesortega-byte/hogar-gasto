@@ -296,14 +296,19 @@ async function handleExpenseFormSubmit(e) {
             transactionData.id = isNaN(idVal) ? idVal : Number(idVal);
             await updateExpense(transactionData);
         } else {
-            // Modo creación (generamos un ID string único para evitar colisiones entre dispositivos)
+            // Modo creación (ID único para evitar colisiones entre dispositivos)
             transactionData.id = Date.now().toString() + '-' + Math.random().toString(36).substr(2, 9);
             await addExpense(transactionData);
         }
         
-        // Intentar sincronizar el cambio con Supabase
+        // Intentar sincronizar con Supabase, pero sin bloquear si falla la red
         if (supabaseClient) {
-            await uploadToSupabase(transactionData);
+            try {
+                await uploadToSupabase(transactionData);
+            } catch (syncErr) {
+                // El dato ya está guardado localmente; el próximo sync lo subirá
+                console.warn('No se pudo subir a la nube ahora, se sincronizará después:', syncErr.message);
+            }
         }
         
         resetExpenseForm();
@@ -372,25 +377,30 @@ const _dbDeleteExpense = deleteExpense;
 window.deleteExpense = async function(id) {
     if (confirm('¿Estás seguro de que deseas eliminar esta transacción?')) {
         try {
-            // 1. Borrar localmente primero (operación local siempre garantizada)
+            // 1. Borrar localmente (siempre funciona, sin necesidad de red)
             await _dbDeleteExpense(isNaN(id) ? id : Number(id));
 
-            // 2. Registrar siempre el ID como "pendiente de borrar en la nube"
-            //    Esto funciona como cola offline: si la red falla, el próximo sync lo procesa
-            const deletedIds = await getSetting('deleted_ids', []);
+            // 2. Registrar en la cola de pendientes ANTES de intentar la nube
+            //    Si la red falla, el próximo syncWithSupabase lo procesará
             const idStr = String(id);
+            const deletedIds = await getSetting('deleted_ids', []);
             if (!deletedIds.includes(idStr)) {
                 deletedIds.push(idStr);
                 await saveSetting('deleted_ids', deletedIds);
             }
 
-            // 3. Si hay conexión con Supabase, intentar borrar en la nube inmediatamente
+            // 3. Si hay Supabase, intentar borrar en la nube inmediatamente
             if (supabaseClient) {
-                await deleteFromSupabase(id);
-                // Si el borrado en la nube tuvo éxito, limpiar de la cola pendiente
-                const remainingIds = await getSetting('deleted_ids', []);
-                const filtered = remainingIds.filter(existingId => existingId !== idStr);
-                await saveSetting('deleted_ids', filtered);
+                try {
+                    await deleteFromSupabase(id);
+                    // Éxito: limpiar de la cola de pendientes
+                    const remaining = await getSetting('deleted_ids', []);
+                    await saveSetting('deleted_ids', remaining.filter(eid => eid !== idStr));
+                } catch (cloudErr) {
+                    // El borrado en la nube falló, pero el ID quedó en la cola
+                    // → se procesará en el próximo syncWithSupabase()
+                    console.warn('No se pudo borrar de la nube ahora, se intentará después:', cloudErr.message);
+                }
             }
             
             await loadPeriodFilters();

@@ -53,41 +53,33 @@ async function disconnectSupabase() {
 }
 
 // Subir una transacción individual (Upsert)
+// Lanza error si falla para que el llamador pueda manejarlo
 async function uploadToSupabase(expense) {
     if (!supabaseClient) return;
-    try {
-        const { error } = await supabaseClient
-            .from('transactions')
-            .upsert({
-                id: String(expense.id),
-                amount: Number(expense.amount),
-                description: expense.desc,
-                category: expense.category,
-                date: expense.date,
-                type: expense.type
-            });
-        
-        if (error) throw error;
-        console.log(`Sincronizado con éxito en la nube: ${expense.id}`);
-    } catch (err) {
-        console.error('Error al subir a Supabase:', err);
-    }
+    const { error } = await supabaseClient
+        .from('transactions')
+        .upsert({
+            id: String(expense.id),
+            amount: Number(expense.amount),
+            description: expense.desc,
+            category: expense.category,
+            date: expense.date,
+            type: expense.type
+        });
+    if (error) throw error;
+    console.log(`Sincronizado en la nube: ${expense.id}`);
 }
 
 // Borrar una transacción de Supabase
+// Lanza error si falla para que el llamador pueda manejarlo
 async function deleteFromSupabase(id) {
     if (!supabaseClient) return;
-    try {
-        const { error } = await supabaseClient
-            .from('transactions')
-            .delete()
-            .eq('id', String(id));
-            
-        if (error) throw error;
-        console.log(`Eliminado con éxito de la nube: ${id}`);
-    } catch (err) {
-        console.error('Error al eliminar de Supabase:', err);
-    }
+    const { error } = await supabaseClient
+        .from('transactions')
+        .delete()
+        .eq('id', String(id));
+    if (error) throw error;
+    console.log(`Eliminado de la nube: ${id}`);
 }
 
 // Sincronización bidireccional completa
@@ -97,35 +89,43 @@ async function syncWithSupabase() {
     console.log('Iniciando sincronización con Supabase...');
     
     try {
-        // 1. Procesar eliminaciones locales acumuladas mientras se estuvo offline
-        const deletedIds = await getSetting('deleted_ids', []);
-        if (deletedIds.length > 0) {
-            console.log('Procesando eliminaciones offline pendientes:', deletedIds);
-            for (const id of deletedIds) {
-                await deleteFromSupabase(id);
+        // PASO 1: Enviar a la nube las eliminaciones que ocurrieron offline
+        const pendingDeletedIds = await getSetting('deleted_ids', []);
+        if (pendingDeletedIds.length > 0) {
+            console.log('Procesando eliminaciones offline pendientes:', pendingDeletedIds);
+            const successfullyDeleted = [];
+            for (const id of pendingDeletedIds) {
+                try {
+                    await deleteFromSupabase(id);
+                    successfullyDeleted.push(id);
+                } catch (err) {
+                    // Si falla uno, se deja en la cola para el próximo intento
+                    console.warn(`No se pudo eliminar ${id} de la nube, se intentará después:`, err.message);
+                }
             }
-            await saveSetting('deleted_ids', []); // Vaciar la lista de eliminaciones
+            // Solo limpiar de la cola los que SÍ se borraron con éxito
+            const remaining = pendingDeletedIds.filter(id => !successfullyDeleted.includes(id));
+            await saveSetting('deleted_ids', remaining);
         }
-        
-        // 2. Traer todos los registros de la nube
-        const { data: cloudItems, error } = await supabaseClient
+
+        // PASO 2: Obtener todos los registros de la nube (fuente de verdad)
+        const { data: cloudItems, error: fetchError } = await supabaseClient
             .from('transactions')
             .select('*');
-            
-        if (error) throw error;
-        
-        // 3. Traer todos los registros locales de IndexedDB
+        if (fetchError) throw fetchError;
+
+        // PASO 3: Obtener todos los registros locales actuales
         const localItems = await getAllExpenses();
-        
+
+        // Crear mapas para búsqueda rápida O(1)
         const cloudMap = new Map(cloudItems.map(item => [String(item.id), item]));
         const localMap = new Map(localItems.map(item => [String(item.id), item]));
-        
-        // 4. Sincronizar de la nube hacia local (agregar o actualizar)
+
+        // PASO 4: Nube → Local: agregar o actualizar registros que vinieron de la nube
         for (const cloudItem of cloudItems) {
             const cloudIdStr = String(cloudItem.id);
             const localItem = localMap.get(cloudIdStr);
-            
-            // Mapear campos de base de datos relacional a IndexedDB
+
             const mappedItem = {
                 id: cloudItem.id,
                 amount: Number(cloudItem.amount),
@@ -134,19 +134,20 @@ async function syncWithSupabase() {
                 date: cloudItem.date,
                 type: cloudItem.type
             };
-            
+
             if (!localItem) {
-                // Si no existe localmente, lo agregamos a IndexedDB
+                // No existe localmente: agregarlo
                 await addExpense(mappedItem);
-                console.log(`Agregado localmente desde la nube: ${mappedItem.id}`);
+                console.log(`Descargado de la nube (nuevo): ${mappedItem.id}`);
             } else {
-                // Si existe pero es diferente, actualizamos localmente
-                const isDifferent = Number(localItem.amount) !== mappedItem.amount ||
-                                    localItem.desc !== mappedItem.desc ||
-                                    localItem.category !== mappedItem.category ||
-                                    localItem.date !== mappedItem.date ||
-                                    localItem.type !== mappedItem.type;
-                                    
+                // Existe localmente: actualizar si hay diferencias
+                const isDifferent =
+                    Number(localItem.amount) !== mappedItem.amount ||
+                    localItem.desc        !== mappedItem.desc     ||
+                    localItem.category    !== mappedItem.category ||
+                    localItem.date        !== mappedItem.date     ||
+                    localItem.type        !== mappedItem.type;
+
                 if (isDifferent) {
                     await updateExpense(mappedItem);
                     console.log(`Actualizado localmente desde la nube: ${mappedItem.id}`);
@@ -154,31 +155,41 @@ async function syncWithSupabase() {
             }
         }
 
-        // 5. CRÍTICO: Eliminar localmente los registros que ya NO están en la nube
-        // (fueron borrados desde otro dispositivo)
+        // PASO 5: Local → Eliminar localmente lo que ya no existe en la nube
+        // (fue borrado desde otro dispositivo)
+        // Usamos la lista ORIGINAL de localItems (antes del paso 4) para evitar
+        // borrar lo que acabamos de agregar en el paso 4.
         for (const localItem of localItems) {
             const localIdStr = String(localItem.id);
             if (!cloudMap.has(localIdStr)) {
-                // Este item ya no existe en la nube → borrarlo de local también
-                const _db = deleteExpense; // Referencia directa a la función de db.js
-                await _db(isNaN(localItem.id) ? localItem.id : Number(localItem.id));
-                console.log(`Eliminado localmente (borrado en otro dispositivo): ${localItem.id}`);
+                // No está en la nube → fue borrado desde otro dispositivo
+                try {
+                    // Llamamos directamente a la función de db.js (no a window.deleteExpense)
+                    await deleteExpense(isNaN(localItem.id) ? localItem.id : Number(localItem.id));
+                    console.log(`Eliminado localmente (otro dispositivo lo borró): ${localItem.id}`);
+                } catch (err) {
+                    console.warn(`No se pudo eliminar localmente ${localItem.id}:`, err.message);
+                }
             }
         }
-        
-        // 6. Sincronizar de local hacia la nube (subir items nuevos que no están en la nube)
-        // Refrescar localItems DESPUÉS de las eliminaciones del paso 5
-        const localItemsAfterSync = await getAllExpenses();
-        for (const localItem of localItemsAfterSync) {
+
+        // PASO 6: Local → Nube: subir registros locales nuevos que no están en la nube
+        // Refrescar desde IndexedDB después de los pasos anteriores para evitar subir
+        // lo que se acaba de eliminar en el paso 5.
+        const localItemsAfterCleanup = await getAllExpenses();
+        for (const localItem of localItemsAfterCleanup) {
             const localIdStr = String(localItem.id);
             if (!cloudMap.has(localIdStr)) {
-                // Si el item local no está en la nube, lo subimos
-                await uploadToSupabase(localItem);
-                console.log(`Subido a la nube: ${localItem.id}`);
+                try {
+                    await uploadToSupabase(localItem);
+                    console.log(`Subido a la nube (nuevo): ${localItem.id}`);
+                } catch (err) {
+                    console.warn(`No se pudo subir ${localItem.id} a la nube:`, err.message);
+                }
             }
         }
-        
-        console.log('Sincronización completada con éxito.');
+
+        console.log('✅ Sincronización completada con éxito.');
         isSyncing = false;
         return true;
     } catch (err) {
@@ -187,4 +198,3 @@ async function syncWithSupabase() {
         throw err;
     }
 }
-
