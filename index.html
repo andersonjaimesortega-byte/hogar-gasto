@@ -1,335 +1,133 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HogarGasto - Gestor de Gastos</title>
-    
-    <!-- SEO & Metadata -->
-    <meta name="description" content="Una aplicación web progresiva y privada para llevar el control de los gastos del hogar en pesos colombianos.">
-    <meta name="theme-color" content="#f5f5f0">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="HogarGasto">
-    
-    <!-- PWA Manifest & Icons -->
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icons/icon-192.svg">
-    
-    <!-- Stylesheet -->
-    <link rel="stylesheet" href="styles.css">
-    
-    <!-- Chart.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baby Shower de Antonella | Confirmación de Asistencia</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <div class="container">
-        
-        <!-- Header -->
-        <header class="glass-panel">
-            <div class="logo-area">
-                <div class="logo-icon">
-                    <i data-lucide="wallet"></i>
-                </div>
-                <div class="logo-text">
-                    <h1>HogarGasto</h1>
-                    <span>Gestor de Finanzas</span>
-                </div>
-            </div>
-            
-            <div class="header-actions">
-                <div id="connection-status" class="status-badge online">
-                    <div class="status-dot"></div>
-                    <span id="status-text">En línea</span>
-                </div>
-                <button id="btn-sync-settings" class="btn btn-secondary btn-icon" title="Sincronización en la nube" style="position: relative;">
-                    <i data-lucide="cloud"></i>
-                    <span id="sync-active-dot" style="display: none; position: absolute; top: 2px; right: 2px; width: 6px; height: 6px; background-color: var(--success); border-radius: 50%;"></span>
-                </button>
-                <button id="btn-install" class="btn btn-secondary btn-icon" style="display: none;" title="Instalar App">
-                    <i data-lucide="download"></i>
-                </button>
-            </div>
+    <div class="background-overlay"></div>
+
+    <!-- Decorative Elements -->
+    <div class="decoration cloud-1 floating">
+        <svg viewBox="0 0 24 24" fill="var(--primary)" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M17.5,19c-3.037,0-5.5-2.463-5.5-5.5c0-0.038,0.002-0.075,0.006-0.112C11.662,13.256,11.336,13.197,11,13.197c-2.485,0-4.5,2.015-4.5,4.5s2.015,4.5,4.5,4.5c0.141,0,0.279-0.008,0.416-0.021C12.333,22.656,13.562,23,15,23c2.761,0,5-2.239,5-5c0-0.125-0.006-0.248-0.017-0.37C20.359,18.529,21,19.689,21,21c0,2.209-1.791,4-4,4H7c-3.866,0-7-3.134-7-7c0-3.353,2.361-6.155,5.5-6.793V10c0-4.418,3.582-8,8-8s8,3.582,8,8v0.207c3.139,0.638,5.5,3.44,5.5,6.793c0,3.866-3.134,7-7,7H17.5z"
+                opacity="0.4" />
+        </svg>
+    </div>
+    <div class="decoration star-1 floating">
+        <svg viewBox="0 0 24 24" fill="var(--secondary)" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 1.5l3.09 6.26 6.91 1-5 4.87 1.18 6.88L12 17.27l-6.18 3.25L7 13.63l-5-4.87 6.91-1L12 1.5z" />
+        </svg>
+    </div>
+    <div class="decoration cloud-2 floating">
+        <svg viewBox="0 0 24 24" fill="var(--primary)" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M17.5,19c-3.037,0-5.5-2.463-5.5-5.5c0-0.038,0.002-0.075,0.006-0.112C11.662,13.256,11.336,13.197,11,13.197c-2.485,0-4.5,2.015-4.5,4.5s2.015,4.5,4.5,4.5c0.141,0,0.279-0.008,0.416-0.021C12.333,22.656,13.562,23,15,23c2.761,0,5-2.239,5-5c0-0.125-0.006-0.248-0.017-0.37C20.359,18.529,21,19.689,21,21c0,2.209-1.791,4-4,4H7c-3.866,0-7-3.134-7-7c0-3.353,2.361-6.155,5.5-6.793V10c0-4.418,3.582-8,8-8s8,3.582,8,8v0.207c3.139,0.638,5.5,3.44,5.5,6.793c0,3.866-3.134,7-7,7H17.5z"
+                opacity="0.3" />
+        </svg>
+    </div>
+    <div class="decoration star-2 floating">
+        <svg viewBox="0 0 24 24" fill="var(--secondary)" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 1.5l3.09 6.26 6.91 1-5 4.87 1.18 6.88L12 17.27l-6.18 3.25L7 13.63l-5-4.87 6.91-1L12 1.5z" />
+        </svg>
+    </div>
+
+    <main class="container">
+        <header class="hero">
+            <div class="baby-icons fade-in">🍼 🧸 ☁️</div>
+            <h1 class="fade-in">Baby Shower</h1>
+            <h2 class="name fade-in-delay">Antonella</h2>
+            <p class="subtitle fade-in-delay-2">¡Acompáñanos a celebrar la llegada de nuestra pequeña!</p>
         </header>
 
-        <!-- Install Banner Promo -->
-        <div id="install-promo" class="install-promo">
-            <div class="install-promo-text">
-                <h4>¡Instala HogarGasto en tu celular!</h4>
-                <p>Accede rápidamente desde tu pantalla de inicio y úsala sin internet.</p>
+        <section class="event-details glass-card fade-in-up">
+            <div class="detail-item">
+                <span class="icon">📅</span>
+                <p><strong>Fecha:</strong> 25 de Octubre, 2026</p>
             </div>
-            <button id="btn-promo-install" class="btn btn-primary">
-                Instalar
-            </button>
-        </div>
+            <div class="detail-item">
+                <span class="icon">⏰</span>
+                <p><strong>Hora:</strong> 4:00 PM</p>
+            </div>
+            <div class="detail-item">
+                <span class="icon">📍</span>
+                <p><strong>Lugar:</strong> Salón de Eventos "La Terraza"</p>
+            </div>
+        </section>
 
-        <!-- Summary Statistics Grid -->
-        <div class="summary-grid">
-            <!-- Income Card -->
-            <div class="glass-panel summary-card income">
-                <div class="card-header-flex">
-                    <span>Ingresos Adicionales</span>
-                    <div class="card-icon">
-                        <i data-lucide="plus-circle"></i>
+        <section class="rsvp-section glass-card fade-in-up-delay">
+            <h3>Confirmar Asistencia</h3>
+            <form id="rsvp-form">
+                <div class="input-group">
+                    <label for="name">Nombre Completo</label>
+                    <input type="text" id="name" name="name" required placeholder="Tu nombre">
+                </div>
+
+                <div class="input-group">
+                    <label for="email">Correo Electrónico (Opcional)</label>
+                    <input type="email" id="email" name="email" placeholder="tu@correo.com">
+                </div>
+
+                <div class="input-group">
+                    <label>¿Asistirás?</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="attending" value="Sí" required>
+                            <span>Sí, ¡allí estaré!</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="attending" value="No" required>
+                            <span>Lo siento, no puedo ir</span>
+                        </label>
                     </div>
                 </div>
-                <div id="val-income" class="card-value">$ 0</div>
-                <span id="val-income-subtext" class="card-subtext">0 aportes registrados</span>
-            </div>
 
-            <!-- Spent Card -->
-            <div class="glass-panel summary-card spent">
-                <div class="card-header-flex">
-                    <span>Gastos Totales</span>
-                    <div class="card-icon">
-                        <i data-lucide="trending-up"></i>
-                    </div>
-                </div>
-                <div id="val-spent" class="card-value">$ 0</div>
-                <span id="val-spent-subtext" class="card-subtext">0 transacciones registradas</span>
-            </div>
-
-            <!-- Balance Card -->
-            <div id="card-balance" class="glass-panel summary-card balance">
-                <div class="card-header-flex">
-                    <span>Saldo Disponible</span>
-                    <div id="icon-balance" class="card-icon">
-                        <i data-lucide="check-circle-2"></i>
-                    </div>
-                </div>
-                <div id="val-balance" class="card-value">$ 0</div>
-                <span id="val-balance-subtext" class="card-subtext">Dentro del presupuesto</span>
-            </div>
-        </div>
-
-        <!-- Main Dashboard Layout -->
-        <main class="main-layout">
-            
-            <!-- Left Side: Expense list & Filters -->
-            <section class="glass-panel">
-                <div class="panel-header">
-                    <h2 class="panel-title">
-                        <i data-lucide="list-ordered" style="color: var(--primary);"></i>
-                        Historial de Gastos
-                    </h2>
-                    <!-- Period Filter -->
-                    <select id="filter-month" class="input-control" style="width: auto; padding: 0.4rem 2rem 0.4rem 1rem; font-size: 0.85rem; border-radius: 8px;">
-                        <!-- Options generated in JS -->
+                <div class="input-group">
+                    <label for="guests">Número de Acompañantes</label>
+                    <select id="guests" name="guests">
+                        <option value="0">Solo yo</option>
+                        <option value="1">1 Acompañante</option>
                     </select>
                 </div>
-                
-                <div class="panel-content">
-                    <!-- Filters Bar -->
-                    <div class="filters-bar">
-                        <select id="filter-category" class="input-control" style="width: auto; min-width: 150px;">
-                            <option value="all">Todas las categorías</option>
-                            <optgroup label="Gastos">
-                                <option value="Mercado">Mercado</option>
-                                <option value="D1">D1</option>
-                                <option value="Servicios Públicos">Servicios Públicos</option>
-                                <option value="Arriendo">Arriendo</option>
-                                <option value="Casa">Casa</option>
-                                <option value="Carne">Carne</option>
-                                <option value="Internet">Internet</option>
-                                <option value="Gas">Gas</option>
-                                <option value="Otros">Otros</option>
-                            </optgroup>
-                            <optgroup label="Ingresos">
-                                <option value="Juni">Aporte Juni</option>
-                                <option value="Isa">Aporte Isa</option>
-                            </optgroup>
-                        </select>
-                    </div>
 
-                    <!-- Expenses List -->
-                    <div id="expenses-list" class="expenses-list-container">
-                        <!-- Items dynamically loaded from DB -->
-                        <div class="empty-state">
-                            <div class="empty-state-icon">
-                                <i data-lucide="receipt"></i>
-                            </div>
-                            <p>No se han registrado gastos en este período.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Right Side: Charts & Add Form -->
-            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-                
-                <!-- Chart Panel -->
-                <section class="glass-panel">
-                    <div class="panel-header">
-                        <h2 class="panel-title">
-                            <i data-lucide="pie-chart" style="color: var(--secondary);"></i>
-                            Distribución por Categoría
-                        </h2>
-                    </div>
-                    <div class="panel-content" style="display: flex; flex-direction: column; align-items: center;">
-                        <div class="chart-container">
-                            <canvas id="categoryChart"></canvas>
-                        </div>
-                        <div id="chart-legend" class="category-legend-list">
-                            <!-- Custom legends rendered via JS -->
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Add Expense Form Panel -->
-                <section class="glass-panel">
-                    <div class="panel-header">
-                        <h2 id="form-title" class="panel-title">
-                            <i data-lucide="plus-circle" style="color: var(--success);"></i>
-                            Registrar Nuevo Gasto
-                        </h2>
-                    </div>
-                    <div class="panel-content">
-                        <form id="expense-form" novalidate>
-                            <input type="hidden" id="expense-id">
-                            
-                            <div class="form-group">
-                                <label for="expense-type">Tipo de Transacción</label>
-                                <select id="expense-type" class="input-control" required>
-                                    <option value="gasto" selected>Gasto (Egreso) 📉</option>
-                                    <option value="ingreso">Ingreso (Aporte) 📈</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="expense-amount">Valor (COP)</label>
-                                <input type="number" id="expense-amount" class="input-control" placeholder="Ej. 45000" min="1" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="expense-desc">Descripción</label>
-                                <input type="text" id="expense-desc" class="input-control" placeholder="Ej. Compras supermercado">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="expense-category">Categoría</label>
-                                <select id="expense-category" class="input-control" required>
-                                    <option value="" disabled selected>Selecciona una categoría</option>
-                                    <option value="Mercado">Mercado 🛒</option>
-                                    <option value="D1">D1 🔴</option>
-                                    <option value="Servicios Públicos">Servicios Públicos ⚡</option>
-                                    <option value="Arriendo">Arriendo 🏠</option>
-                                    <option value="Casa">Casa 🏡</option>
-                                    <option value="Carne">Carne 🥩</option>
-                                    <option value="Internet">Internet 🌐</option>
-                                    <option value="Gas">Gas 🔥</option>
-                                    <option value="Otros">Otros ⚙️</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="expense-date">Fecha</label>
-                                <input type="date" id="expense-date" class="input-control" required>
-                            </div>
-
-                            <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
-                                <button type="submit" id="btn-save-expense" class="btn btn-primary" style="flex: 1;">
-                                    Guardar Gasto
-                                </button>
-                                <button type="button" id="btn-cancel-edit" class="btn btn-secondary" style="display: none;">
-                                    Cancelar
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </section>
-
-            </div>
-        </main>
-
-        <!-- Floating Action Button -->
-        <button id="fab-add" class="fab" title="Registrar Gasto Rápido">
-            <i data-lucide="plus"></i>
-        </button>
-
-        <!-- Monthly Summary Panel -->
-        <section class="glass-panel monthly-summary-panel">
-            <div class="panel-header">
-                <h2 class="panel-title">
-                    <i data-lucide="calendar-days" style="color: var(--primary);"></i>
-                    Resumen Acumulado por Mes
-                </h2>
-                <button id="btn-clear-db" class="btn btn-danger btn-icon" title="Borrar todos los datos" style="display: flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.9rem; font-size: 0.8rem; border-radius: 8px;">
-                    <i data-lucide="trash-2" style="width:14px;height:14px;"></i>
-                    Reiniciar datos
-                </button>
-            </div>
-            <div class="panel-content" style="margin-top: 1rem;">
-                <div class="table-responsive">
-                    <table class="summary-table">
-                        <thead>
-                            <tr>
-                                <th>Mes</th>
-                                <th class="text-right">Ingresos</th>
-                                <th class="text-right">Gastos</th>
-                                <th class="text-right">Balance Neto</th>
-                            </tr>
-                        </thead>
-                        <tbody id="monthly-summary-body">
-                            <!-- Carga dinámica -->
-                        </tbody>
-                    </table>
+                <div class="input-group">
+                    <label for="message">Mensaje para Antonella (Opcional)</label>
+                    <textarea id="message" name="message" rows="3" placeholder="Escribe algo lindo..."></textarea>
                 </div>
 
-                <!-- Gráfica mensual -->
-                <div style="margin-top: 2rem;">
-                    <p style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 1rem;">Ingresos vs Gastos por Mes</p>
-                    <div style="position: relative; height: 280px;">
-                        <canvas id="monthlyChart"></canvas>
+                <button type="submit" class="btn-primary">Confirmar Asistencia</button>
+            </form>
+
+            <div id="success-message" class="hidden">
+                <div class="success-content">
+                    <div class="invitation-image-wrapper">
+                        <img src="./assets/background.png" alt="Invitación Baby Shower" class="invitation-image">
+                    </div>
+                    <div class="success-text-content">
+                        <span class="check-icon">✨</span>
+                        <h4>¡Gracias por confirmar tu asistencia!</h4>
+                        <p>Esperamos que llegue ese día para disfrutar.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Footer -->
-        <footer class="app-footer">
-            <p>HogarGasto v1.0.0 • Local-First PWA • Guardado Seguro en Dispositivo</p>
+        <footer class="footer">
+            <p>Hecho con ❤️ para Antonella</p>
         </footer>
-    </div>
+    </main>
 
-    <!-- Supabase Sync Modal -->
-    <div id="modal-sync" class="modal-overlay">
-        <div class="glass-panel modal-container">
-            <div class="panel-header">
-                <h3 class="panel-title">Sincronización en la Nube</h3>
-                <button id="btn-close-sync-modal" class="btn btn-secondary btn-icon" style="padding: 0.25rem; border-radius: 6px;">
-                    <i data-lucide="x" style="width: 16px; height: 16px;"></i>
-                </button>
-            </div>
-            <div class="panel-content">
-                <div class="form-group">
-                    <label for="sync-url">Supabase Project URL</label>
-                    <input type="text" id="sync-url" class="input-control" placeholder="https://xxxxxxxxxxxxxx.supabase.co">
-                </div>
-                <div class="form-group">
-                    <label for="sync-key">Supabase Anon Key</label>
-                    <input type="password" id="sync-key" class="input-control" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
-                </div>
-                <div id="sync-status-msg" style="font-size: 0.85rem; margin-top: 0.5rem; display: none; font-weight: 500;"></div>
-            </div>
-            <div class="modal-footer">
-                <button id="btn-disconnect-sync" class="btn btn-danger" style="margin-right: auto; display: none;">Desconectar</button>
-                <button id="btn-cancel-sync" class="btn btn-secondary">Cancelar</button>
-                <button id="btn-save-sync" class="btn btn-primary">Conectar y Sincronizar</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Lucide Icons Script -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Supabase Client -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- App Logic Scripts -->
-    <script src="utils.js"></script>
-    <script src="db.js"></script>
-    <script src="sync.js"></script>
-    <script src="chart.js"></script>
-    <script src="ui.js"></script>
-    <script src="pwa.js"></script>
-    <script src="app.js"></script>
+    <script src="main.js"></script>
 </body>
+
 </html>
