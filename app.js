@@ -291,18 +291,30 @@ class AppController {
 
     async requestDeleteTransaction(id) {
         if (!confirm('¿Estás seguro de que deseas eliminar esta transacción?')) return;
-        const idString = String(id);
+        // Buscar la transacción original para preservar el tipo exacto del ID (string o number)
+        // IndexedDB distingue entre la clave '123' y 123, por lo que usar el tipo incorrecto
+        // haría que store.delete() no encontrara nada y el registro no se borrara.
+        const transaction = this.expenses.find(item => String(item.id) === String(id));
+        if (!transaction) {
+            console.warn('Transacción no encontrada en memoria:', id);
+            return;
+        }
+        const exactId = transaction.id; // id con el tipo original (string UUID o number)
+        const idString = String(exactId);
         try {
-            // id llega de la transacción almacenada; no se debe coercionar.
-            await deleteExpense(id);
+            // Borrar de IndexedDB usando el tipo exacto de ID
+            await deleteExpense(exactId);
+            // Registrar en cola de pendientes ANTES de intentar la nube
             const deletedIds = await getSetting('deleted_ids', []);
             if (!deletedIds.includes(idString)) await saveSetting('deleted_ids', [...deletedIds, idString]);
             if (supabaseClient) {
                 try {
-                    await deleteFromSupabase(id);
+                    await deleteFromSupabase(exactId);
+                    // Éxito en nube: limpiar de la cola
                     const remaining = (await getSetting('deleted_ids', [])).filter(value => value !== idString);
                     await saveSetting('deleted_ids', remaining);
                 } catch (error) {
+                    // Quedó en la cola → syncWithSupabase lo reintentará
                     console.warn('No se pudo borrar de la nube; se reintentará después.', error);
                 }
             }

@@ -89,6 +89,89 @@ body {
     padding: 1.5rem;
 }
 
+/* Floating Action Button */
+.fab {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--primary-grad);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--glass-shadow);
+  cursor: pointer;
+  z-index: 1000;
+  transition: transform 0.2s ease;
+}
+.fab:hover { transform: scale(1.08); }
+
+/* Modal overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+.modal-overlay.hidden { display: none; }
+.modal-container { max-width: 90%; width: 420px; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+.modal-actions { display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1rem; }
+
+/* Toast container */
+.toast-container {
+  position: fixed;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+}
+.toast {
+  background: var(--bg-surface);
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  box-shadow: var(--glass-shadow);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+.toast button { background: var(--primary); color: #fff; border: none; padding: 0.3rem 0.6rem; border-radius: 4px; cursor: pointer; }
+
+/* Monthly banner */
+.summary-banner {
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.banner-positive { background: var(--success-glow); color: var(--success); }
+.banner-warning { background: rgba(255,165,0,0.15); color: #d97706; }
+.banner-negative { background: var(--danger-glow); color: var(--danger); }
+
+/* Category budget */
+.cat-budget { margin: 1rem 0; }
+.cat-budget .budget-item { margin-bottom: 0.75rem; }
+.cat-budget .budget-label { display: flex; justify-content: space-between; font-size: 0.85rem; }
+.cat-budget .budget-bar { height: 6px; background: var(--border-color); border-radius: 3px; overflow: hidden; margin-top: 0.25rem; }
+.cat-budget .budget-fill { height: 100%; background: var(--primary); }
+
+/* Day header */
+.day-header { font-size: 0.9rem; font-weight: 600; color: var(--text-secondary); margin: 0.75rem 0 0.25rem; }
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1.5rem;
+}
+
 /* Navegación simple entre el trabajo diario y la vista de análisis. */
 .app-tabs {
     display: inline-flex;
