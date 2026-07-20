@@ -95,8 +95,15 @@ class AppController {
 
         const addButton = document.getElementById('fab-add');
         addButton?.addEventListener('click', () => {
-            dom.expenseForm.scrollIntoView({ behavior: 'smooth' });
-            setTimeout(() => dom.expenseAmount.focus(), 300);
+            // Open quick add modal
+            const modal = document.getElementById('modal-add');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('active');
+                // Reset and focus the form for new entry
+                this.resetForm();
+                setTimeout(() => dom.expenseAmount.focus(), 300);
+            }
         });
         this.bindSyncEvents();
     }
@@ -167,7 +174,7 @@ class AppController {
     bindSyncEvents() {
         const modal = document.getElementById('modal-sync');
         const button = document.getElementById('btn-sync-settings');
-        const closeButton = document.getElementById('btn-close-sync-modal');
+        const closeButton = document.getElementById('btn-close-sync');
         const cancelButton = document.getElementById('btn-cancel-sync');
         const saveButton = document.getElementById('btn-save-sync');
         const disconnectButton = document.getElementById('btn-disconnect-sync');
@@ -175,6 +182,19 @@ class AppController {
         const keyInput = document.getElementById('sync-key');
         const status = document.getElementById('sync-status-msg');
         const close = () => modal.classList.remove('active');
+        // Quick add modal handlers
+        const quickModal = document.getElementById('modal-add');
+        const quickCloseBtn = document.getElementById('btn-close-modal');
+        const quickCancelBtn = document.getElementById('btn-cancel-edit');
+        const quickCancelHandler = () => {
+            if (quickModal) {
+                quickModal.classList.remove('active');
+                quickModal.classList.add('hidden');
+                this.resetForm();
+            }
+        };
+        quickCloseBtn?.addEventListener('click', quickCancelHandler);
+        quickCancelBtn?.addEventListener('click', quickCancelHandler);
         const showStatus = (message, type) => {
             status.textContent = message;
             status.className = type;
@@ -249,6 +269,12 @@ class AppController {
             }
             const transactionMonth = transaction.date.substring(0, 7);
             this.resetForm();
+            // Close quick add modal after saving
+            const quickModal = document.getElementById('modal-add');
+            if (quickModal) {
+                quickModal.classList.remove('active');
+                quickModal.classList.add('hidden');
+            }
             if (transactionMonth !== this.currentFilterMonth) this.currentFilterMonth = transactionMonth;
             await this.loadPeriodFilters();
             await this.refresh();
