@@ -24,13 +24,21 @@ const dom = {
     btnSaveExpense: document.getElementById('btn-save-expense'),
     btnCancelEdit: document.getElementById('btn-cancel-edit'),
     monthlySummaryBody: document.getElementById('monthly-summary-body'),
-    btnClearDb: document.getElementById('btn-clear-db'),
+    summaryYear: document.getElementById('summary-year'),
     connectionStatus: document.getElementById('connection-status'),
     statusText: document.getElementById('status-text'),
     btnInstall: document.getElementById('btn-install'),
     installPromo: document.getElementById('install-promo'),
     btnPromoInstall: document.getElementById('btn-promo-install')
 };
+
+// La vista no conoce la persistencia ni la sincronización. El controlador de
+// la aplicación inyecta las acciones que corresponden a cada transacción.
+let transactionActionHandlers = { onEdit: null, onDelete: null };
+
+function setTransactionActionHandlers(handlers) {
+    transactionActionHandlers = { ...transactionActionHandlers, ...handlers };
+}
 
 // Actualizar estadísticas del Dashboard
 function updateDashboardStats(filteredExpenses, monthlyBudget, currentFilterMonth) {
@@ -112,7 +120,7 @@ function renderExpensesList(expenses, currentFilterMonth, categoryVal, searchVal
     items.forEach(exp => {
         const itemEl = document.createElement('div');
         itemEl.className = 'expense-item';
-        itemEl.id = `exp-item-${exp.id}`;
+        itemEl.dataset.transactionId = String(exp.id);
         
         const catClass = getCategoryIconClass(exp.category);
         const emoji = categoryEmojis[exp.category] || '⚙️';
@@ -137,15 +145,19 @@ function renderExpensesList(expenses, currentFilterMonth, categoryVal, searchVal
             <div class="expense-right">
                 <span class="${amountClass}">${amountSign} ${formatCOP.format(exp.amount)}</span>
                 <div class="expense-actions">
-                    <button class="btn btn-secondary btn-icon" onclick="editExpense('${exp.id}')" title="Editar">
+                    <button class="btn btn-secondary btn-icon" type="button" title="Editar">
                         <i data-lucide="edit" style="width: 14px; height: 14px; color: var(--text-secondary);"></i>
                     </button>
-                    <button class="btn btn-danger btn-icon" onclick="deleteExpense('${exp.id}')" title="Eliminar">
+                    <button class="btn btn-danger btn-icon" type="button" title="Eliminar">
                         <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
                     </button>
                 </div>
             </div>
         `;
+
+        const [editButton, deleteButton] = itemEl.querySelectorAll('.expense-actions button');
+        editButton.addEventListener('click', () => transactionActionHandlers.onEdit?.(exp.id));
+        deleteButton.addEventListener('click', () => transactionActionHandlers.onDelete?.(exp.id));
         
         dom.expensesList.appendChild(itemEl);
     });
@@ -203,13 +215,13 @@ function populatePeriodFilters(sortedMonths, currentFilterMonth) {
 }
 
 // Renderizar la tabla de resumen mensual acumulado
-function renderMonthlySummary(allExpenses, monthlyBudget) {
+function renderMonthlySummary(allExpenses, monthlyBudget, selectedYear) {
     if (!dom.monthlySummaryBody) return;
 
     // Agrupar todas las transacciones por mes (YYYY-MM)
     const monthMap = {};
     allExpenses.forEach(exp => {
-        if (!exp.date) return;
+        if (!exp.date || (selectedYear && !exp.date.startsWith(`${selectedYear}-`))) return;
         const monthKey = exp.date.substring(0, 7);
         if (!monthMap[monthKey]) {
             monthMap[monthKey] = { income: 0, expenses: 0 };
@@ -273,14 +285,14 @@ function renderMonthlySummary(allExpenses, monthlyBudget) {
 let monthlyChartInstance = null;
 
 // Renderizar gráfica de barras: Ingresos vs Gastos por mes
-function renderMonthlyChart(allExpenses) {
+function renderMonthlyChart(allExpenses, selectedYear) {
     const canvas = document.getElementById('monthlyChart');
     if (!canvas) return;
 
     // Agrupar por mes
     const monthMap = {};
     allExpenses.forEach(exp => {
-        if (!exp.date) return;
+        if (!exp.date || (selectedYear && !exp.date.startsWith(`${selectedYear}-`))) return;
         const key = exp.date.substring(0, 7);
         if (!monthMap[key]) monthMap[key] = { income: 0, expenses: 0 };
         const isIncome = exp.type === 'ingreso' || (!exp.type && ['Juni', 'Isa'].includes(exp.category));
@@ -327,8 +339,8 @@ function renderMonthlyChart(allExpenses) {
                 {
                     label: 'Gastos',
                     data: expenseData,
-                    backgroundColor: 'rgba(220, 38, 38, 0.7)',
-                    borderColor: 'rgba(220, 38, 38, 1)',
+                    backgroundColor: 'rgba(207, 102, 90, 0.72)',
+                    borderColor: 'rgba(207, 102, 90, 1)',
                     borderWidth: 2,
                     borderRadius: 8,
                     borderSkipped: false,
@@ -352,9 +364,9 @@ function renderMonthlyChart(allExpenses) {
                 },
                 tooltip: {
                     backgroundColor: 'rgba(255,255,255,0.97)',
-                    titleColor: '#1e1b4b',
+                    titleColor: '#1d3448',
                     bodyColor: '#4b5563',
-                    borderColor: 'rgba(99,102,241,0.2)',
+                    borderColor: 'rgba(36,99,143,0.2)',
                     borderWidth: 1,
                     padding: 12,
                     cornerRadius: 10,
@@ -373,7 +385,7 @@ function renderMonthlyChart(allExpenses) {
                     border: { display: false }
                 },
                 y: {
-                    grid: { color: 'rgba(99,102,241,0.07)', drawBorder: false },
+                    grid: { color: 'rgba(36,99,143,0.08)', drawBorder: false },
                     ticks: {
                         color: '#6b7280',
                         font: { family: "'Plus Jakarta Sans', sans-serif", size: 11 },

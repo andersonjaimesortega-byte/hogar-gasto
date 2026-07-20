@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hogargasto-cache-v5';
+const CACHE_NAME = 'hogargasto-cache-v10';
 const ASSETS_TO_CACHE = [
   './',
   'index.html',
@@ -12,10 +12,7 @@ const ASSETS_TO_CACHE = [
   'pwa.js',
   'manifest.json',
   'icons/icon-192.svg',
-  'icons/icon-512.svg',
-  'https://cdn.jsdelivr.net/npm/chart.js',
-  'https://unpkg.com/lucide@latest',
-  'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap'
+  'icons/icon-512.svg'
 ];
 
 // Evento de instalación: cachear recursos estáticos (App Shell)
@@ -23,7 +20,7 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        console.log('Service Worker: Caching App Shell y CDNs...');
+        console.log('Service Worker: Caching App Shell...');
         return cache.addAll(ASSETS_TO_CACHE);
       })
       .then(() => {
@@ -67,14 +64,12 @@ self.addEventListener('fetch', (event) => {
         return fetch(event.request)
           .then((response) => {
             // Verificar respuesta válida
-            if (!response || response.status !== 200 || response.type !== 'basic') {
+            if (!response || !response.ok) {
               return response;
             }
 
-            // Clonar la respuesta para guardarla en caché si corresponde
-            // (Solo cacheamos recursos que pertenecen a nuestra app o CDNs autorizadas)
-            const shouldCache = ASSETS_TO_CACHE.some(asset => event.request.url.includes(asset)) || 
-                                event.request.url.startsWith(self.location.origin);
+            // Clonar la respuesta para guardarla solo si pertenece a la app.
+            const shouldCache = event.request.url.startsWith(self.location.origin);
             
             if (shouldCache) {
               const responseToCache = response.clone();
