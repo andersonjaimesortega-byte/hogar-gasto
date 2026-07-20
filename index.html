@@ -305,12 +305,46 @@
         </footer>
     </div>
 
+            </div>
+            <div class="panel-content" style="margin-top: 1rem;">
+                <div class="table-responsive">
+                    <table class="summary-table">
+                        <thead>
+                            <tr>
+                                <th>Mes</th>
+                                <th class="text-right">Ingresos</th>
+                                <th class="text-right">Gastos</th>
+                                <th class="text-right">Balance Neto</th>
+                            </tr>
+                        </thead>
+                        <tbody id="monthly-summary-body">
+                            <!-- Carga dinámica -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Gráfica mensual -->
+                <div style="margin-top: 2rem;">
+                    <p style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 1rem;">Ingresos vs Gastos por Mes</p>
+                    <div style="position: relative; height: 280px;">
+                        <canvas id="monthlyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>HogarGasto v1.0.0 • Local-First PWA • Guardado Seguro en Dispositivo</p>
+        </footer>
+    </div>
+
     <!-- Supabase Sync Modal -->
     <div id="modal-sync" class="modal-overlay">
         <div class="glass-panel modal-container">
             <div class="panel-header">
                 <h3 class="panel-title">Sincronización en la Nube</h3>
-                <button id="btn-close-sync-modal" class="btn btn-secondary btn-icon" style="padding: 0.25rem; border-radius: 6px;">
+                <button id="btn-close-sync" class="btn btn-secondary btn-icon" style="padding: 0.25rem; border-radius: 6px;">
                     <i data-lucide="x" style="width: 16px; height: 16px;"></i>
                 </button>
             </div>
@@ -331,11 +365,6 @@
                 <button id="btn-save-sync" class="btn btn-primary">Conectar y Sincronizar</button>
             </div>
         </div>
-    </div>
-
-    <!-- Floating Action Button -->
-    <div id="fab-add" class="fab" title="Agregar gasto/ingreso">
-      <i data-lucide="plus"></i>
     </div>
 
     <!-- Quick Add Modal (hidden by default) -->
