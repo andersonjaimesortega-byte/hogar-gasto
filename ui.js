@@ -29,7 +29,8 @@ const dom = {
     statusText: document.getElementById('status-text'),
     btnInstall: document.getElementById('btn-install'),
     installPromo: document.getElementById('install-promo'),
-    btnPromoInstall: document.getElementById('btn-promo-install')
+    btnPromoInstall: document.getElementById('btn-promo-install'),
+    categoryBudgetList: document.getElementById('category-budget-list')
 };
 
 // La vista no conoce la persistencia ni la sincronización. El controlador de
@@ -79,7 +80,7 @@ function updateDashboardStats(filteredExpenses, monthlyBudget, currentFilterMont
         dom.iconBalance.innerHTML = '<i data-lucide="check-circle-2"></i>';
         dom.iconBalance.style.color = 'var(--success)';
     }
-    
+
 }
 
 // Renderizar la lista de gastos con filtros aplicados
@@ -117,7 +118,19 @@ function renderExpensesList(expenses, currentFilterMonth, categoryVal, searchVal
         return;
     }
     
+    let currentDate = null;
+    let currentGroup = null;
     items.forEach(exp => {
+        if (exp.date !== currentDate) {
+            currentDate = exp.date;
+            currentGroup = document.createElement('section');
+            currentGroup.className = 'expense-day-group';
+            const title = document.createElement('h3');
+            title.className = 'expense-day-title';
+            title.textContent = getExpenseDayLabel(exp.date);
+            currentGroup.appendChild(title);
+            dom.expensesList.appendChild(currentGroup);
+        }
         const itemEl = document.createElement('div');
         itemEl.className = 'expense-item';
         itemEl.dataset.transactionId = String(exp.id);
@@ -159,12 +172,46 @@ function renderExpensesList(expenses, currentFilterMonth, categoryVal, searchVal
         editButton.addEventListener('click', () => transactionActionHandlers.onEdit?.(exp.id));
         deleteButton.addEventListener('click', () => transactionActionHandlers.onDelete?.(exp.id));
         
-        dom.expensesList.appendChild(itemEl);
+        currentGroup.appendChild(itemEl);
     });
     
     if (window.lucide) {
         window.lucide.createIcons();
     }
+}
+
+function getExpenseDayLabel(dateStr) {
+    const today = getTodayStr();
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`;
+    if (dateStr === today) return 'Hoy';
+    if (dateStr === yesterdayStr) return 'Ayer';
+    return formatDateString(dateStr);
+}
+
+function renderCategoryBudgets(expenses, month, budgets) {
+    if (!dom.categoryBudgetList) return;
+    const categories = Object.keys(categoryColors).filter(category => !['Juni', 'Isa'].includes(category));
+    const spentByCategory = Object.fromEntries(categories.map(category => [category, 0]));
+    expenses.forEach(expense => {
+        const isIncome = expense.type === 'ingreso' || ['Juni', 'Isa'].includes(expense.category);
+        if (!isIncome && expense.date?.startsWith(month) && spentByCategory[expense.category] !== undefined) {
+            spentByCategory[expense.category] += Number(expense.amount);
+        }
+    });
+
+    dom.categoryBudgetList.innerHTML = '';
+    categories.forEach(category => {
+        const budget = Number(budgets[category] || 0);
+        const item = document.createElement('div');
+        item.className = `category-budget-item${budget > 0 && spentByCategory[category] > budget ? ' is-over-budget' : ''}`;
+        item.innerHTML = `
+            <header><span>${categoryEmojis[category] || ''} ${category}</span><small>${formatCOP.format(spentByCategory[category])} gastado${budget ? ` de ${formatCOP.format(budget)}` : ''}</small></header>
+            <input class="input-control" type="number" min="0" inputmode="numeric" data-category="${category}" value="${budget || ''}" placeholder="Sin límite">
+        `;
+        dom.categoryBudgetList.appendChild(item);
+    });
 }
 
 // Actualizar opciones de categoría según el tipo de transacción en el formulario

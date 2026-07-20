@@ -89,89 +89,6 @@ body {
     padding: 1.5rem;
 }
 
-/* Floating Action Button */
-.fab {
-  position: fixed;
-  bottom: 1.5rem;
-  right: 1.5rem;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: var(--primary-grad);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: var(--glass-shadow);
-  cursor: pointer;
-  z-index: 1000;
-  transition: transform 0.2s ease;
-}
-.fab:hover { transform: scale(1.08); }
-
-/* Modal overlay */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
-}
-.modal-overlay.hidden { display: none; }
-.modal-container { max-width: 90%; width: 420px; }
-.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
-.modal-actions { display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1rem; }
-
-/* Toast container */
-.toast-container {
-  position: fixed;
-  bottom: 1rem;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1000;
-}
-.toast {
-  background: var(--bg-surface);
-  padding: 0.75rem 1rem;
-  border-radius: 6px;
-  box-shadow: var(--glass-shadow);
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 0.5rem;
-}
-.toast button { background: var(--primary); color: #fff; border: none; padding: 0.3rem 0.6rem; border-radius: 4px; cursor: pointer; }
-
-/* Monthly banner */
-.summary-banner {
-  margin: 1rem 0;
-  padding: 0.75rem 1rem;
-  border-radius: 6px;
-  font-weight: 500;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.banner-positive { background: var(--success-glow); color: var(--success); }
-.banner-warning { background: rgba(255,165,0,0.15); color: #d97706; }
-.banner-negative { background: var(--danger-glow); color: var(--danger); }
-
-/* Category budget */
-.cat-budget { margin: 1rem 0; }
-.cat-budget .budget-item { margin-bottom: 0.75rem; }
-.cat-budget .budget-label { display: flex; justify-content: space-between; font-size: 0.85rem; }
-.cat-budget .budget-bar { height: 6px; background: var(--border-color); border-radius: 3px; overflow: hidden; margin-top: 0.25rem; }
-.cat-budget .budget-fill { height: 100%; background: var(--primary); }
-
-/* Day header */
-.day-header { font-size: 0.9rem; font-weight: 600; color: var(--text-secondary); margin: 0.75rem 0 0.25rem; }
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 1.5rem;
-}
-
 /* Navegación simple entre el trabajo diario y la vista de análisis. */
 .app-tabs {
     display: inline-flex;
@@ -992,4 +909,42 @@ footer.app-footer {
 }
 #sync-status-msg.info {
     color: var(--info);
+}
+
+/* Flujos diarios: registrar, entender el mes y corregir un borrado. */
+.btn-add-transaction { padding: 0.65rem 0.9rem; }
+.btn-add-transaction svg { width: 17px; height: 17px; }
+.transaction-panel { display: none; }
+.transaction-panel.is-open { display: block; position: fixed; z-index: 1002; top: 50%; left: 50%; width: min(94vw, 510px); max-height: calc(100vh - 2rem); overflow-y: auto; transform: translate(-50%, -50%); box-shadow: 0 24px 70px rgba(29, 52, 72, 0.28); }
+.transaction-panel .panel-header { position: sticky; top: 0; background: rgba(255,255,255,0.96); z-index: 1; }
+.transaction-panel .panel-header .btn { margin-left: auto; }
+.transaction-panel form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 0.85rem; }
+.transaction-panel .form-group { margin-bottom: 1rem; }
+.transaction-panel .form-group:nth-of-type(3), .transaction-panel form > div:last-child { grid-column: 1 / -1; }
+.transaction-backdrop { z-index: 1001; background: rgba(20, 37, 51, 0.45); backdrop-filter: blur(2px); }
+
+.undo-toast { position: fixed; z-index: 1100; left: 50%; bottom: 1.25rem; transform: translateX(-50%); display: flex; align-items: center; gap: 1rem; width: min(92vw, 420px); padding: 0.85rem 1rem; border-radius: 12px; background: #1d3448; color: #fff; box-shadow: 0 12px 28px rgba(29, 52, 72, 0.25); font-size: 0.86rem; }
+.undo-toast[hidden] { display: none; }
+.undo-toast button { margin-left: auto; color: #fff; background: transparent; border: 0; font: inherit; font-weight: 800; cursor: pointer; }
+
+.category-budget-panel { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); }
+.budget-panel-heading { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+.budget-panel-heading h3 { font-size: 1rem; }
+.budget-panel-heading p { margin-top: 0.25rem; color: var(--text-secondary); font-size: 0.8rem; }
+.category-budget-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+.category-budget-item { padding: 0.85rem; border: 1px solid var(--border-color); border-radius: 12px; }
+.category-budget-item.is-over-budget { border-color: rgba(207, 102, 90, 0.55); background: var(--danger-glow); }
+.category-budget-item header { display: flex; justify-content: space-between; margin: 0 0 0.65rem; padding: 0; }
+.category-budget-item header span { font-size: 0.82rem; font-weight: 700; }
+.category-budget-item header small { color: var(--text-secondary); font-size: 0.74rem; }
+.category-budget-item .input-control { padding: 0.55rem 0.7rem; font-size: 0.85rem; }
+.expense-day-group + .expense-day-group { margin-top: 1.25rem; }
+.expense-day-title { margin: 0 0 0.6rem; color: var(--text-secondary); font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; }
+
+@media (max-width: 640px) {
+    .btn-add-transaction { padding: 0.65rem; }
+    .btn-add-transaction { font-size: 0; }
+    .transaction-panel form, .category-budget-list { grid-template-columns: 1fr; }
+    .transaction-panel .form-group:nth-of-type(3) { grid-column: auto; }
+    .budget-panel-heading { align-items: flex-start; flex-direction: column; }
 }

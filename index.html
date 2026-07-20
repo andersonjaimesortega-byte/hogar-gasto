@@ -38,6 +38,10 @@
             </div>
             
             <div class="header-actions">
+                <button id="btn-add-transaction" class="btn btn-primary btn-add-transaction" type="button">
+                    <i data-lucide="plus"></i>
+                    Registrar
+                </button>
                 <div id="connection-status" class="status-badge online">
                     <div class="status-dot"></div>
                     <span id="status-text">En línea</span>
@@ -170,7 +174,7 @@
             <div style="display: flex; flex-direction: column; gap: 1.5rem;">
                 
                 <!-- Chart Panel -->
-                <section class="glass-panel">
+                <section id="transaction-panel" class="glass-panel transaction-panel" aria-modal="true" role="dialog" aria-labelledby="form-title">
                     <div class="panel-header">
                         <h2 class="panel-title">
                             <i data-lucide="pie-chart" style="color: var(--secondary);"></i>
@@ -194,6 +198,9 @@
                             <i data-lucide="plus-circle" style="color: var(--success);"></i>
                             Registrar Nuevo Gasto
                         </h2>
+                        <button id="btn-close-transaction" class="btn btn-secondary btn-icon" type="button" title="Cerrar">
+                            <i data-lucide="x"></i>
+                        </button>
                     </div>
                     <div class="panel-content">
                         <form id="expense-form" novalidate>
@@ -296,6 +303,17 @@
                         <canvas id="monthlyChart"></canvas>
                     </div>
                 </div>
+
+                <section class="category-budget-panel">
+                    <div class="budget-panel-heading">
+                        <div>
+                            <h3>Presupuesto por categoría</h3>
+                            <p>Define un límite mensual para cada gasto.</p>
+                        </div>
+                        <button id="btn-save-category-budgets" class="btn btn-primary" type="button">Guardar límites</button>
+                    </div>
+                    <div id="category-budget-list" class="category-budget-list"></div>
+                </section>
             </div>
         </section>
 
@@ -305,38 +323,10 @@
         </footer>
     </div>
 
-            </div>
-            <div class="panel-content" style="margin-top: 1rem;">
-                <div class="table-responsive">
-                    <table class="summary-table">
-                        <thead>
-                            <tr>
-                                <th>Mes</th>
-                                <th class="text-right">Ingresos</th>
-                                <th class="text-right">Gastos</th>
-                                <th class="text-right">Balance Neto</th>
-                            </tr>
-                        </thead>
-                        <tbody id="monthly-summary-body">
-                            <!-- Carga dinámica -->
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Gráfica mensual -->
-                <div style="margin-top: 2rem;">
-                    <p style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 1rem;">Ingresos vs Gastos por Mes</p>
-                    <div style="position: relative; height: 280px;">
-                        <canvas id="monthlyChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Footer -->
-        <footer class="app-footer">
-            <p>HogarGasto v1.0.0 • Local-First PWA • Guardado Seguro en Dispositivo</p>
-        </footer>
+    <div id="transaction-backdrop" class="modal-overlay transaction-backdrop" hidden></div>
+    <div id="undo-toast" class="undo-toast" role="status" hidden>
+        <span id="undo-message">Movimiento eliminado.</span>
+        <button id="btn-undo-delete" type="button">Deshacer</button>
     </div>
 
     <!-- Supabase Sync Modal -->
@@ -344,7 +334,7 @@
         <div class="glass-panel modal-container">
             <div class="panel-header">
                 <h3 class="panel-title">Sincronización en la Nube</h3>
-                <button id="btn-close-sync" class="btn btn-secondary btn-icon" style="padding: 0.25rem; border-radius: 6px;">
+                <button id="btn-close-sync-modal" class="btn btn-secondary btn-icon" style="padding: 0.25rem; border-radius: 6px;">
                     <i data-lucide="x" style="width: 16px; height: 16px;"></i>
                 </button>
             </div>
@@ -366,60 +356,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Quick Add Modal (hidden by default) -->
-    <div id="modal-add" class="modal-overlay hidden">
-      <div class="modal-container glass-panel">
-        <div class="modal-header">
-          <h3 class="modal-title">Registrar Operación</h3>
-          <button id="btn-close-modal" class="btn btn-secondary btn-icon" title="Cerrar">
-            <i data-lucide="x"></i>
-          </button>
-        </div>
-        <div class="modal-content">
-          <!-- Reuse existing expense form -->
-          <form id="expense-form" novalidate>
-            <input type="hidden" id="expense-id">
-            <div class="form-group">
-              <label for="expense-type">Tipo</label>
-              <select id="expense-type" class="input-control">
-                <option value="gasto">Gasto</option>
-                <option value="ingreso">Ingreso</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="expense-amount">Valor</label>
-              <input type="number" id="expense-amount" class="input-control" placeholder="0" required>
-            </div>
-            <div class="form-group">
-              <label for="expense-desc">Descripción</label>
-              <input type="text" id="expense-desc" class="input-control" placeholder="Detalle..." required>
-            </div>
-            <div class="form-group">
-              <label for="expense-category">Categoría</label>
-              <select id="expense-category" class="input-control"></select>
-            </div>
-            <div class="form-group">
-              <label for="expense-date">Fecha</label>
-              <input type="date" id="expense-date" class="input-control" required>
-            </div>
-            <div class="modal-actions">
-              <button type="submit" class="btn btn-primary" id="btn-save-expense">Guardar</button>
-              <button type="button" class="btn btn-secondary" id="btn-cancel-edit">Cancelar</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-
-    <!-- Toast container for undo delete -->
-    <div id="toast-container" class="toast-container hidden"></div>
-
-    <!-- Monthly summary banner placeholder -->
-    <div id="monthly-banner" class="summary-banner hidden"></div>
-
-    <!-- Category budget section placeholder (inside Summary tab) -->
-    <div id="cat-budget-section" class="cat-budget hidden"></div>
 
     <!-- Lucide Icons Script -->
     <script src="https://unpkg.com/lucide@latest"></script>
