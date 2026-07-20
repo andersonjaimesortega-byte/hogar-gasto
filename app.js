@@ -5,6 +5,7 @@ class AppController {
         this.categoryBudgets = {};
         this.currentFilterMonth = '';
         this.summaryYear = '';
+        this.summaryView = 'general';
         this.categoryChart = null;
         this.syncTimer = null;
         this.undoTimer = null;
@@ -96,13 +97,15 @@ class AppController {
             this.summaryYear = event.target.value;
             this.renderSummary();
         });
+        document.querySelectorAll('.summary-view-button').forEach(button => {
+            button.addEventListener('click', () => this.selectSummaryView(button.dataset.summaryView));
+        });
 
         document.querySelectorAll('.tab-button').forEach(button => {
             button.addEventListener('click', () => this.selectTab(button.dataset.tab));
         });
 
         const openTransaction = () => this.openTransactionForm(true);
-        document.getElementById('fab-add')?.addEventListener('click', openTransaction);
         document.getElementById('btn-add-transaction')?.addEventListener('click', openTransaction);
         document.getElementById('btn-close-transaction')?.addEventListener('click', () => this.closeTransactionForm());
         document.getElementById('transaction-backdrop')?.addEventListener('click', () => this.closeTransactionForm());
@@ -161,7 +164,6 @@ class AppController {
             button.classList.toggle('is-active', isActive);
             button.setAttribute('aria-selected', String(isActive));
         });
-        document.getElementById('fab-add').style.display = isSummary ? 'none' : '';
         if (isSummary) this.renderSummary();
         window.lucide?.createIcons();
     }
@@ -182,6 +184,19 @@ class AppController {
     renderSummary() {
         renderMonthlySummary(this.expenses, this.monthlyBudget, this.summaryYear);
         renderMonthlyChart(this.expenses, this.summaryYear);
+        renderCategorySummary(this.expenses, this.summaryYear);
+        this.selectSummaryView(this.summaryView, false);
+    }
+
+    selectSummaryView(view, shouldRender = true) {
+        this.summaryView = view;
+        const showCategory = view === 'category';
+        document.getElementById('summary-general-view').hidden = showCategory;
+        document.getElementById('summary-category-view').hidden = !showCategory;
+        document.querySelectorAll('.summary-view-button').forEach(button => {
+            button.classList.toggle('is-active', button.dataset.summaryView === view);
+        });
+        if (shouldRender && showCategory) renderCategorySummary(this.expenses, this.summaryYear);
     }
 
     updateTransactionTypeUI() {

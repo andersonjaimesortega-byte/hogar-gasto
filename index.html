@@ -262,11 +262,6 @@
 
         </section>
 
-        <!-- Floating Action Button -->
-        <button id="fab-add" class="fab" title="Registrar Gasto Rápido">
-            <i data-lucide="plus"></i>
-        </button>
-
         <!-- Monthly Summary Panel -->
         <section id="tab-summary" class="tab-panel glass-panel monthly-summary-panel" hidden>
             <div class="panel-header">
@@ -280,6 +275,12 @@
                 </label>
             </div>
             <div class="panel-content" style="margin-top: 1rem;">
+                <div class="summary-view-switch" role="group" aria-label="Tipo de resumen">
+                    <button class="summary-view-button is-active" type="button" data-summary-view="general">General</button>
+                    <button class="summary-view-button" type="button" data-summary-view="category">Por categoría</button>
+                </div>
+
+                <div id="summary-general-view">
                 <div class="table-responsive">
                     <table class="summary-table">
                         <thead>
@@ -301,6 +302,26 @@
                     <p style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 1rem;">Ingresos vs Gastos por Mes</p>
                     <div style="position: relative; height: 280px;">
                         <canvas id="monthlyChart"></canvas>
+                    </div>
+                </div>
+                </div>
+
+                <div id="summary-category-view" hidden>
+                    <div class="category-summary-heading">
+                        <h3>Gastos acumulados por categoría</h3>
+                        <p id="category-summary-description"></p>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="summary-table">
+                            <thead>
+                                <tr>
+                                    <th>Categoría</th>
+                                    <th class="text-right">Gasto acumulado</th>
+                                    <th class="text-right">Participación</th>
+                                </tr>
+                            </thead>
+                            <tbody id="category-summary-body"></tbody>
+                        </table>
                     </div>
                 </div>
 

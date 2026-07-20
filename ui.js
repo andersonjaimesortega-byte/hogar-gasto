@@ -25,6 +25,8 @@ const dom = {
     btnCancelEdit: document.getElementById('btn-cancel-edit'),
     monthlySummaryBody: document.getElementById('monthly-summary-body'),
     summaryYear: document.getElementById('summary-year'),
+    categorySummaryBody: document.getElementById('category-summary-body'),
+    categorySummaryDescription: document.getElementById('category-summary-description'),
     connectionStatus: document.getElementById('connection-status'),
     statusText: document.getElementById('status-text'),
     btnInstall: document.getElementById('btn-install'),
@@ -211,6 +213,41 @@ function renderCategoryBudgets(expenses, month, budgets) {
             <input class="input-control" type="number" min="0" inputmode="numeric" data-category="${category}" value="${budget || ''}" placeholder="Sin límite">
         `;
         dom.categoryBudgetList.appendChild(item);
+    });
+}
+
+function renderCategorySummary(expenses, selectedYear) {
+    if (!dom.categorySummaryBody) return;
+    const totals = {};
+    expenses.forEach(expense => {
+        const isIncome = expense.type === 'ingreso' || ['Juni', 'Isa'].includes(expense.category);
+        if (!isIncome && expense.date?.startsWith(`${selectedYear}-`)) {
+            totals[expense.category] = (totals[expense.category] || 0) + Number(expense.amount);
+        }
+    });
+
+    const categories = Object.entries(totals).sort(([, amountA], [, amountB]) => amountB - amountA);
+    const totalSpent = categories.reduce((sum, [, amount]) => sum + amount, 0);
+    dom.categorySummaryBody.innerHTML = '';
+    if (dom.categorySummaryDescription) {
+        dom.categorySummaryDescription.textContent = selectedYear
+            ? `Distribución de gastos durante ${selectedYear}.`
+            : 'Distribución de gastos registrados.';
+    }
+    if (!categories.length) {
+        dom.categorySummaryBody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:2rem; color:var(--text-muted);">No hay gastos en este período.</td></tr>';
+        return;
+    }
+
+    categories.forEach(([category, amount]) => {
+        const percentage = totalSpent ? Math.round((amount / totalSpent) * 100) : 0;
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><span class="category-summary-name"><span class="category-dot" style="background:${categoryColors[category] || categoryColors.Otros}"></span>${categoryEmojis[category] || ''} ${escapeHTML(category)}</span></td>
+            <td class="text-right" style="font-weight:700; color:var(--text-primary);">${formatCOP.format(amount)}</td>
+            <td class="text-right" style="color:var(--text-secondary);">${percentage}%</td>
+        `;
+        dom.categorySummaryBody.appendChild(row);
     });
 }
 
