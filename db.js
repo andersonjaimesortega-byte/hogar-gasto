@@ -15,7 +15,7 @@ function initDB() {
             
             // Almacén de gastos
             if (!database.objectStoreNames.contains('expenses')) {
-                const expenseStore = database.createObjectStore('expenses', { keyPath: 'id', autoIncrement: true });
+                const expenseStore = database.createObjectStore('expenses', { keyPath: 'id' });
                 expenseStore.createIndex('date', 'date', { unique: false });
                 expenseStore.createIndex('category', 'category', { unique: false });
             }
@@ -37,32 +37,41 @@ function initDB() {
     });
 }
 
+// Asegurar que db esté inicializado antes de operar
+async function getDB() {
+    if (db) return db;
+    return await initDB();
+}
+
 // Obtener una configuración por su clave
-function getSetting(key, defaultValue) {
-    return new Promise((resolve) => {
-        const transaction = db.transaction(['settings'], 'readonly');
-        const store = transaction.objectStore('settings');
-        const request = store.get(key);
+async function getSetting(key, defaultValue) {
+    try {
+        const database = await getDB();
+        return new Promise((resolve) => {
+            const transaction = database.transaction(['settings'], 'readonly');
+            const store = transaction.objectStore('settings');
+            const request = store.get(key);
 
-        request.onsuccess = (event) => {
-            if (event.target.result) {
-                resolve(event.target.result.value);
-            } else {
-                // Guardar valor inicial si no existe
-                saveSetting(key, defaultValue).then(() => resolve(defaultValue));
-            }
-        };
+            request.onsuccess = (event) => {
+                if (event.target.result !== undefined && event.target.result.value !== undefined) {
+                    resolve(event.target.result.value);
+                } else {
+                    saveSetting(key, defaultValue).then(() => resolve(defaultValue));
+                }
+            };
 
-        request.onerror = () => {
-            resolve(defaultValue); // Retorna default en caso de error
-        };
-    });
+            request.onerror = () => resolve(defaultValue);
+        });
+    } catch (err) {
+        return defaultValue;
+    }
 }
 
 // Guardar configuración genérica
-function saveSetting(key, value) {
+async function saveSetting(key, value) {
+    const database = await getDB();
     return new Promise((resolve, reject) => {
-        const transaction = db.transaction(['settings'], 'readwrite');
+        const transaction = database.transaction(['settings'], 'readwrite');
         const store = transaction.objectStore('settings');
         const request = store.put({ key: key, value: value });
 
@@ -72,9 +81,10 @@ function saveSetting(key, value) {
 }
 
 // Obtener todos los gastos de la DB
-function getAllExpenses() {
+async function getAllExpenses() {
+    const database = await getDB();
     return new Promise((resolve, reject) => {
-        const transaction = db.transaction(['expenses'], 'readonly');
+        const transaction = database.transaction(['expenses'], 'readonly');
         const store = transaction.objectStore('expenses');
         const request = store.getAll();
 
@@ -84,9 +94,10 @@ function getAllExpenses() {
 }
 
 // Agregar gasto/ingreso a IndexedDB
-function addExpense(expense) {
+async function addExpense(expense) {
+    const database = await getDB();
     return new Promise((resolve, reject) => {
-        const transaction = db.transaction(['expenses'], 'readwrite');
+        const transaction = database.transaction(['expenses'], 'readwrite');
         const store = transaction.objectStore('expenses');
         const request = store.add(expense);
 
@@ -96,9 +107,10 @@ function addExpense(expense) {
 }
 
 // Actualizar gasto/ingreso en IndexedDB
-function updateExpense(expense) {
+async function updateExpense(expense) {
+    const database = await getDB();
     return new Promise((resolve, reject) => {
-        const transaction = db.transaction(['expenses'], 'readwrite');
+        const transaction = database.transaction(['expenses'], 'readwrite');
         const store = transaction.objectStore('expenses');
         const request = store.put(expense);
 
@@ -107,39 +119,38 @@ function updateExpense(expense) {
     });
 }
 
-// Borrar gasto en IndexedDB
-function deleteExpense(id) {
+// Borrar gasto en IndexedDB probando tanto tipo String como Number para evitar huérfanos
+async function deleteExpense(id) {
+    const database = await getDB();
     return new Promise((resolve, reject) => {
-        const transaction = db.transaction(['expenses'], 'readwrite');
+        const transaction = database.transaction(['expenses'], 'readwrite');
         const store = transaction.objectStore('expenses');
-        const request = store.delete(id);
+        
+        // Intentar borrar con el ID original y sus variantes tipo string/number
+        store.delete(id);
+        if (typeof id === 'string' && !isNaN(Number(id))) {
+            store.delete(Number(id));
+        } else if (typeof id === 'number') {
+            store.delete(String(id));
+        }
 
-        request.onsuccess = () => resolve();
-        request.onerror = (event) => reject(event.target.error);
+        transaction.oncomplete = () => resolve();
+        transaction.onerror = (event) => reject(event.target.error);
     });
 }
 
-// Limpiar base de datos (Promesa interna)
-function clearDatabase() {
+// Limpiar base de datos
+async function clearDatabase() {
+    const database = await getDB();
     return new Promise((resolve, reject) => {
-        const transaction = db.transaction(['expenses', 'settings'], 'readwrite');
+        const transaction = database.transaction(['expenses', 'settings'], 'readwrite');
         const expenseStore = transaction.objectStore('expenses');
         const settingsStore = transaction.objectStore('settings');
         
-        const req1 = expenseStore.clear();
-        const req2 = settingsStore.clear();
-        
-        let successCount = 0;
-        const checkSuccess = () => {
-            successCount++;
-            if (successCount === 2) resolve();
-        };
-        
-        req1.onsuccess = checkSuccess;
-        req2.onsuccess = checkSuccess;
-        
-        req1.onerror = (e) => reject(e.target.error);
-        req2.onerror = (e) => reject(e.target.error);
+        expenseStore.clear();
+        settingsStore.clear();
+
+        transaction.oncomplete = () => resolve();
+        transaction.onerror = (e) => reject(e.target.error);
     });
 }
-

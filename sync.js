@@ -9,9 +9,11 @@ async function initSupabase() {
     const key = await getSetting('supabase_key', '');
     if (url && key) {
         try {
-            supabaseClient = supabase.createClient(url, key);
-            updateSyncBadge(true);
-            return true;
+            if (window.supabase && typeof window.supabase.createClient === 'function') {
+                supabaseClient = window.supabase.createClient(url, key);
+                updateSyncBadge(true);
+                return true;
+            }
         } catch (err) {
             console.error('Error al inicializar Supabase:', err);
             updateSyncBadge(false);
@@ -33,7 +35,6 @@ function updateSyncBadge(connected) {
 async function saveSupabaseConfig(url, key) {
     const previousUrl = await getSetting('supabase_url', '');
     const previousKey = await getSetting('supabase_key', '');
-    // Si cambia la instancia, reseteamos los IDs conocidos para evitar falsos borrados.
     if (previousUrl !== url || previousKey !== key) {
         await saveSetting('synced_cloud_ids', []);
     }
@@ -54,14 +55,15 @@ async function disconnectSupabase() {
 
 async function uploadToSupabase(expense) {
     if (!supabaseClient) return;
-    const { error } = await supabaseClient.from('transactions').upsert({
+    const itemToUpload = {
         id:          String(expense.id),
         amount:      Number(expense.amount),
-        description: expense.desc,
+        description: expense.desc || '',
         category:    expense.category,
         date:        expense.date,
-        type:        expense.type
-    });
+        type:        expense.type || (['Juni', 'Isa'].includes(expense.category) ? 'ingreso' : 'gasto')
+    };
+    const { error } = await supabaseClient.from('transactions').upsert(itemToUpload);
     if (error) throw error;
     console.log(`Sincronizado en la nube: ${expense.id}`);
 }
@@ -77,19 +79,6 @@ async function deleteFromSupabase(id) {
 }
 
 // ─── Sincronización bidireccional ──────────────────────────────────────────
-//
-// Flujo de sincronización:
-//   1. Enviar a la nube las eliminaciones pendientes offline.
-//   2. Descargar todos los registros de la nube.
-//   3. Obtener los registros locales.
-//   4. Nube → Local: agregar o actualizar lo que vino de la nube.
-//      EXCEPCIÓN: no re-agregar IDs que el usuario borró localmente pero cuya
-//      eliminación en la nube aún está en la cola (evita que el item vuelva
-//      a aparecer al recargar).
-//   5. Local → Resolver: si un ID ya había sido confirmado en la nube y ahora
-//      ya no está, fue borrado desde otro dispositivo → borrarlo localmente.
-//      Si nunca fue confirmado, es un registro nuevo → subirlo.
-//   6. Persistir la lista de IDs confirmados en la nube para el paso 5 futuro.
 
 async function syncWithSupabase() {
     if (!supabaseClient || isSyncing) return false;
@@ -105,13 +94,12 @@ async function syncWithSupabase() {
             for (const id of pendingDeletes) {
                 try {
                     await deleteFromSupabase(id);
-                    done.push(id);
+                    done.push(String(id));
                 } catch (err) {
                     console.warn(`No se pudo eliminar ${id} de la nube ahora; se reintentará.`, err.message);
                 }
             }
-            // Solo quitar de la cola los que SÍ se eliminaron con éxito
-            const remaining = pendingDeletes.filter(id => !done.includes(id));
+            const remaining = pendingDeletes.filter(id => !done.includes(String(id)));
             await saveSetting('deleted_ids', remaining);
         }
 
@@ -124,21 +112,17 @@ async function syncWithSupabase() {
         // ── PASO 3: Obtener registros locales ──────────────────────────────
         const localItems = await getAllExpenses();
 
-        const cloudMap    = new Map(cloudItems.map(item  => [String(item.id),  item]));
-        const localMap    = new Map(localItems.map(item  => [String(item.id),  item]));
-        const knownIds    = new Set(await getSetting('synced_cloud_ids', []));
+        const cloudMap    = new Map((cloudItems || []).map(item  => [String(item.id), item]));
+        const localMap    = new Map(localItems.map(item => [String(item.id), item]));
+        const knownIds    = new Set((await getSetting('synced_cloud_ids', [])).map(id => String(id)));
         const nextKnownIds = new Set(cloudMap.keys());
 
-        // IDs que el usuario borró localmente pero cuya eliminación en la nube
-        // aún no llegó (quedaron en la cola después del paso 1).
-        const stillPendingDelete = new Set(await getSetting('deleted_ids', []));
+        const stillPendingDelete = new Set((await getSetting('deleted_ids', [])).map(id => String(id)));
 
         // ── PASO 4: Nube → Local ───────────────────────────────────────────
-        for (const cloudItem of cloudItems) {
+        for (const cloudItem of (cloudItems || [])) {
             const cloudIdStr = String(cloudItem.id);
 
-            // No re-agregar un item que el usuario ya borró localmente
-            // y cuya eliminación en la nube aún está pendiente.
             if (stillPendingDelete.has(cloudIdStr)) {
                 console.log(`Ignorado (borrado local pendiente): ${cloudIdStr}`);
                 continue;
@@ -146,12 +130,12 @@ async function syncWithSupabase() {
 
             const localItem = localMap.get(cloudIdStr);
             const mappedItem = {
-                id:       cloudItem.id,
+                id:       localItem ? localItem.id : cloudIdStr,
                 amount:   Number(cloudItem.amount),
-                desc:     cloudItem.description || '',
-                category: cloudItem.category,
+                desc:     cloudItem.description || cloudItem.desc || '',
+                category: cloudItem.category || 'Otros',
                 date:     cloudItem.date,
-                type:     cloudItem.type
+                type:     cloudItem.type || (['Juni', 'Isa'].includes(cloudItem.category) ? 'ingreso' : 'gasto')
             };
 
             if (!localItem) {
@@ -160,7 +144,7 @@ async function syncWithSupabase() {
             } else {
                 const isDifferent =
                     Number(localItem.amount) !== mappedItem.amount ||
-                    localItem.desc           !== mappedItem.desc     ||
+                    (localItem.desc || '')   !== mappedItem.desc     ||
                     localItem.category       !== mappedItem.category ||
                     localItem.date           !== mappedItem.date     ||
                     localItem.type           !== mappedItem.type;
@@ -174,14 +158,12 @@ async function syncWithSupabase() {
         // ── PASO 5: Local → Resolver ───────────────────────────────────────
         for (const localItem of localItems) {
             const localIdStr = String(localItem.id);
-            if (cloudMap.has(localIdStr)) continue; // ya procesado en paso 4
+            if (cloudMap.has(localIdStr)) continue;
 
             if (knownIds.has(localIdStr)) {
-                // Estaba en la nube antes y ahora no → otro dispositivo lo borró
                 await deleteExpense(localItem.id);
                 console.log(`Eliminado localmente (borrado en otro dispositivo): ${localItem.id}`);
             } else {
-                // Nunca estuvo en la nube → es un registro nuevo, subirlo
                 try {
                     await uploadToSupabase(localItem);
                     nextKnownIds.add(localIdStr);
