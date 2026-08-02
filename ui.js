@@ -25,14 +25,11 @@ const dom = {
     btnCancelEdit: document.getElementById('btn-cancel-edit'),
     monthlySummaryBody: document.getElementById('monthly-summary-body'),
     summaryYear: document.getElementById('summary-year'),
-    categorySummaryBody: document.getElementById('category-summary-body'),
-    categorySummaryDescription: document.getElementById('category-summary-description'),
     connectionStatus: document.getElementById('connection-status'),
     statusText: document.getElementById('status-text'),
     btnInstall: document.getElementById('btn-install'),
     installPromo: document.getElementById('install-promo'),
-    btnPromoInstall: document.getElementById('btn-promo-install'),
-    categoryBudgetList: document.getElementById('category-budget-list')
+    btnPromoInstall: document.getElementById('btn-promo-install')
 };
 
 // La vista no conoce la persistencia ni la sincronización. El controlador de
@@ -44,45 +41,61 @@ function setTransactionActionHandlers(handlers) {
 }
 
 // Actualizar estadísticas del Dashboard
-function updateDashboardStats(filteredExpenses, monthlyBudget, currentFilterMonth) {
-    // Clasificar transacciones en gastos e ingresos
-    const incomesOnly = filteredExpenses.filter(exp => exp.type === 'ingreso' || ['Juni', 'Isa'].includes(exp.category));
-    const expensesOnly = filteredExpenses.filter(exp => exp.type === 'gasto' || (!exp.type && !['Juni', 'Isa'].includes(exp.category)));
+function updateDashboardStats(allExpenses, currentFilterMonth) {
+    if (!allExpenses) return;
 
+    // Transacciones del mes filtrado
+    const currentMonthExpenses = allExpenses.filter(exp => exp.date && exp.date.startsWith(currentFilterMonth));
+    const currentMonthSpentOnly = currentMonthExpenses.filter(exp => exp.type === 'gasto' || (!exp.type && !['Juni', 'Isa'].includes(exp.category)));
 
-    
-    // Ingresos Adicionales
-    const totalIncome = incomesOnly.reduce((sum, item) => sum + Number(item.amount), 0);
-    dom.valIncome.textContent = formatCOP.format(totalIncome);
-    dom.valIncomeSubtext.textContent = `${incomesOnly.length} aportes registrados`;
-
-    // Gastos Totales
-    const totalSpent = expensesOnly.reduce((sum, item) => sum + Number(item.amount), 0);
-    dom.valSpent.textContent = formatCOP.format(totalSpent);
-    dom.valSpentSubtext.textContent = `${expensesOnly.length} transacciones este mes`;
-    
-    // Saldo Disponible: Ingresos - Gastos
-    const balance = totalIncome - totalSpent;
-    dom.valBalance.textContent = formatCOP.format(balance);
-    
-    // Modificar estilos según saldo positivo/negativo
-    dom.cardBalance.classList.remove('deficit', 'shake');
-    dom.iconBalance.style.color = '';
-    
-    if (balance < 0) {
-        dom.cardBalance.classList.add('deficit');
-        setTimeout(() => dom.cardBalance.classList.add('shake'), 50);
-        dom.valBalanceSubtext.textContent = '¡Has excedido el saldo disponible!';
-        dom.valBalanceSubtext.style.color = 'var(--danger)';
-        dom.iconBalance.innerHTML = '<i data-lucide="alert-triangle"></i>';
-        dom.iconBalance.style.color = 'var(--danger)';
-    } else {
-        dom.valBalanceSubtext.textContent = 'Saldo a favor';
-        dom.valBalanceSubtext.style.color = '';
-        dom.iconBalance.innerHTML = '<i data-lucide="check-circle-2"></i>';
-        dom.iconBalance.style.color = 'var(--success)';
+    // Gastos Totales (de este mes)
+    const totalSpent = currentMonthSpentOnly.reduce((sum, item) => sum + Number(item.amount), 0);
+    if (dom.valSpent) {
+        dom.valSpent.textContent = formatCOP.format(totalSpent);
+        dom.valSpentSubtext.textContent = `${currentMonthSpentOnly.length} transacciones este mes`;
     }
 
+    // Saldo Disponible Acumulado (histórico hasta el mes seleccionado inclusive)
+    const historyExpenses = allExpenses.filter(exp => exp.date && exp.date.substring(0, 7) <= currentFilterMonth);
+    const totalCumulativeIncome = historyExpenses
+        .filter(exp => exp.type === 'ingreso' || ['Juni', 'Isa'].includes(exp.category))
+        .reduce((sum, item) => sum + Number(item.amount), 0);
+    const totalCumulativeExpense = historyExpenses
+        .filter(exp => exp.type === 'gasto' || (!exp.type && !['Juni', 'Isa'].includes(exp.category)))
+        .reduce((sum, item) => sum + Number(item.amount), 0);
+
+    const balance = totalCumulativeIncome - totalCumulativeExpense;
+    if (dom.valBalance) {
+        dom.valBalance.textContent = formatCOP.format(balance);
+    }
+
+    if (dom.valIncome) {
+        const currentMonthIncomes = currentMonthExpenses.filter(exp => exp.type === 'ingreso' || ['Juni', 'Isa'].includes(exp.category));
+        const totalIncome = currentMonthIncomes.reduce((sum, item) => sum + Number(item.amount), 0);
+        dom.valIncome.textContent = formatCOP.format(totalIncome);
+        if (dom.valIncomeSubtext) dom.valIncomeSubtext.textContent = `${currentMonthIncomes.length} aportes registrados`;
+    }
+
+    // Modificar estilos según saldo positivo/negativo
+    if (dom.cardBalance && dom.iconBalance && dom.valBalanceSubtext) {
+        dom.cardBalance.classList.remove('deficit', 'shake');
+        dom.iconBalance.style.color = '';
+
+        if (balance < 0) {
+            dom.cardBalance.classList.add('deficit');
+            setTimeout(() => dom.cardBalance.classList.add('shake'), 50);
+            dom.valBalanceSubtext.textContent = '¡Saldo acumulado en déficit!';
+            dom.valBalanceSubtext.style.color = 'var(--danger)';
+            dom.iconBalance.innerHTML = '<i data-lucide="alert-triangle"></i>';
+            dom.iconBalance.style.color = 'var(--danger)';
+        } else {
+            dom.valBalanceSubtext.textContent = 'Saldo a favor (Acumulado)';
+            dom.valBalanceSubtext.style.color = '';
+            dom.iconBalance.innerHTML = '<i data-lucide="check-circle-2"></i>';
+            dom.iconBalance.style.color = 'var(--success)';
+        }
+    }
+    if (window.lucide) window.lucide.createIcons();
 }
 
 // Renderizar la lista de gastos con filtros aplicados
@@ -120,19 +133,7 @@ function renderExpensesList(expenses, currentFilterMonth, categoryVal, searchVal
         return;
     }
     
-    let currentDate = null;
-    let currentGroup = null;
     items.forEach(exp => {
-        if (exp.date !== currentDate) {
-            currentDate = exp.date;
-            currentGroup = document.createElement('section');
-            currentGroup.className = 'expense-day-group';
-            const title = document.createElement('h3');
-            title.className = 'expense-day-title';
-            title.textContent = getExpenseDayLabel(exp.date);
-            currentGroup.appendChild(title);
-            dom.expensesList.appendChild(currentGroup);
-        }
         const itemEl = document.createElement('div');
         itemEl.className = 'expense-item';
         itemEl.dataset.transactionId = String(exp.id);
@@ -174,81 +175,12 @@ function renderExpensesList(expenses, currentFilterMonth, categoryVal, searchVal
         editButton.addEventListener('click', () => transactionActionHandlers.onEdit?.(exp.id));
         deleteButton.addEventListener('click', () => transactionActionHandlers.onDelete?.(exp.id));
         
-        currentGroup.appendChild(itemEl);
+        dom.expensesList.appendChild(itemEl);
     });
     
     if (window.lucide) {
         window.lucide.createIcons();
     }
-}
-
-function getExpenseDayLabel(dateStr) {
-    const today = getTodayStr();
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayStr = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`;
-    if (dateStr === today) return 'Hoy';
-    if (dateStr === yesterdayStr) return 'Ayer';
-    return formatDateString(dateStr);
-}
-
-function renderCategoryBudgets(expenses, month, budgets) {
-    if (!dom.categoryBudgetList) return;
-    const categories = Object.keys(categoryColors).filter(category => !['Juni', 'Isa'].includes(category));
-    const spentByCategory = Object.fromEntries(categories.map(category => [category, 0]));
-    expenses.forEach(expense => {
-        const isIncome = expense.type === 'ingreso' || ['Juni', 'Isa'].includes(expense.category);
-        if (!isIncome && expense.date?.startsWith(month) && spentByCategory[expense.category] !== undefined) {
-            spentByCategory[expense.category] += Number(expense.amount);
-        }
-    });
-
-    dom.categoryBudgetList.innerHTML = '';
-    categories.forEach(category => {
-        const budget = Number(budgets[category] || 0);
-        const item = document.createElement('div');
-        item.className = `category-budget-item${budget > 0 && spentByCategory[category] > budget ? ' is-over-budget' : ''}`;
-        item.innerHTML = `
-            <header><span>${categoryEmojis[category] || ''} ${category}</span><small>${formatCOP.format(spentByCategory[category])} gastado${budget ? ` de ${formatCOP.format(budget)}` : ''}</small></header>
-            <input class="input-control" type="number" min="0" inputmode="numeric" data-category="${category}" value="${budget || ''}" placeholder="Sin límite">
-        `;
-        dom.categoryBudgetList.appendChild(item);
-    });
-}
-
-function renderCategorySummary(expenses, selectedYear) {
-    if (!dom.categorySummaryBody) return;
-    const totals = {};
-    expenses.forEach(expense => {
-        const isIncome = expense.type === 'ingreso' || ['Juni', 'Isa'].includes(expense.category);
-        if (!isIncome && expense.date?.startsWith(`${selectedYear}-`)) {
-            totals[expense.category] = (totals[expense.category] || 0) + Number(expense.amount);
-        }
-    });
-
-    const categories = Object.entries(totals).sort(([, amountA], [, amountB]) => amountB - amountA);
-    const totalSpent = categories.reduce((sum, [, amount]) => sum + amount, 0);
-    dom.categorySummaryBody.innerHTML = '';
-    if (dom.categorySummaryDescription) {
-        dom.categorySummaryDescription.textContent = selectedYear
-            ? `Distribución de gastos durante ${selectedYear}.`
-            : 'Distribución de gastos registrados.';
-    }
-    if (!categories.length) {
-        dom.categorySummaryBody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:2rem; color:var(--text-muted);">No hay gastos en este período.</td></tr>';
-        return;
-    }
-
-    categories.forEach(([category, amount]) => {
-        const percentage = totalSpent ? Math.round((amount / totalSpent) * 100) : 0;
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td><span class="category-summary-name"><span class="category-dot" style="background:${categoryColors[category] || categoryColors.Otros}"></span>${categoryEmojis[category] || ''} ${escapeHTML(category)}</span></td>
-            <td class="text-right" style="font-weight:700; color:var(--text-primary);">${formatCOP.format(amount)}</td>
-            <td class="text-right" style="color:var(--text-secondary);">${percentage}%</td>
-        `;
-        dom.categorySummaryBody.appendChild(row);
-    });
 }
 
 // Actualizar opciones de categoría según el tipo de transacción en el formulario
@@ -450,6 +382,7 @@ function renderMonthlyChart(allExpenses, selectedYear) {
                     backgroundColor: 'rgba(255,255,255,0.97)',
                     titleColor: '#1d3448',
                     bodyColor: '#4b5563',
+                    bodyColor: '#4b5563',
                     borderColor: 'rgba(36,99,143,0.2)',
                     borderWidth: 1,
                     padding: 12,
@@ -484,4 +417,35 @@ function renderMonthlyChart(allExpenses, selectedYear) {
             }
         }
     });
+}
+
+// Mostrar notificaciones emergentes Toast
+function showToast(message, type = 'info', duration = 3000) {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.style.cssText = `
+        background: var(--bg-card);
+        color: var(--text-primary);
+        padding: 0.75rem 1.25rem;
+        border-radius: 8px;
+        box-shadow: var(--shadow-lg);
+        border: 1px solid var(--border-color);
+        margin-top: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+    `;
+    toast.innerHTML = message;
+    container.appendChild(toast);
+    container.classList.remove('hidden');
+
+    setTimeout(() => {
+        toast.remove();
+        if (container.children.length === 0) {
+            container.classList.add('hidden');
+        }
+    }, duration);
 }
