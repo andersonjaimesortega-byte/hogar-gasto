@@ -89,6 +89,28 @@ body {
     padding: 1.5rem;
 }
 
+/* Chart Type Toggle Buttons */
+.btn-toggle-chart {
+    background: transparent;
+    color: var(--text-secondary);
+    border: none;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.btn-toggle-chart:hover {
+    color: var(--text-primary);
+    background: rgba(36, 99, 143, 0.08);
+}
+.btn-toggle-chart.active {
+    background: var(--primary);
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(36, 99, 143, 0.25);
+}
+
 /* Floating Action Button */
 .fab {
   position: fixed;

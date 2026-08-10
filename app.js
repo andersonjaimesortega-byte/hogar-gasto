@@ -6,6 +6,7 @@ class AppController {
         this.summaryYear = '';
         this.categoryChart = null;
         this.syncTimer = null;
+        this.chartDistributionType = 'gasto';
     }
 
     async initialize() {
@@ -62,7 +63,8 @@ class AppController {
                 canvas.getContext('2d'),
                 currentExpenses,
                 this.categoryChart,
-                document.getElementById('chart-legend')
+                document.getElementById('chart-legend'),
+                this.chartDistributionType || 'gasto'
             );
         }
         this.updateSummaryYearOptions();
@@ -101,6 +103,29 @@ class AppController {
         document.querySelectorAll('.tab-button').forEach(button => {
             button.addEventListener('click', () => this.selectTab(button.dataset.tab));
         });
+
+        const btnGastos = document.getElementById('btn-chart-gastos');
+        const btnIngresos = document.getElementById('btn-chart-ingresos');
+        
+        const toggleChartType = (type) => {
+            this.chartDistributionType = type;
+            btnGastos?.classList.toggle('active', type === 'gasto');
+            btnIngresos?.classList.toggle('active', type === 'ingreso');
+            const currentExpenses = this.expenses.filter(item => item.date?.startsWith(this.currentFilterMonth));
+            const canvas = document.getElementById('categoryChart');
+            if (canvas) {
+                this.categoryChart = updateCategoryChart(
+                    canvas.getContext('2d'),
+                    currentExpenses,
+                    this.categoryChart,
+                    document.getElementById('chart-legend'),
+                    this.chartDistributionType
+                );
+            }
+        };
+
+        btnGastos?.addEventListener('click', () => toggleChartType('gasto'));
+        btnIngresos?.addEventListener('click', () => toggleChartType('ingreso'));
 
         const openAddModalHandler = () => {
             const modal = document.getElementById('modal-add');

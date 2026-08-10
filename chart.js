@@ -1,19 +1,25 @@
 // Dibujar/Actualizar gráfico circular interactivo
-function updateCategoryChart(ctx, filteredExpenses, currentChartInstance, legendContainer) {
+function updateCategoryChart(ctx, filteredExpenses, currentChartInstance, legendContainer, chartType = 'gasto') {
     const categoriesSum = {};
     
+    // Filtrar estrictamente por tipo (gasto vs ingreso)
+    const targetExpenses = filteredExpenses.filter(exp => {
+        const isIncome = exp.type === 'ingreso' || ['Juni', 'Isa'].includes(exp.category);
+        return chartType === 'ingreso' ? isIncome : !isIncome;
+    });
+
     // Inicializar categorías en 0
     Object.keys(categoryColors).forEach(cat => {
         categoriesSum[cat] = 0;
     });
     
     // Sumar gastos/ingresos por categoría
-    filteredExpenses.forEach(exp => {
+    targetExpenses.forEach(exp => {
         const cat = exp.category || 'Otros';
         if (categoriesSum[cat] !== undefined) {
             categoriesSum[cat] += Number(exp.amount);
         } else {
-            categoriesSum['Otros'] += Number(exp.amount);
+            categoriesSum['Otros'] = (categoriesSum['Otros'] || 0) + Number(exp.amount);
         }
     });
     
@@ -30,7 +36,7 @@ function updateCategoryChart(ctx, filteredExpenses, currentChartInstance, legend
         const legendItem = document.createElement('div');
         legendItem.className = 'legend-item';
         legendItem.innerHTML = `
-            <div class="legend-color" style="background-color: ${categoryColors[cat]};"></div>
+            <div class="legend-color" style="background-color: ${categoryColors[cat] || 'var(--primary)'};"></div>
             <span>${categoryEmojis[cat] || '⚙️'} ${cat}: <strong>${formatCOP.format(total)}</strong></span>
         `;
         legendContainer.appendChild(legendItem);
@@ -44,7 +50,8 @@ function updateCategoryChart(ctx, filteredExpenses, currentChartInstance, legend
     if (activeCategories.length === 0) {
         // Limpiar lienzo si no hay datos
         ctx.clearRect(0, 0, 200, 200);
-        legendContainer.innerHTML = '<span style="color: var(--text-muted); font-size: 0.85rem; text-align: center; width: 100%;">Registra transacciones para ver la distribución.</span>';
+        const emptyMsg = chartType === 'ingreso' ? 'No hay ingresos registrados en este período.' : 'No hay gastos registrados en este período.';
+        legendContainer.innerHTML = `<span style="color: var(--text-muted); font-size: 0.85rem; text-align: center; width: 100%; display: block; padding: 1rem 0;">${emptyMsg}</span>`;
         return null;
     }
     
