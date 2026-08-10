@@ -6,19 +6,19 @@ const formatCOP = new Intl.NumberFormat('es-CO', {
     maximumFractionDigits: 0
 });
 
-// Colores de las categorías correspondientes al CSS
+// Colores de las categorías correspondientes al tema Navy Blue, Verde Esmeralda y Dorado
 const categoryColors = {
-    'Mercado': '#f59e0b',
-    'D1': '#ef4444',
-    'Servicios Públicos': '#0ea5e9',
-    'Arriendo': '#3b82f6',
-    'Casa': '#10b981',
-    'Carne': '#f43f5e',
-    'Internet': '#6366f1',
-    'Gas': '#f97316',
-    'Otros': '#6b7280',
-    'Juni': '#a855f7',
-    'Isa': '#ec4899'
+    'Mercado': '#d97706',           // Dorado Cálido
+    'D1': '#e11d48',                // Carmín
+    'Servicios Públicos': '#0f2a4a',// Navy Blue Imperial
+    'Arriendo': '#047857',          // Verde Esmeralda Oscuro
+    'Casa': '#10b981',              // Verde Esmeralda Vivo
+    'Carne': '#c05621',              // Cobre Cálido
+    'Internet': '#2563eb',          // Azul Marino
+    'Gas': '#f59e0b',               // Dorado Ámbar
+    'Otros': '#64748b',              // Gris Pizarra
+    'Juni': '#0f2a4a',              // Navy Blue
+    'Isa': '#059669'                // Verde Esmeralda
 };
 
 // Emojis de las categorías
@@ -47,15 +47,21 @@ function getCategoryIconClass(cat) {
         case 'Carne': return 'cat-icon-carne';
         case 'Internet': return 'cat-icon-internet';
         case 'Gas': return 'cat-icon-gas';
+        case 'Juni': return 'cat-icon-juni';
+        case 'Isa': return 'cat-icon-isa';
         default: return 'cat-icon-otros';
     }
 }
 
-// Formatear la fecha para visualización elegante (ej. "12 Jul 2026")
+// Formatear string YYYY-MM-DD a fecha legible en español sin desfase UTC
 function formatDateString(dateStr) {
     if (!dateStr) return '';
-    const [year, month, day] = dateStr.split('-');
-    const dateObj = new Date(year, parseInt(month) - 1, day);
+    const parts = dateStr.split('-');
+    if (parts.length !== 3) return dateStr;
+    const year = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1;
+    const day = parseInt(parts[2], 10);
+    const dateObj = new Date(year, month, day);
     
     return dateObj.toLocaleDateString('es-CO', {
         day: 'numeric',
@@ -64,33 +70,30 @@ function formatDateString(dateStr) {
     });
 }
 
-// Escapar cadenas HTML para prevenir XSS
-function escapeHTML(str) {
-    if (!str) return '';
-    return str.replace(/[&<>'"]/g, 
-        tag => ({
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            "'": '&#39;',
-            '"': '&quot;'
-        }[tag] || tag)
-    );
-}
-
-// Ayudante para obtener la fecha de hoy en formato local 'YYYY-MM-DD'
+// Obtener fecha de hoy en formato YYYY-MM-DD local
 function getTodayStr() {
     const today = new Date();
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0');
-    const dd = String(today.getDate()).padStart(2, '0');
-    return `${yyyy}-${mm}-${dd}`;
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
 }
 
-// Ayudante para obtener el mes actual en formato 'YYYY-MM'
+// Obtener mes actual en formato YYYY-MM local
 function getCurrentMonthStr() {
     const today = new Date();
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0');
-    return `${yyyy}-${mm}`;
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    return `${year}-${month}`;
+}
+
+// Sanitizar string HTML para prevenir XSS
+function escapeHTML(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
 }
