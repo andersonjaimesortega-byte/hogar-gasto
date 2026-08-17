@@ -25,15 +25,12 @@ const dom = {
     btnCancelEdit: document.getElementById('btn-cancel-edit'),
     monthlySummaryBody: document.getElementById('monthly-summary-body'),
     summaryYear: document.getElementById('summary-year'),
+    summaryCategory: document.getElementById('summary-category'),
     connectionStatus: document.getElementById('connection-status'),
-    statusText: document.getElementById('status-text'),
-    btnInstall: document.getElementById('btn-install'),
-    installPromo: document.getElementById('install-promo'),
-    btnPromoInstall: document.getElementById('btn-promo-install')
+    statusText: document.getElementById('status-text')
 };
 
-// La vista no conoce la persistencia ni la sincronización. El controlador de
-// la aplicación inyecta las acciones que corresponden a cada transacción.
+// Handlers de acción inyectados desde AppController
 let transactionActionHandlers = { onEdit: null, onDelete: null };
 
 function setTransactionActionHandlers(handlers) {
@@ -48,7 +45,7 @@ function updateDashboardStats(allExpenses, currentFilterMonth) {
     const currentMonthExpenses = allExpenses.filter(exp => exp.date && exp.date.startsWith(currentFilterMonth));
     const currentMonthSpentOnly = currentMonthExpenses.filter(exp => exp.type === 'gasto' || (!exp.type && !['Juni', 'Isa'].includes(exp.category)));
 
-    // Gastos Totales (de este mes)
+    // Gastos Totales (este mes)
     const totalSpent = currentMonthSpentOnly.reduce((sum, item) => sum + Number(item.amount), 0);
     if (dom.valSpent) {
         dom.valSpent.textContent = formatCOP.format(totalSpent);
@@ -100,22 +97,22 @@ function updateDashboardStats(allExpenses, currentFilterMonth) {
 
 // Renderizar la lista de gastos con filtros aplicados
 function renderExpensesList(expenses, currentFilterMonth, categoryVal, searchVal) {
-    const searchValLower = searchVal.toLowerCase().trim();
+    const searchValLower = (searchVal || '').toLowerCase().trim();
     
     // 1. Filtrar por el mes seleccionado
-    let items = expenses.filter(exp => exp.date.startsWith(currentFilterMonth));
+    let items = expenses.filter(exp => exp.date && exp.date.startsWith(currentFilterMonth));
     
     // 2. Filtrar por categoría si no es 'all'
     if (categoryVal !== 'all') {
         items = items.filter(exp => exp.category === categoryVal);
     }
     
-    // 3. Filtrar por descripción en la barra de búsqueda
+    // 3. Filtrar por descripción
     if (searchValLower) {
-        items = items.filter(exp => exp.desc.toLowerCase().includes(searchValLower));
+        items = items.filter(exp => (exp.desc || '').toLowerCase().includes(searchValLower));
     }
     
-    // Ordenar gastos por fecha descendente (más nuevos primero)
+    // Ordenar gastos por fecha descendente
     items.sort((a, b) => new Date(b.date) - new Date(a.date));
     
     dom.expensesList.innerHTML = '';
@@ -154,7 +151,7 @@ function renderExpensesList(expenses, currentFilterMonth, categoryVal, searchVal
                     <span class="expense-desc">${escapeHTML(exp.desc)}</span>
                     <div class="expense-meta">
                         <span>${formattedDate}</span>
-                        <span class="expense-tag" style="background: rgba(255,255,255,0.03); color: var(--text-secondary);">${escapeHTML(exp.category)}</span>
+                        <span class="expense-tag">${escapeHTML(exp.category)}</span>
                     </div>
                 </div>
             </div>
@@ -185,8 +182,6 @@ function renderExpensesList(expenses, currentFilterMonth, categoryVal, searchVal
 
 // Actualizar opciones de categoría según el tipo de transacción en el formulario
 function updateCategoryOptions() {
-
-
     const type = dom.expenseType.value;
     dom.expenseCategory.innerHTML = '<option value="" disabled selected>Selecciona una categoría</option>';
     
@@ -230,193 +225,366 @@ function populatePeriodFilters(sortedMonths, currentFilterMonth) {
     }
 }
 
-// Renderizar la tabla de resumen mensual acumulado
-function renderMonthlySummary(allExpenses, monthlyBudget, selectedYear) {
+// Renderizar la tabla de resumen mensual acumulado (General o por Categoría)
+function renderMonthlySummary(allExpenses, monthlyBudget, selectedYear, selectedCategory = 'all') {
     if (!dom.monthlySummaryBody) return;
 
-    // Agrupar todas las transacciones por mes (YYYY-MM)
-    const monthMap = {};
-    allExpenses.forEach(exp => {
-        if (!exp.date || (selectedYear && !exp.date.startsWith(`${selectedYear}-`))) return;
-        const monthKey = exp.date.substring(0, 7);
-        if (!monthMap[monthKey]) {
-            monthMap[monthKey] = { income: 0, expenses: 0 };
+    const tableHeader = document.getElementById('summary-table-header');
+
+    if (selectedCategory === 'all') {
+        if (tableHeader) {
+            tableHeader.innerHTML = `
+                <th>Mes</th>
+                <th class="text-right">Ingresos</th>
+                <th class="text-right">Gastos</th>
+                <th class="text-right">Balance Neto</th>
+            `;
         }
-        const isIncome = exp.type === 'ingreso' || (!exp.type && ['Juni', 'Isa'].includes(exp.category));
-        if (isIncome) {
-            monthMap[monthKey].income += Number(exp.amount);
-        } else {
-            monthMap[monthKey].expenses += Number(exp.amount);
+
+        const monthMap = {};
+        allExpenses.forEach(exp => {
+            if (!exp.date || (selectedYear && !exp.date.startsWith(`${selectedYear}-`))) return;
+            const monthKey = exp.date.substring(0, 7);
+            if (!monthMap[monthKey]) monthMap[monthKey] = { income: 0, expenses: 0 };
+            const isIncome = exp.type === 'ingreso' || (!exp.type && ['Juni', 'Isa'].includes(exp.category));
+            if (isIncome) monthMap[monthKey].income += Number(exp.amount);
+            else monthMap[monthKey].expenses += Number(exp.amount);
+        });
+
+        const sortedMonths = Object.keys(monthMap).sort().reverse();
+        dom.monthlySummaryBody.innerHTML = '';
+
+        if (sortedMonths.length === 0) {
+            dom.monthlySummaryBody.innerHTML = `
+                <tr>
+                    <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                        No hay transacciones registradas aún.
+                    </td>
+                </tr>
+            `;
+            return;
         }
-    });
 
-    // Ordenar meses de forma descendente (más reciente primero)
-    const sortedMonths = Object.keys(monthMap).sort().reverse();
+        sortedMonths.forEach(monthKey => {
+            const { income, expenses } = monthMap[monthKey];
+            const balance = income - expenses;
+            const balanceClass = balance >= 0 ? 'balance-positive' : 'balance-negative';
+            const balancePrefix = balance >= 0 ? '+' : '';
 
-    dom.monthlySummaryBody.innerHTML = '';
+            const [year, month] = monthKey.split('-');
+            const dateObj = new Date(year, parseInt(month) - 1, 1);
+            const monthLabel = dateObj.toLocaleDateString('es-CO', { month: 'long', year: 'numeric' });
+            const monthName = monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1);
 
-    if (sortedMonths.length === 0) {
-        dom.monthlySummaryBody.innerHTML = `
-            <tr>
-                <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 2rem;">
-                    No hay transacciones registradas aún.
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><span style="font-weight: 600; color: var(--text-primary);">${monthName}</span></td>
+                <td class="text-right" style="color: var(--success); font-weight: 600;">+ ${formatCOP.format(income)}</td>
+                <td class="text-right" style="color: var(--danger); font-weight: 600;">- ${formatCOP.format(expenses)}</td>
+                <td class="text-right ${balanceClass}">${balancePrefix}${formatCOP.format(balance)}</td>
+            `;
+            dom.monthlySummaryBody.appendChild(tr);
+        });
+    } else {
+        // Comparativo por categoría específica
+        const isIncomeCat = ['Juni', 'Isa'].includes(selectedCategory);
+
+        if (tableHeader) {
+            tableHeader.innerHTML = `
+                <th>Mes</th>
+                <th class="text-right">Monto (${selectedCategory})</th>
+                <th class="text-right">% del Mes</th>
+                <th class="text-right">vs. Mes Anterior</th>
+            `;
+        }
+
+        const monthMap = {};
+        allExpenses.forEach(exp => {
+            if (!exp.date || (selectedYear && !exp.date.startsWith(`${selectedYear}-`))) return;
+            const monthKey = exp.date.substring(0, 7);
+            if (!monthMap[monthKey]) monthMap[monthKey] = { catAmount: 0, totalGroupAmount: 0 };
+
+            const isIncome = exp.type === 'ingreso' || (!exp.type && ['Juni', 'Isa'].includes(exp.category));
+            const belongsToGroup = isIncomeCat ? isIncome : !isIncome;
+
+            if (belongsToGroup) {
+                monthMap[monthKey].totalGroupAmount += Number(exp.amount);
+            }
+            if (exp.category === selectedCategory) {
+                monthMap[monthKey].catAmount += Number(exp.amount);
+            }
+        });
+
+        const ascMonths = Object.keys(monthMap).sort();
+        const diffMap = {};
+
+        ascMonths.forEach((m, idx) => {
+            const currentAmount = monthMap[m].catAmount;
+            if (idx === 0) {
+                diffMap[m] = { diff: 0, pct: 0, isFirst: true };
+            } else {
+                const prevAmount = monthMap[ascMonths[idx - 1]].catAmount;
+                const diff = currentAmount - prevAmount;
+                const pct = prevAmount > 0 ? (diff / prevAmount) * 100 : (currentAmount > 0 ? 100 : 0);
+                diffMap[m] = { diff, pct, isFirst: false };
+            }
+        });
+
+        const descMonths = [...ascMonths].reverse();
+        dom.monthlySummaryBody.innerHTML = '';
+
+        if (descMonths.length === 0) {
+            dom.monthlySummaryBody.innerHTML = `
+                <tr>
+                    <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                        No hay registros para la categoría <strong>${escapeHTML(selectedCategory)}</strong> en el año seleccionado.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        descMonths.forEach(monthKey => {
+            const { catAmount, totalGroupAmount } = monthMap[monthKey];
+            const { diff, pct, isFirst } = diffMap[monthKey];
+
+            const sharePct = totalGroupAmount > 0 ? ((catAmount / totalGroupAmount) * 100).toFixed(1) : '0.0';
+
+            let compHtml = '';
+            if (isFirst || diff === 0) {
+                compHtml = `<span style="color: var(--text-muted); font-size: 0.85rem;">—</span>`;
+            } else if (diff > 0) {
+                const color = isIncomeCat ? 'var(--success)' : 'var(--danger)';
+                compHtml = `<span style="color: ${color}; font-weight: 600;">+${formatCOP.format(diff)} <small>(▲ ${pct.toFixed(1)}%)</small></span>`;
+            } else {
+                const color = isIncomeCat ? 'var(--danger)' : 'var(--success)';
+                compHtml = `<span style="color: ${color}; font-weight: 600;">${formatCOP.format(diff)} <small>(▼ ${Math.abs(pct).toFixed(1)}%)</small></span>`;
+            }
+
+            const [year, month] = monthKey.split('-');
+            const dateObj = new Date(year, parseInt(month) - 1, 1);
+            const monthLabel = dateObj.toLocaleDateString('es-CO', { month: 'long', year: 'numeric' });
+            const monthName = monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1);
+
+            const amountColor = isIncomeCat ? 'var(--success)' : 'var(--text-primary)';
+            const amountPrefix = isIncomeCat ? '+' : '-';
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><span style="font-weight: 600; color: var(--text-primary);">${monthName}</span></td>
+                <td class="text-right" style="color: ${amountColor}; font-weight: 700;">
+                    ${catAmount > 0 ? `${amountPrefix} ${formatCOP.format(catAmount)}` : '$ 0'}
                 </td>
-            </tr>
-        `;
-        return;
+                <td class="text-right" style="font-weight: 600; color: var(--text-secondary);">
+                    ${sharePct}%
+                </td>
+                <td class="text-right">
+                    ${compHtml}
+                </td>
+            `;
+            dom.monthlySummaryBody.appendChild(tr);
+        });
     }
-
-    sortedMonths.forEach(monthKey => {
-        const { income, expenses } = monthMap[monthKey];
-        const balance = income - expenses;
-        const balanceClass = balance >= 0 ? 'balance-positive' : 'balance-negative';
-        const balancePrefix = balance >= 0 ? '+' : '';
-
-        // Formatear nombre del mes
-        const [year, month] = monthKey.split('-');
-        const dateObj = new Date(year, parseInt(month) - 1, 1);
-        const monthLabel = dateObj.toLocaleDateString('es-CO', { month: 'long', year: 'numeric' });
-        const monthName = monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1);
-
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>
-                <span style="font-weight: 600; color: var(--text-primary);">${monthName}</span>
-            </td>
-            <td class="text-right" style="color: var(--success); font-weight: 600;">
-                + ${formatCOP.format(income)}
-            </td>
-            <td class="text-right" style="color: var(--danger); font-weight: 600;">
-                - ${formatCOP.format(expenses)}
-            </td>
-            <td class="text-right ${balanceClass}">
-                ${balancePrefix}${formatCOP.format(balance)}
-            </td>
-        `;
-        dom.monthlySummaryBody.appendChild(tr);
-    });
 }
 
-// Instancia del gráfico mensual (para destruirla antes de recrear)
+// Instancia del gráfico mensual
 let monthlyChartInstance = null;
 
-// Renderizar gráfica de barras: Ingresos vs Gastos por mes
-function renderMonthlyChart(allExpenses, selectedYear) {
+// Renderizar gráfica de barras: General (Ingresos vs Gastos) o Evolución por Categoría
+function renderMonthlyChart(allExpenses, selectedYear, selectedCategory = 'all') {
     const canvas = document.getElementById('monthlyChart');
+    const chartTitleEl = document.getElementById('summary-chart-title');
     if (!canvas) return;
 
-    // Agrupar por mes
-    const monthMap = {};
-    allExpenses.forEach(exp => {
-        if (!exp.date || (selectedYear && !exp.date.startsWith(`${selectedYear}-`))) return;
-        const key = exp.date.substring(0, 7);
-        if (!monthMap[key]) monthMap[key] = { income: 0, expenses: 0 };
-        const isIncome = exp.type === 'ingreso' || (!exp.type && ['Juni', 'Isa'].includes(exp.category));
-        if (isIncome) monthMap[key].income += Number(exp.amount);
-        else monthMap[key].expenses += Number(exp.amount);
-    });
-
-    // Ordenar meses ascendente (más antiguo → más reciente)
-    const sortedMonths = Object.keys(monthMap).sort();
-
-    // Etiquetas legibles en español
-    const labels = sortedMonths.map(m => {
-        const [y, mo] = m.split('-');
-        const d = new Date(y, parseInt(mo) - 1, 1);
-        const label = d.toLocaleDateString('es-CO', { month: 'short', year: '2-digit' });
-        return label.charAt(0).toUpperCase() + label.slice(1);
-    });
-
-    const incomeData  = sortedMonths.map(m => monthMap[m].income);
-    const expenseData = sortedMonths.map(m => monthMap[m].expenses);
-
-    // Destruir instancia anterior si existe
     if (monthlyChartInstance) {
         monthlyChartInstance.destroy();
         monthlyChartInstance = null;
     }
 
-    const ctx = canvas.getContext('2d');
+    if (selectedCategory === 'all') {
+        if (chartTitleEl) chartTitleEl.textContent = 'Ingresos vs Gastos por Mes';
 
-    monthlyChartInstance = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels,
-            datasets: [
-                {
-                    label: 'Ingresos',
-                    data: incomeData,
-                    backgroundColor: 'rgba(5, 150, 105, 0.75)',
-                    borderColor: 'rgba(5, 150, 105, 1)',
-                    borderWidth: 2,
-                    borderRadius: 8,
-                    borderSkipped: false,
-                },
-                {
-                    label: 'Gastos',
-                    data: expenseData,
-                    backgroundColor: 'rgba(207, 102, 90, 0.72)',
-                    borderColor: 'rgba(207, 102, 90, 1)',
-                    borderWidth: 2,
-                    borderRadius: 8,
-                    borderSkipped: false,
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            interaction: { mode: 'index', intersect: false },
-            plugins: {
-                legend: {
-                    position: 'top',
-                    labels: {
-                        color: '#4b5563',
-                        font: { family: "'Plus Jakarta Sans', sans-serif", size: 12, weight: '600' },
-                        boxWidth: 12,
-                        borderRadius: 4,
-                        padding: 16
-                    }
-                },
-                tooltip: {
-                    backgroundColor: 'rgba(255,255,255,0.97)',
-                    titleColor: '#1d3448',
-                    bodyColor: '#4b5563',
-                    bodyColor: '#4b5563',
-                    borderColor: 'rgba(36,99,143,0.2)',
-                    borderWidth: 1,
-                    padding: 12,
-                    cornerRadius: 10,
-                    callbacks: {
-                        label: ctx => ` ${ctx.dataset.label}: ${formatCOP.format(ctx.raw)}`
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    grid: { display: false },
-                    ticks: {
-                        color: '#6b7280',
-                        font: { family: "'Plus Jakarta Sans', sans-serif", size: 11 }
+        const monthMap = {};
+        allExpenses.forEach(exp => {
+            if (!exp.date || (selectedYear && !exp.date.startsWith(`${selectedYear}-`))) return;
+            const key = exp.date.substring(0, 7);
+            if (!monthMap[key]) monthMap[key] = { income: 0, expenses: 0 };
+            const isIncome = exp.type === 'ingreso' || (!exp.type && ['Juni', 'Isa'].includes(exp.category));
+            if (isIncome) monthMap[key].income += Number(exp.amount);
+            else monthMap[key].expenses += Number(exp.amount);
+        });
+
+        const sortedMonths = Object.keys(monthMap).sort();
+        const labels = sortedMonths.map(m => {
+            const [y, mo] = m.split('-');
+            const d = new Date(y, parseInt(mo) - 1, 1);
+            const label = d.toLocaleDateString('es-CO', { month: 'short', year: '2-digit' });
+            return label.charAt(0).toUpperCase() + label.slice(1);
+        });
+
+        const incomeData  = sortedMonths.map(m => monthMap[m].income);
+        const expenseData = sortedMonths.map(m => monthMap[m].expenses);
+        const ctx = canvas.getContext('2d');
+
+        monthlyChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: 'Ingresos',
+                        data: incomeData,
+                        backgroundColor: 'rgba(5, 150, 105, 0.75)',
+                        borderColor: 'rgba(5, 150, 105, 1)',
+                        borderWidth: 2,
+                        borderRadius: 8,
+                        borderSkipped: false,
                     },
-                    border: { display: false }
-                },
-                y: {
-                    grid: { color: 'rgba(36,99,143,0.08)', drawBorder: false },
-                    ticks: {
-                        color: '#6b7280',
-                        font: { family: "'Plus Jakarta Sans', sans-serif", size: 11 },
-                        callback: v => {
-                            if (v >= 1000000) return '$' + (v / 1000000).toFixed(1) + 'M';
-                            if (v >= 1000) return '$' + (v / 1000).toFixed(0) + 'k';
-                            return '$' + v;
+                    {
+                        label: 'Gastos',
+                        data: expenseData,
+                        backgroundColor: 'rgba(207, 102, 90, 0.72)',
+                        borderColor: 'rgba(207, 102, 90, 1)',
+                        borderWidth: 2,
+                        borderRadius: 8,
+                        borderSkipped: false,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: '#4b5563',
+                            font: { family: "'Plus Jakarta Sans', sans-serif", size: 12, weight: '600' },
+                            boxWidth: 12,
+                            borderRadius: 4,
+                            padding: 16
                         }
                     },
-                    border: { display: false }
+                    tooltip: {
+                        backgroundColor: 'rgba(255,255,255,0.97)',
+                        titleColor: '#1d3448',
+                        bodyColor: '#4b5563',
+                        borderColor: 'rgba(36,99,143,0.2)',
+                        borderWidth: 1,
+                        padding: 12,
+                        cornerRadius: 10,
+                        callbacks: {
+                            label: ctx => ` ${ctx.dataset.label}: ${formatCOP.format(ctx.raw)}`
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#6b7280', font: { family: "'Plus Jakarta Sans', sans-serif", size: 11 } },
+                        border: { display: false }
+                    },
+                    y: {
+                        grid: { color: 'rgba(36,99,143,0.08)', drawBorder: false },
+                        ticks: {
+                            color: '#6b7280',
+                            font: { family: "'Plus Jakarta Sans', sans-serif", size: 11 },
+                            callback: v => {
+                                if (v >= 1000000) return '$' + (v / 1000000).toFixed(1) + 'M';
+                                if (v >= 1000) return '$' + (v / 1000).toFixed(0) + 'k';
+                                return '$' + v;
+                            }
+                        },
+                        border: { display: false }
+                    }
                 }
             }
-        }
-    });
+        });
+    } else {
+        // Gráfica de evolución por categoría específica
+        const catEmoji = categoryEmojis[selectedCategory] || '📊';
+        const catColor = categoryColors[selectedCategory] || '#0f2a4a';
+        if (chartTitleEl) chartTitleEl.textContent = `${catEmoji} Evolución Mensual: ${selectedCategory}`;
+
+        const monthMap = {};
+        allExpenses.forEach(exp => {
+            if (!exp.date || (selectedYear && !exp.date.startsWith(`${selectedYear}-`))) return;
+            const key = exp.date.substring(0, 7);
+            if (!monthMap[key]) monthMap[key] = 0;
+            if (exp.category === selectedCategory) {
+                monthMap[key] += Number(exp.amount);
+            }
+        });
+
+        const sortedMonths = Object.keys(monthMap).sort();
+        const labels = sortedMonths.map(m => {
+            const [y, mo] = m.split('-');
+            const d = new Date(y, parseInt(mo) - 1, 1);
+            const label = d.toLocaleDateString('es-CO', { month: 'short', year: '2-digit' });
+            return label.charAt(0).toUpperCase() + label.slice(1);
+        });
+
+        const categoryData = sortedMonths.map(m => monthMap[m]);
+        const ctx = canvas.getContext('2d');
+
+        monthlyChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: selectedCategory,
+                        data: categoryData,
+                        backgroundColor: catColor + 'bf',
+                        borderColor: catColor,
+                        borderWidth: 2,
+                        borderRadius: 8,
+                        borderSkipped: false,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(255,255,255,0.97)',
+                        titleColor: '#1d3448',
+                        bodyColor: '#4b5563',
+                        borderColor: 'rgba(36,99,143,0.2)',
+                        borderWidth: 1,
+                        padding: 12,
+                        cornerRadius: 10,
+                        callbacks: {
+                            label: ctx => ` ${ctx.dataset.label}: ${formatCOP.format(ctx.raw)}`
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#6b7280', font: { family: "'Plus Jakarta Sans', sans-serif", size: 11 } },
+                        border: { display: false }
+                    },
+                    y: {
+                        grid: { color: 'rgba(36,99,143,0.08)', drawBorder: false },
+                        ticks: {
+                            color: '#6b7280',
+                            font: { family: "'Plus Jakarta Sans', sans-serif", size: 11 },
+                            callback: v => {
+                                if (v >= 1000000) return '$' + (v / 1000000).toFixed(1) + 'M';
+                                if (v >= 1000) return '$' + (v / 1000).toFixed(0) + 'k';
+                                return '$' + v;
+                            }
+                        },
+                        border: { display: false }
+                    }
+                }
+            }
+        });
+    }
 }
 
 // Mostrar notificaciones emergentes Toast

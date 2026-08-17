@@ -4,6 +4,7 @@ class AppController {
         this.monthlyBudget = 1000000;
         this.currentFilterMonth = '';
         this.summaryYear = '';
+        this.summaryCategory = 'all';
         this.categoryChart = null;
         this.syncTimer = null;
         this.chartDistributionType = 'gasto';
@@ -22,7 +23,6 @@ class AppController {
 
             registerServiceWorker();
             checkOnlineStatus(dom.connectionStatus, dom.statusText);
-            setupInstallPrompt(dom.btnInstall, dom.installPromo, dom.btnPromoInstall);
             this.enableAutomaticSync();
         } catch (error) {
             console.error('Error al inicializar la aplicación:', error);
@@ -97,6 +97,10 @@ class AppController {
         });
         dom.summaryYear?.addEventListener('change', event => {
             this.summaryYear = event.target.value;
+            this.renderSummary();
+        });
+        dom.summaryCategory?.addEventListener('change', event => {
+            this.summaryCategory = event.target.value;
             this.renderSummary();
         });
 
@@ -192,8 +196,9 @@ class AppController {
     }
 
     renderSummary() {
-        renderMonthlySummary(this.expenses, this.monthlyBudget, this.summaryYear);
-        renderMonthlyChart(this.expenses, this.summaryYear);
+        const selectedCat = dom.summaryCategory ? dom.summaryCategory.value : (this.summaryCategory || 'all');
+        renderMonthlySummary(this.expenses, this.monthlyBudget, this.summaryYear, selectedCat);
+        renderMonthlyChart(this.expenses, this.summaryYear, selectedCat);
     }
 
     updateTransactionTypeUI() {

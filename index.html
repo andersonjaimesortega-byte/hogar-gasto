@@ -46,21 +46,8 @@
                     <i data-lucide="cloud"></i>
                     <span id="sync-active-dot" style="display: none; position: absolute; top: 2px; right: 2px; width: 6px; height: 6px; background-color: var(--success); border-radius: 50%;"></span>
                 </button>
-                <button id="btn-install" class="btn btn-secondary btn-icon" style="display: none;" title="Instalar App">
-                    <i data-lucide="download"></i>
-                </button>
             </div>
         </header>
-
-        <!-- Install Banner Promo -->
-        <div id="install-promo" class="install-promo">
-                <h4>¡Instala HogarGasto en tu celular!</h4>
-                <p>Accede rápidamente desde tu pantalla de inicio y úsala sin internet.</p>
-            </div>
-            <button id="btn-promo-install" class="btn btn-primary">
-                Instalar
-            </button>
-        </div>
 
         <nav class="app-tabs" aria-label="Secciones principales">
             <button class="tab-button is-active" type="button" data-tab="dashboard" aria-selected="true">
@@ -203,21 +190,45 @@
 
         <!-- Monthly Summary Panel -->
         <section id="tab-summary" class="tab-panel glass-panel monthly-summary-panel" hidden>
-            <div class="panel-header">
+            <div class="panel-header" style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
                 <h2 class="panel-title">
                     <i data-lucide="calendar-days" style="color: var(--primary);"></i>
                     Resumen Acumulado por Mes
                 </h2>
-                <label class="year-filter" for="summary-year">
-                    <span>Año</span>
-                    <select id="summary-year" class="input-control"></select>
-                </label>
+                <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+                    <label class="year-filter" for="summary-category">
+                        <span>Categoría</span>
+                        <select id="summary-category" class="input-control" style="width: auto; min-width: 150px;">
+                            <option value="all">Todas (General)</option>
+                            <optgroup label="Gastos">
+                                <option value="Mercado">Mercado 🛒</option>
+                                <option value="D1">D1 🔴</option>
+                                <option value="Servicios Públicos">Servicios Públicos ⚡</option>
+                                <option value="Arriendo">Arriendo 🏠</option>
+                                <option value="Casa">Casa 🏡</option>
+                                <option value="Carne">Carne 🥩</option>
+                                <option value="Internet">Internet 🌐</option>
+                                <option value="Gas">Gas 🔥</option>
+                                <option value="Otros">Otros ⚙️</option>
+                            </optgroup>
+                            <optgroup label="Ingresos">
+                                <option value="Juni">Aporte Juni 🙋‍♂️</option>
+                                <option value="Isa">Aporte Isa 🙋‍♀️</option>
+                            </optgroup>
+                        </select>
+                    </label>
+
+                    <label class="year-filter" for="summary-year">
+                        <span>Año</span>
+                        <select id="summary-year" class="input-control"></select>
+                    </label>
+                </div>
             </div>
             <div class="panel-content" style="margin-top: 1rem;">
                 <div class="table-responsive">
                     <table class="summary-table">
                         <thead>
-                            <tr>
+                            <tr id="summary-table-header">
                                 <th>Mes</th>
                                 <th class="text-right">Ingresos</th>
                                 <th class="text-right">Gastos</th>
@@ -232,7 +243,7 @@
 
                 <!-- Gráfica mensual -->
                 <div style="margin-top: 2rem;">
-                    <p style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 1rem;">Ingresos vs Gastos por Mes</p>
+                    <p id="summary-chart-title" style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 1rem;">Ingresos vs Gastos por Mes</p>
                     <div style="position: relative; height: 280px;">
                         <canvas id="monthlyChart"></canvas>
                     </div>
@@ -244,7 +255,6 @@
         <footer class="app-footer">
             <p>HogarGasto v1.0.0 • Local-First PWA • Guardado Seguro en Dispositivo</p>
         </footer>
-    </div>
 
 
 
