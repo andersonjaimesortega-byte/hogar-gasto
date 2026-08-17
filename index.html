@@ -164,6 +164,22 @@
                     </div>
                 </section>
 
+                <!-- Category Budgets Panel -->
+                <section class="glass-panel" style="padding: 1.25rem;">
+                    <div class="panel-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                        <h3 class="panel-title" style="font-size: 1rem;">
+                            <i data-lucide="target" style="color: var(--secondary);"></i>
+                            Límites por Categoría
+                        </h3>
+                        <button id="btn-open-budget-modal" type="button" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.35rem 0.65rem;">
+                            <i data-lucide="settings" style="width: 14px; height: 14px;"></i> Configurar
+                        </button>
+                    </div>
+                    <div id="category-budgets-list" class="cat-budget-container">
+                        <!-- Dynamic category budget bars rendered via JS -->
+                    </div>
+                </section>
+
                 <!-- Quick Action Panel -->
                 <section class="glass-panel text-center" style="padding: 1.5rem; text-align: center;">
                     <div style="margin-bottom: 1rem;">
@@ -282,6 +298,32 @@
                 <button id="btn-disconnect-sync" class="btn btn-danger" style="margin-right: auto; display: none;">Desconectar</button>
                 <button id="btn-cancel-sync" class="btn btn-secondary">Cancelar</button>
                 <button id="btn-save-sync" class="btn btn-primary">Conectar y Sincronizar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Budgets Configuration Modal -->
+    <div id="modal-budgets" class="modal-overlay hidden">
+        <div class="modal-container glass-panel" style="max-width: 480px; width: 92%;">
+            <div class="modal-header" style="margin-bottom: 1rem;">
+                <h3 class="modal-title">Configurar Presupuestos por Categoría</h3>
+                <button id="btn-close-budget-modal" class="btn btn-secondary btn-icon" title="Cerrar">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <div class="modal-content" style="max-height: 70vh; overflow-y: auto;">
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.25rem; line-height: 1.4;">
+                    Establece el monto límite mensual (en COP) para cada categoría. Si no deseas asignar límite a alguna, déjala en 0.
+                </p>
+                <form id="category-budgets-form">
+                    <div id="budget-inputs-container" style="display: flex; flex-direction: column; gap: 0.85rem;">
+                        <!-- Generated via JS -->
+                    </div>
+                    <div class="modal-actions" style="margin-top: 1.5rem; justify-content: flex-end;">
+                        <button type="button" id="btn-cancel-budget-modal" class="btn btn-secondary">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Límites</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

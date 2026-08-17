@@ -95,6 +95,80 @@ function updateDashboardStats(allExpenses, currentFilterMonth) {
     if (window.lucide) window.lucide.createIcons();
 }
 
+// Renderizar barras de presupuesto por categoría
+function renderCategoryBudgets(allExpenses, currentFilterMonth, categoryBudgets = {}) {
+    const container = document.getElementById('category-budgets-list');
+    if (!container) return;
+
+    // Calcular consumo del mes por categoría de gasto
+    const currentMonthExpenses = (allExpenses || []).filter(exp => 
+        exp.date && 
+        exp.date.startsWith(currentFilterMonth) && 
+        (exp.type === 'gasto' || (!exp.type && !['Juni', 'Isa'].includes(exp.category)))
+    );
+
+    const spentMap = {};
+    currentMonthExpenses.forEach(exp => {
+        const cat = exp.category || 'Otros';
+        spentMap[cat] = (spentMap[cat] || 0) + Number(exp.amount);
+    });
+
+    const categoriesList = ['Mercado', 'D1', 'Servicios Públicos', 'Arriendo', 'Casa', 'Carne', 'Internet', 'Gas', 'Otros'];
+
+    container.innerHTML = '';
+
+    categoriesList.forEach(cat => {
+        const spent = spentMap[cat] || 0;
+        const limit = Number(categoryBudgets[cat]) || 0;
+        const emoji = categoryEmojis[cat] || '⚙️';
+
+        let pct = 0;
+        let statusClass = 'normal';
+        let statusText = 'Sin límite fijado';
+
+        if (limit > 0) {
+            pct = Math.round((spent / limit) * 100);
+            if (spent >= limit) {
+                statusClass = 'danger';
+                const over = spent - limit;
+                statusText = `Excedido por ${formatCOP.format(over)}`;
+            } else if (spent >= 0.75 * limit) {
+                statusClass = 'warning';
+                const remaining = limit - spent;
+                statusText = `¡Alerta! Quedan ${formatCOP.format(remaining)}`;
+            } else {
+                statusClass = 'normal';
+                const remaining = limit - spent;
+                statusText = `Quedan ${formatCOP.format(remaining)}`;
+            }
+        } else if (spent > 0) {
+            statusText = `Gastado este mes: ${formatCOP.format(spent)}`;
+        }
+
+        const barWidth = limit > 0 ? Math.min(pct, 100) : (spent > 0 ? 100 : 0);
+        const barClass = limit > 0 ? statusClass : 'normal';
+
+        const itemEl = document.createElement('div');
+        itemEl.className = 'budget-item';
+        itemEl.innerHTML = `
+            <div class="budget-item-header">
+                <span class="budget-cat-name">${emoji} ${escapeHTML(cat)}</span>
+                <span class="budget-amounts">
+                    ${formatCOP.format(spent)} ${limit > 0 ? `/ <small style="font-weight: 500;">${formatCOP.format(limit)}</small>` : ''}
+                </span>
+            </div>
+            <div class="budget-bar-track">
+                <div class="budget-bar-fill ${barClass}" style="width: ${barWidth}%;"></div>
+            </div>
+            <div class="budget-item-footer">
+                <span>${limit > 0 ? `${pct}% consumido` : 'Límite no asignado'}</span>
+                <span class="budget-status-tag ${statusClass}">${statusText}</span>
+            </div>
+        `;
+        container.appendChild(itemEl);
+    });
+}
+
 // Renderizar la lista de gastos con filtros aplicados
 function renderExpensesList(expenses, currentFilterMonth, categoryVal, searchVal) {
     const searchValLower = (searchVal || '').toLowerCase().trim();

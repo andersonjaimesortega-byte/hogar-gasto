@@ -8,12 +8,24 @@ class AppController {
         this.categoryChart = null;
         this.syncTimer = null;
         this.chartDistributionType = 'gasto';
+        this.categoryBudgets = {
+            'Mercado': 800000,
+            'D1': 400000,
+            'Servicios Públicos': 300000,
+            'Arriendo': 1200000,
+            'Casa': 250000,
+            'Carne': 200000,
+            'Internet': 80000,
+            'Gas': 40000,
+            'Otros': 150000
+        };
     }
 
     async initialize() {
         try {
             await initDB();
             this.monthlyBudget = await getSetting('monthly_budget', 1000000);
+            this.categoryBudgets = await getSetting('category_budgets', this.categoryBudgets);
             this.setupDefaultDates();
             this.bindEvents();
             await this.loadPeriodFilters();
@@ -55,6 +67,7 @@ class AppController {
         const currentExpenses = this.expenses.filter(item => item.date?.startsWith(this.currentFilterMonth));
 
         updateDashboardStats(this.expenses, this.currentFilterMonth);
+        renderCategoryBudgets(this.expenses, this.currentFilterMonth, this.categoryBudgets);
         renderExpensesList(this.expenses, this.currentFilterMonth, dom.filterCategory.value, '');
 
         const canvas = document.getElementById('categoryChart');
@@ -102,6 +115,57 @@ class AppController {
         dom.summaryCategory?.addEventListener('change', event => {
             this.summaryCategory = event.target.value;
             this.renderSummary();
+        });
+
+        // Configuración de Modal de Presupuestos por Categoría
+        const btnOpenBudgetModal = document.getElementById('btn-open-budget-modal');
+        const btnCloseBudgetModal = document.getElementById('btn-close-budget-modal');
+        const btnCancelBudgetModal = document.getElementById('btn-cancel-budget-modal');
+        const modalBudgets = document.getElementById('modal-budgets');
+        const formBudgets = document.getElementById('category-budgets-form');
+
+        const openBudgetModal = () => {
+            if (!modalBudgets) return;
+            const container = document.getElementById('budget-inputs-container');
+            if (container) {
+                const categories = ['Mercado', 'D1', 'Servicios Públicos', 'Arriendo', 'Casa', 'Carne', 'Internet', 'Gas', 'Otros'];
+                container.innerHTML = categories.map(cat => `
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="budget-input-${cat}" style="font-size: 0.85rem; font-weight: 600;">
+                            ${categoryEmojis[cat] || '⚙️'} ${cat}
+                        </label>
+                        <input type="number" id="budget-input-${cat}" data-category="${cat}" class="input-control budget-input-field" value="${this.categoryBudgets[cat] || 0}" placeholder="0" min="0" step="1000">
+                    </div>
+                `).join('');
+            }
+            modalBudgets.classList.remove('hidden');
+            modalBudgets.classList.add('active');
+        };
+
+        const closeBudgetModal = () => {
+            if (modalBudgets) {
+                modalBudgets.classList.remove('active');
+                modalBudgets.classList.add('hidden');
+            }
+        };
+
+        btnOpenBudgetModal?.addEventListener('click', openBudgetModal);
+        btnCloseBudgetModal?.addEventListener('click', closeBudgetModal);
+        btnCancelBudgetModal?.addEventListener('click', closeBudgetModal);
+
+        formBudgets?.addEventListener('submit', async event => {
+            event.preventDefault();
+            const newBudgets = {};
+            document.querySelectorAll('.budget-input-field').forEach(input => {
+                const cat = input.dataset.category;
+                const val = Math.max(0, Number(input.value) || 0);
+                newBudgets[cat] = val;
+            });
+            this.categoryBudgets = newBudgets;
+            await saveSetting('category_budgets', newBudgets);
+            closeBudgetModal();
+            renderCategoryBudgets(this.expenses, this.currentFilterMonth, this.categoryBudgets);
+            showToast('✅ Presupuestos actualizados con éxito', 'success');
         });
 
         document.querySelectorAll('.tab-button').forEach(button => {

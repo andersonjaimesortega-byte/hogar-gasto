@@ -121,6 +121,105 @@ body {
     box-shadow: 0 2px 8px rgba(36, 99, 143, 0.25);
 }
 
+/* Category Budget Progress Bars & Container */
+.cat-budget-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.budget-item {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(15, 42, 74, 0.08);
+    border-radius: 12px;
+    padding: 0.75rem 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.budget-item:hover {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(15, 42, 74, 0.16);
+    box-shadow: 0 4px 12px rgba(15, 42, 74, 0.05);
+}
+
+.budget-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.35rem;
+}
+
+.budget-cat-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.budget-amounts {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+}
+
+.budget-bar-track {
+    height: 8px;
+    background: rgba(15, 42, 74, 0.08);
+    border-radius: 99px;
+    overflow: hidden;
+    margin-bottom: 0.35rem;
+}
+
+.budget-bar-fill {
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.4s ease, background 0.3s ease;
+}
+
+.budget-bar-fill.normal {
+    background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+}
+
+.budget-bar-fill.warning {
+    background: linear-gradient(90deg, #fbbf24 0%, #d97706 100%);
+}
+
+.budget-bar-fill.danger {
+    background: linear-gradient(90deg, #f87171 0%, #e11d48 100%);
+}
+
+.budget-item-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.73rem;
+    color: var(--text-muted);
+}
+
+.budget-status-tag {
+    font-weight: 700;
+    font-size: 0.7rem;
+    padding: 0.1rem 0.45rem;
+    border-radius: 4px;
+}
+
+.budget-status-tag.normal {
+    color: #047857;
+    background: rgba(16, 185, 129, 0.12);
+}
+
+.budget-status-tag.warning {
+    color: #b45309;
+    background: rgba(245, 158, 11, 0.15);
+}
+
+.budget-status-tag.danger {
+    color: #e11d48;
+    background: rgba(225, 29, 72, 0.15);
+}
+
 /* Floating Action Button */
 .fab {
   position: fixed;
