@@ -54,6 +54,10 @@
                 <i data-lucide="layout-dashboard"></i>
                 Movimientos
             </button>
+            <button class="tab-button" type="button" data-tab="budgets" aria-selected="false">
+                <i data-lucide="target"></i>
+                Presupuestos
+            </button>
             <button class="tab-button" type="button" data-tab="summary" aria-selected="false">
                 <i data-lucide="chart-column"></i>
                 Resumen
@@ -164,22 +168,6 @@
                     </div>
                 </section>
 
-                <!-- Category Budgets Panel -->
-                <section class="glass-panel" style="padding: 1.25rem;">
-                    <div class="panel-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-                        <h3 class="panel-title" style="font-size: 1rem;">
-                            <i data-lucide="target" style="color: var(--secondary);"></i>
-                            Límites por Categoría
-                        </h3>
-                        <button id="btn-open-budget-modal" type="button" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.35rem 0.65rem;">
-                            <i data-lucide="settings" style="width: 14px; height: 14px;"></i> Configurar
-                        </button>
-                    </div>
-                    <div id="category-budgets-list" class="cat-budget-container">
-                        <!-- Dynamic category budget bars rendered via JS -->
-                    </div>
-                </section>
-
                 <!-- Quick Action Panel -->
                 <section class="glass-panel text-center" style="padding: 1.5rem; text-align: center;">
                     <div style="margin-bottom: 1rem;">
@@ -197,6 +185,23 @@
             </div>
         </main>
 
+        </section>
+
+        <!-- Budgets Tab Panel -->
+        <section id="tab-budgets" class="tab-panel glass-panel" hidden style="padding: 1.5rem;">
+            <div class="panel-header" style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+                <h2 class="panel-title">
+                    <i data-lucide="target" style="color: var(--gold);"></i>
+                    Control de Presupuestos por Categoría
+                </h2>
+                <button id="btn-open-budget-modal" type="button" class="btn btn-primary" style="font-size: 0.85rem;">
+                    <i data-lucide="settings" style="width: 16px; height: 16px;"></i> Configurar Presupuestos
+                </button>
+            </div>
+            
+            <div id="category-budgets-list" class="cat-budget-container">
+                <!-- Global budget summary card + category budget cards rendered dynamically via JS -->
+            </div>
         </section>
 
         <!-- Floating Action Button -->

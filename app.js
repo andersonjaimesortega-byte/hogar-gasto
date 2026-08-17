@@ -234,17 +234,24 @@ class AppController {
     }
 
     selectTab(tabName) {
-        const isSummary = tabName === 'summary';
-        document.getElementById('tab-dashboard').hidden = isSummary;
-        document.getElementById('tab-summary').hidden = !isSummary;
         document.querySelectorAll('.tab-button').forEach(button => {
             const isActive = button.dataset.tab === tabName;
             button.classList.toggle('is-active', isActive);
             button.setAttribute('aria-selected', String(isActive));
         });
+
+        document.querySelectorAll('.tab-panel').forEach(panel => {
+            const isTarget = panel.id === `tab-${tabName}`;
+            panel.hidden = !isTarget;
+        });
+
+        const isDashboard = tabName === 'dashboard';
         const fab = document.getElementById('fab-add');
-        if (fab) fab.style.display = isSummary ? 'none' : '';
-        if (isSummary) this.renderSummary();
+        if (fab) fab.style.display = isDashboard ? '' : 'none';
+
+        if (tabName === 'summary') this.renderSummary();
+        if (tabName === 'budgets') renderCategoryBudgets(this.expenses, this.currentFilterMonth, this.categoryBudgets);
+
         window.lucide?.createIcons();
     }
 

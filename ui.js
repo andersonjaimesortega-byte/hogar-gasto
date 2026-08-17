@@ -115,7 +115,55 @@ function renderCategoryBudgets(allExpenses, currentFilterMonth, categoryBudgets 
 
     const categoriesList = ['Mercado', 'D1', 'Servicios Públicos', 'Arriendo', 'Casa', 'Carne', 'Internet', 'Gas', 'Otros'];
 
-    container.innerHTML = '';
+    // Calcular totales globales de presupuestos asignados y consumidos
+    const totalLimits = categoriesList.reduce((sum, cat) => sum + (Number(categoryBudgets[cat]) || 0), 0);
+    const totalSpentOnCats = categoriesList.reduce((sum, cat) => sum + (spentMap[cat] || 0), 0);
+
+    let globalPct = 0;
+    let globalStatusClass = 'normal';
+    let globalStatusText = 'Sin presupuestos asignados';
+
+    if (totalLimits > 0) {
+        globalPct = Math.round((totalSpentOnCats / totalLimits) * 100);
+        if (totalSpentOnCats >= totalLimits) {
+            globalStatusClass = 'danger';
+            globalStatusText = `¡Excedido por ${formatCOP.format(totalSpentOnCats - totalLimits)}!`;
+        } else if (totalSpentOnCats >= 0.75 * totalLimits) {
+            globalStatusClass = 'warning';
+            globalStatusText = `¡Alerta! Quedan ${formatCOP.format(totalLimits - totalSpentOnCats)}`;
+        } else {
+            globalStatusClass = 'normal';
+            globalStatusText = `Quedan ${formatCOP.format(totalLimits - totalSpentOnCats)}`;
+        }
+    } else if (totalSpentOnCats > 0) {
+        globalStatusText = `Total gastado: ${formatCOP.format(totalSpentOnCats)}`;
+    }
+
+    const globalBarWidth = totalLimits > 0 ? Math.min(globalPct, 100) : (totalSpentOnCats > 0 ? 100 : 0);
+
+    container.innerHTML = `
+        <div class="global-budget-card" style="background: linear-gradient(135deg, rgba(15, 42, 74, 0.05) 0%, rgba(217, 119, 6, 0.08) 100%); border: 1px solid rgba(15, 42, 74, 0.14); border-radius: 14px; padding: 1.25rem; margin-bottom: 1.5rem; box-shadow: 0 4px 16px rgba(15, 42, 74, 0.04);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+                <span style="font-size: 0.95rem; font-weight: 800; color: var(--text-primary);">Consumo Presupuestal Global (Mes Actual)</span>
+                <span style="font-size: 1.1rem; font-weight: 800; color: var(--primary);">${formatCOP.format(totalSpentOnCats)} <small style="font-weight: 600; color: var(--text-muted);">/ ${totalLimits > 0 ? formatCOP.format(totalLimits) : '$ 0'}</small></span>
+            </div>
+            <div class="budget-bar-track" style="height: 12px; margin-bottom: 0.6rem; border-radius: 99px;">
+                <div class="budget-bar-fill ${globalStatusClass}" style="width: ${globalBarWidth}%;"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-secondary); flex-wrap: wrap; gap: 0.5rem;">
+                <span style="font-weight: 700;">${totalLimits > 0 ? `${globalPct}% consumido del presupuesto total` : 'Sin presupuestos asignados'}</span>
+                <span class="budget-status-tag ${globalStatusClass}" style="font-size: 0.78rem; padding: 0.2rem 0.6rem;">${globalStatusText}</span>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 0.5rem;">
+            <h3 style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted);">Límites por Categoría de Gasto</h3>
+        </div>
+
+        <div class="budget-cards-grid"></div>
+    `;
+
+    const cardsGrid = container.querySelector('.budget-cards-grid');
 
     categoriesList.forEach(cat => {
         const spent = spentMap[cat] || 0;
@@ -165,7 +213,7 @@ function renderCategoryBudgets(allExpenses, currentFilterMonth, categoryBudgets 
                 <span class="budget-status-tag ${statusClass}">${statusText}</span>
             </div>
         `;
-        container.appendChild(itemEl);
+        cardsGrid.appendChild(itemEl);
     });
 }
 
