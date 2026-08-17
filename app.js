@@ -64,6 +64,7 @@ class AppController {
 
     async refresh() {
         this.expenses = await getAllExpenses();
+        this.categoryBudgets = await getSetting('category_budgets', this.categoryBudgets);
         const currentExpenses = this.expenses.filter(item => item.date?.startsWith(this.currentFilterMonth));
 
         updateDashboardStats(this.expenses, this.currentFilterMonth);
@@ -163,9 +164,12 @@ class AppController {
             });
             this.categoryBudgets = newBudgets;
             await saveSetting('category_budgets', newBudgets);
+            if (typeof uploadSettingToSupabase === 'function') {
+                await uploadSettingToSupabase('category_budgets', newBudgets);
+            }
             closeBudgetModal();
             renderCategoryBudgets(this.expenses, this.currentFilterMonth, this.categoryBudgets);
-            showToast('✅ Presupuestos actualizados con éxito', 'success');
+            showToast('✅ Presupuestos actualizados y sincronizados en la nube', 'success');
         });
 
         document.querySelectorAll('.tab-button').forEach(button => {

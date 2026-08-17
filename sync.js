@@ -78,6 +78,49 @@ async function deleteFromSupabase(id) {
     console.log(`Eliminado de la nube: ${id}`);
 }
 
+async function uploadSettingToSupabase(key, value) {
+    if (!supabaseClient) return;
+    try {
+        const itemToUpload = {
+            key: key,
+            value: typeof value === 'object' ? JSON.stringify(value) : String(value),
+            updated_at: new Date().toISOString()
+        };
+        let { error } = await supabaseClient.from('app_settings').upsert(itemToUpload);
+        if (error) {
+            await supabaseClient.from('settings').upsert(itemToUpload);
+        }
+        console.log(`Configuración '${key}' sincronizada con la nube.`);
+    } catch (err) {
+        console.warn(`No se pudo subir la configuración '${key}' a la nube:`, err.message);
+    }
+}
+
+async function syncSettingsWithSupabase() {
+    if (!supabaseClient) return;
+    try {
+        let { data, error } = await supabaseClient.from('app_settings').select('*').eq('key', 'category_budgets').maybeSingle();
+        if (error || !data) {
+            const res = await supabaseClient.from('settings').select('*').eq('key', 'category_budgets').maybeSingle();
+            if (res.data) data = res.data;
+        }
+
+        const localBudgets = await getSetting('category_budgets', null);
+
+        if (data && data.value) {
+            let parsedCloud = typeof data.value === 'string' ? JSON.parse(data.value) : data.value;
+            await saveSetting('category_budgets', parsedCloud);
+            console.log('✅ Presupuestos por categoría descargados de la nube.');
+            return parsedCloud;
+        } else if (localBudgets) {
+            await uploadSettingToSupabase('category_budgets', localBudgets);
+        }
+    } catch (err) {
+        console.warn('Sincronización de configuración omitida:', err.message);
+    }
+    return null;
+}
+
 // ─── Sincronización bidireccional ──────────────────────────────────────────
 
 async function syncWithSupabase() {
@@ -86,6 +129,9 @@ async function syncWithSupabase() {
     console.log('Iniciando sincronización con Supabase…');
 
     try {
+        // Sincronizar configuración (Presupuestos por Categoría)
+        await syncSettingsWithSupabase();
+
         // ── PASO 1: Enviar eliminaciones pendientes offline ────────────────
         const pendingDeletes = await getSetting('deleted_ids', []);
         if (pendingDeletes.length > 0) {
