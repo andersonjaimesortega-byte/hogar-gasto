@@ -281,7 +281,31 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
         }
     });
 
-    // Proyección por categoría distinguiendo fijos vs variables
+    // Obtener transacciones de meses anteriores para cálculo de promedios históricos acumulados
+    const pastExpenses = (allExpenses || []).filter(exp => 
+        exp.date && 
+        exp.date.substring(0, 7) < currentFilterMonth && 
+        (exp.type === 'gasto' || (!exp.type && !['Juni', 'Isa'].includes(exp.category)))
+    );
+
+    const pastMonthsSet = new Set(pastExpenses.map(exp => exp.date.substring(0, 7)));
+    const pastMonthCount = pastMonthsSet.size;
+
+    const historicalCatSpentSum = {};
+    pastExpenses.forEach(exp => {
+        const cat = exp.category || 'Otros';
+        historicalCatSpentSum[cat] = (historicalCatSpentSum[cat] || 0) + Number(exp.amount);
+    });
+
+    const historicalCatAvg = {};
+    categoriesList.forEach(cat => {
+        historicalCatAvg[cat] = pastMonthCount > 0 ? Math.round((historicalCatSpentSum[cat] || 0) / pastMonthCount) : 0;
+    });
+
+    const historicalTotalSpentSum = Object.values(historicalCatSpentSum).reduce((a, b) => a + b, 0);
+    const historicalTotalMonthlyAvg = pastMonthCount > 0 ? Math.round(historicalTotalSpentSum / pastMonthCount) : 0;
+
+    // Proyección por categoría distinguiendo fijos vs variables con ajuste adaptativo histórico
     let projectedTotal = 0;
     const catProjections = {};
 
@@ -291,13 +315,23 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
 
         if (fixedCategories.includes(cat)) {
             // Gasto fijo: Si ya se pagó en el mes, la proyección es el pago real realizado.
-            // Si no se ha pagado aún en el mes, la proyección estimará el límite asignado (o el gasto actual si no hay límite).
-            catProjections[cat] = catSpent > 0 ? catSpent : catLimit;
+            // Si no se ha pagado aún en el mes, estimamos el límite o el promedio histórico.
+            catProjections[cat] = catSpent > 0 ? catSpent : (catLimit > 0 ? catLimit : (historicalCatAvg[cat] || 0));
         } else {
-            // Gasto variable: Se proyecta acumulando la velocidad diaria de consumo restante
+            // Gasto variable: Se proyecta usando la velocidad diaria de consumo
             if (isCurrentMonth && currentDay > 0) {
                 const catDailyPace = catSpent / currentDay;
-                catProjections[cat] = Math.round(catSpent + (catDailyPace * remainingDays));
+                let effectiveDailyPace = catDailyPace;
+
+                // Si estamos en los primeros 5 días del mes y tenemos histórico,
+                // combinamos el ritmo inicial con el promedio histórico diario para prevenir distorsiones.
+                if (currentDay <= 5 && historicalCatAvg[cat] > 0) {
+                    const historicalDailyPace = historicalCatAvg[cat] / daysInMonth;
+                    const weightCurrent = currentDay / 10; // ej. Día 2: 20% mes actual + 80% histórico
+                    effectiveDailyPace = (catDailyPace * weightCurrent) + (historicalDailyPace * (1 - weightCurrent));
+                }
+
+                catProjections[cat] = Math.round(catSpent + (effectiveDailyPace * remainingDays));
             } else {
                 catProjections[cat] = catSpent;
             }
@@ -372,6 +406,14 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
                 <span class="projection-metric-value" style="color: var(--secondary);">${isCurrentMonth ? formatCOP.format(recommendedDailyVariableMax) : '$ 0'}</span>
                 <span class="projection-metric-subtext">Máx. diario en compras rest. (${remainingDays} días)</span>
             </div>
+
+            <div class="projection-metric-card">
+                <span class="projection-metric-title">
+                    <i data-lucide="history" style="color: var(--primary);"></i> Media Histórica Mensual
+                </span>
+                <span class="projection-metric-value" style="color: var(--text-primary);">${pastMonthCount > 0 ? formatCOP.format(historicalTotalMonthlyAvg) : '—'}</span>
+                <span class="projection-metric-subtext">${pastMonthCount > 0 ? `Acumulada sobre ${pastMonthCount} mes(es) anterior(es)` : 'Se alimenta con cada mes guardado'}</span>
+            </div>
         </div>
 
         <!-- Banner de Diagnóstico -->
@@ -397,6 +439,7 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
                             <th>Tipo</th>
                             <th class="text-right">Gastado a la Fecha</th>
                             <th class="text-right">Proyección Cierre</th>
+                            <th class="text-right">Media Histórica</th>
                             <th class="text-right">Límite Asignado</th>
                             <th class="text-right">Estado Est.</th>
                         </tr>
@@ -407,6 +450,7 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
                             const catSpent = spentMap[cat] || 0;
                             const catProj = catProjections[cat] || 0;
                             const catLimit = Number(categoryBudgets[cat]) || 0;
+                            const catHistAvg = historicalCatAvg[cat] || 0;
                             const emoji = categoryEmojis[cat] || '⚙️';
 
                             let statusBadge = '<span class="budget-status-tag normal">Sin límite</span>';
@@ -429,6 +473,7 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
                                     <td>${typeTag}</td>
                                     <td class="text-right" style="font-weight: 600;">${formatCOP.format(catSpent)}</td>
                                     <td class="text-right" style="font-weight: 700; color: ${catLimit > 0 && catProj > catLimit ? 'var(--danger)' : 'var(--text-primary)'};">${formatCOP.format(catProj)}</td>
+                                    <td class="text-right" style="color: var(--text-muted); font-size: 0.85rem;">${catHistAvg > 0 ? formatCOP.format(catHistAvg) : '—'}</td>
                                     <td class="text-right" style="color: var(--text-muted);">${catLimit > 0 ? formatCOP.format(catLimit) : '—'}</td>
                                     <td class="text-right">${statusBadge}</td>
                                 </tr>
