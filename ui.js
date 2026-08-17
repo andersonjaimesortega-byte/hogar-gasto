@@ -263,16 +263,62 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
     });
 
     const categoriesList = ['Mercado', 'D1', 'Servicios Públicos', 'Arriendo', 'Casa', 'Carne', 'Internet', 'Gas', 'Otros'];
+    const fixedCategories = ['Arriendo', 'Internet', 'Gas'];
+    const variableCategories = ['Mercado', 'D1', 'Servicios Públicos', 'Casa', 'Carne', 'Otros'];
+
     const totalLimits = categoriesList.reduce((sum, cat) => sum + (Number(categoryBudgets[cat]) || 0), 0);
 
-    // Cálculos de proyección
-    const dailyPace = currentDay > 0 ? (spentSoFar / currentDay) : spentSoFar;
-    const projectedTotal = isCurrentMonth ? Math.round(spentSoFar + (dailyPace * remainingDays)) : spentSoFar;
+    // Separar gastado a la fecha entre fijos y variables
+    let fixedSpentSoFar = 0;
+    let variableSpentSoFar = 0;
 
-    const remainingBudget = Math.max(0, totalLimits - spentSoFar);
-    const recommendedDailyMax = isCurrentMonth && remainingDays > 0 ? Math.round(remainingBudget / remainingDays) : 0;
+    categoriesList.forEach(cat => {
+        const amt = spentMap[cat] || 0;
+        if (fixedCategories.includes(cat)) {
+            fixedSpentSoFar += amt;
+        } else {
+            variableSpentSoFar += amt;
+        }
+    });
 
-    // Diagnóstico
+    // Proyección por categoría distinguiendo fijos vs variables
+    let projectedTotal = 0;
+    const catProjections = {};
+
+    categoriesList.forEach(cat => {
+        const catSpent = spentMap[cat] || 0;
+        const catLimit = Number(categoryBudgets[cat]) || 0;
+
+        if (fixedCategories.includes(cat)) {
+            // Gasto fijo: Si ya se pagó en el mes, la proyección es el pago real realizado.
+            // Si no se ha pagado aún en el mes, la proyección estimará el límite asignado (o el gasto actual si no hay límite).
+            catProjections[cat] = catSpent > 0 ? catSpent : catLimit;
+        } else {
+            // Gasto variable: Se proyecta acumulando la velocidad diaria de consumo restante
+            if (isCurrentMonth && currentDay > 0) {
+                const catDailyPace = catSpent / currentDay;
+                catProjections[cat] = Math.round(catSpent + (catDailyPace * remainingDays));
+            } else {
+                catProjections[cat] = catSpent;
+            }
+        }
+        projectedTotal += catProjections[cat];
+    });
+
+    // Ritmo promedio diario para gastos VARIABLES (Mercado, D1, Carne, Casa, Servicios, Otros)
+    const variableDailyPace = currentDay > 0 ? Math.round(variableSpentSoFar / currentDay) : variableSpentSoFar;
+
+    // Presupuesto restante reservado para gastos VARIABLES
+    const projectedFixedTotal = fixedCategories.reduce((sum, cat) => sum + catProjections[cat], 0);
+    const variableBudgetLimit = totalLimits > projectedFixedTotal ? totalLimits - projectedFixedTotal : 0;
+    const remainingVariableBudget = Math.max(0, variableBudgetLimit - variableSpentSoFar);
+    
+    // Meta diaria recomendada para los gastos variables en los días restantes
+    const recommendedDailyVariableMax = isCurrentMonth && remainingDays > 0 
+        ? Math.round(remainingVariableBudget / remainingDays) 
+        : 0;
+
+    // Diagnóstico inteligente
     let alertType = 'info';
     let alertMessage = '';
 
@@ -282,33 +328,33 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
     } else if (projectedTotal <= totalLimits) {
         alertType = 'success';
         const estSavings = totalLimits - projectedTotal;
-        alertMessage = `<strong>¡Ritmo financiero saludable!</strong> Al ritmo actual de <strong>${formatCOP.format(dailyPace)}/día</strong>, cerrarás el mes con un ahorro estimado de <strong>${formatCOP.format(estSavings)}</strong> respecto a tu límite global.`;
+        alertMessage = `<strong>¡Ritmo financiero saludable!</strong> En tus gastos variables mantienes un promedio de <strong>${formatCOP.format(variableDailyPace)}/día</strong>. Al cierre de mes estimas un ahorro de <strong>${formatCOP.format(estSavings)}</strong> respecto a tu presupuesto total.`;
     } else if (projectedTotal <= 1.05 * totalLimits) {
         alertType = 'warning';
-        alertMessage = `<strong>Atención moderada:</strong> Estás al límite de tu presupuesto total. Te sugerimos mantener tu gasto diario por debajo de <strong>${formatCOP.format(recommendedDailyMax)}/día</strong> durante los <strong>${remainingDays} días restantes</strong>.`;
+        alertMessage = `<strong>Atención en gastos variables:</strong> Estás al límite de tu presupuesto total. Te sugerimos ajustar tus compras diarias (Mercado, D1, Carne, etc.) a máximo <strong>${formatCOP.format(recommendedDailyVariableMax)}/día</strong> durante los <strong>${remainingDays} días restantes</strong>.`;
     } else {
         alertType = 'danger';
         const over = projectedTotal - totalLimits;
-        alertMessage = `<strong>⚠️ Alerta de Sobre-gasto Proyectado:</strong> Al ritmo actual de <strong>${formatCOP.format(dailyPace)}/día</strong>, te sobrepasarás por <strong>${formatCOP.format(over)}</strong> al finalizar el mes. Para mantenerte en meta, te sugerimos gastar máximo <strong>${formatCOP.format(recommendedDailyMax)}/día</strong> en los <strong>${remainingDays} días restantes</strong>.`;
+        alertMessage = `<strong>⚠️ Alerta de Sobre-gasto Proyectado:</strong> Al ritmo actual en gastos variables (<strong>${formatCOP.format(variableDailyPace)}/día</strong>), te sobrepasarás en <strong>${formatCOP.format(over)}</strong> al finalizar el mes. Para mantenerte en meta, limita tus compras variables a <strong>${formatCOP.format(recommendedDailyVariableMax)}/día</strong> en los <strong>${remainingDays} días restantes</strong>.`;
     }
 
     container.innerHTML = `
-        <!-- Metricas Principales -->
+        <!-- Métricas Principales -->
         <div class="projection-grid">
             <div class="projection-metric-card">
                 <span class="projection-metric-title">
                     <i data-lucide="trending-up" style="color: var(--primary);"></i> Gastado a la Fecha
                 </span>
                 <span class="projection-metric-value" style="color: var(--text-primary);">${formatCOP.format(spentSoFar)}</span>
-                <span class="projection-metric-subtext">Acumulado en los primeros ${currentDay} días</span>
+                <span class="projection-metric-subtext">Fijos: ${formatCOP.format(fixedSpentSoFar)} | Var: ${formatCOP.format(variableSpentSoFar)}</span>
             </div>
 
             <div class="projection-metric-card">
                 <span class="projection-metric-title">
-                    <i data-lucide="calculator" style="color: var(--gold);"></i> Promedio Diario Actual
+                    <i data-lucide="calculator" style="color: var(--gold);"></i> Promedio Diario Variable
                 </span>
-                <span class="projection-metric-value" style="color: var(--gold);">${formatCOP.format(dailyPace)}</span>
-                <span class="projection-metric-subtext">Velocidad de consumo por día</span>
+                <span class="projection-metric-value" style="color: var(--gold);">${formatCOP.format(variableDailyPace)}</span>
+                <span class="projection-metric-subtext">Velocidad en Mercado, D1, Carne, etc.</span>
             </div>
 
             <div class="projection-metric-card">
@@ -321,10 +367,10 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
 
             <div class="projection-metric-card">
                 <span class="projection-metric-title">
-                    <i data-lucide="shield-alert" style="color: var(--secondary);"></i> Meta Diaria Recomendada
+                    <i data-lucide="shield-alert" style="color: var(--secondary);"></i> Meta Diaria Variable Rec.
                 </span>
-                <span class="projection-metric-value" style="color: var(--secondary);">${isCurrentMonth ? formatCOP.format(recommendedDailyMax) : '$ 0'}</span>
-                <span class="projection-metric-subtext">Máximo sugerido en los ${remainingDays} días rest.</span>
+                <span class="projection-metric-value" style="color: var(--secondary);">${isCurrentMonth ? formatCOP.format(recommendedDailyVariableMax) : '$ 0'}</span>
+                <span class="projection-metric-subtext">Máx. diario en compras rest. (${remainingDays} días)</span>
             </div>
         </div>
 
@@ -341,13 +387,14 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
         <!-- Tabla de Proyección por Categorías -->
         <div style="margin-top: 2rem;">
             <h3 style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 1rem;">
-                Desglose Proyectado por Categoría
+                Desglose Proyectado por Categoría (Fijos vs Variables)
             </h3>
             <div class="table-responsive">
                 <table class="summary-table">
                     <thead>
                         <tr>
                             <th>Categoría</th>
+                            <th>Tipo</th>
                             <th class="text-right">Gastado a la Fecha</th>
                             <th class="text-right">Proyección Cierre</th>
                             <th class="text-right">Límite Asignado</th>
@@ -356,9 +403,9 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
                     </thead>
                     <tbody>
                         ${categoriesList.map(cat => {
+                            const isFixed = fixedCategories.includes(cat);
                             const catSpent = spentMap[cat] || 0;
-                            const catDailyPace = currentDay > 0 ? (catSpent / currentDay) : catSpent;
-                            const catProj = isCurrentMonth ? Math.round(catSpent + (catDailyPace * remainingDays)) : catSpent;
+                            const catProj = catProjections[cat] || 0;
                             const catLimit = Number(categoryBudgets[cat]) || 0;
                             const emoji = categoryEmojis[cat] || '⚙️';
 
@@ -372,9 +419,14 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
                                 }
                             }
 
+                            const typeTag = isFixed 
+                                ? `<span style="font-size: 0.72rem; font-weight: 700; color: #1e40af; background: rgba(30,64,175,0.1); padding: 0.15rem 0.45rem; border-radius: 4px;">📌 Fijo</span>`
+                                : `<span style="font-size: 0.72rem; font-weight: 700; color: #d97706; background: rgba(217,119,6,0.12); padding: 0.15rem 0.45rem; border-radius: 4px;">🔄 Variable</span>`;
+
                             return `
                                 <tr>
                                     <td><span style="font-weight: 600; color: var(--text-primary);">${emoji} ${escapeHTML(cat)}</span></td>
+                                    <td>${typeTag}</td>
                                     <td class="text-right" style="font-weight: 600;">${formatCOP.format(catSpent)}</td>
                                     <td class="text-right" style="font-weight: 700; color: ${catLimit > 0 && catProj > catLimit ? 'var(--danger)' : 'var(--text-primary)'};">${formatCOP.format(catProj)}</td>
                                     <td class="text-right" style="color: var(--text-muted);">${catLimit > 0 ? formatCOP.format(catLimit) : '—'}</td>
