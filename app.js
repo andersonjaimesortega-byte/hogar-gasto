@@ -69,6 +69,7 @@ class AppController {
 
         updateDashboardStats(this.expenses, this.currentFilterMonth);
         renderCategoryBudgets(this.expenses, this.currentFilterMonth, this.categoryBudgets);
+        renderProjectionTab(this.expenses, this.currentFilterMonth, this.categoryBudgets);
         renderExpensesList(this.expenses, this.currentFilterMonth, dom.filterCategory.value, '');
 
         const canvas = document.getElementById('categoryChart');
@@ -255,6 +256,7 @@ class AppController {
 
         if (tabName === 'summary') this.renderSummary();
         if (tabName === 'budgets') renderCategoryBudgets(this.expenses, this.currentFilterMonth, this.categoryBudgets);
+        if (tabName === 'projection') renderProjectionTab(this.expenses, this.currentFilterMonth, this.categoryBudgets);
 
         window.lucide?.createIcons();
     }

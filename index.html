@@ -58,6 +58,10 @@
                 <i data-lucide="target"></i>
                 Presupuestos
             </button>
+            <button class="tab-button" type="button" data-tab="projection" aria-selected="false">
+                <i data-lucide="sparkles"></i>
+                Proyección
+            </button>
             <button class="tab-button" type="button" data-tab="summary" aria-selected="false">
                 <i data-lucide="chart-column"></i>
                 Resumen
@@ -201,6 +205,24 @@
             
             <div id="category-budgets-list" class="cat-budget-container">
                 <!-- Global budget summary card + category budget cards rendered dynamically via JS -->
+            </div>
+        </section>
+
+        <!-- Projection Tab Panel -->
+        <section id="tab-projection" class="tab-panel glass-panel" hidden style="padding: 1.5rem;">
+            <div class="panel-header" style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+                <h2 class="panel-title">
+                    <i data-lucide="sparkles" style="color: var(--gold);"></i>
+                    Proyección e Inteligencia Financiera
+                </h2>
+                <div id="projection-date-badge" style="font-size: 0.85rem; font-weight: 700; color: var(--primary); background: rgba(15, 42, 74, 0.06); padding: 0.4rem 0.8rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                    <!-- Fecha y día actual -->
+                </div>
+            </div>
+
+            <!-- Dynamic Projection Dashboard rendered via JS -->
+            <div id="projection-container">
+                <!-- Metrics cards, Diagnosis advice, and Category projections -->
             </div>
         </section>
 

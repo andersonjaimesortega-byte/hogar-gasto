@@ -217,6 +217,180 @@ function renderCategoryBudgets(allExpenses, currentFilterMonth, categoryBudgets 
     });
 }
 
+// Renderizar el Dashboard de Proyección e Inteligencia Financiera
+function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = {}) {
+    const container = document.getElementById('projection-container');
+    const dateBadge = document.getElementById('projection-date-badge');
+    if (!container) return;
+
+    // Determinar día actual y días totales del mes
+    const now = new Date();
+    const currentMonthStr = getCurrentMonthStr();
+    const isCurrentMonth = !currentFilterMonth || currentFilterMonth === currentMonthStr;
+
+    const [yearStr, monthStr] = (currentFilterMonth || currentMonthStr).split('-');
+    const year = parseInt(yearStr);
+    const monthIndex = parseInt(monthStr) - 1;
+    const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+
+    let currentDay = isCurrentMonth ? now.getDate() : daysInMonth;
+    const remainingDays = Math.max(1, daysInMonth - currentDay);
+
+    const monthObj = new Date(year, monthIndex, 1);
+    const monthName = monthObj.toLocaleDateString('es-CO', { month: 'long', year: 'numeric' });
+    const capitalizedMonth = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+
+    if (dateBadge) {
+        dateBadge.innerHTML = isCurrentMonth
+            ? `<i data-lucide="clock" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-right: 4px;"></i> Día ${currentDay} de ${daysInMonth} • ${capitalizedMonth}`
+            : `<i data-lucide="calendar" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-right: 4px;"></i> ${capitalizedMonth} (Cerrado)`;
+    }
+
+    // Calcular gastos del mes
+    const monthExpenses = (allExpenses || []).filter(exp => 
+        exp.date && 
+        exp.date.startsWith(currentFilterMonth) && 
+        (exp.type === 'gasto' || (!exp.type && !['Juni', 'Isa'].includes(exp.category)))
+    );
+
+    const spentMap = {};
+    let spentSoFar = 0;
+    monthExpenses.forEach(exp => {
+        const amt = Number(exp.amount);
+        spentSoFar += amt;
+        const cat = exp.category || 'Otros';
+        spentMap[cat] = (spentMap[cat] || 0) + amt;
+    });
+
+    const categoriesList = ['Mercado', 'D1', 'Servicios Públicos', 'Arriendo', 'Casa', 'Carne', 'Internet', 'Gas', 'Otros'];
+    const totalLimits = categoriesList.reduce((sum, cat) => sum + (Number(categoryBudgets[cat]) || 0), 0);
+
+    // Cálculos de proyección
+    const dailyPace = currentDay > 0 ? (spentSoFar / currentDay) : spentSoFar;
+    const projectedTotal = isCurrentMonth ? Math.round(spentSoFar + (dailyPace * remainingDays)) : spentSoFar;
+
+    const remainingBudget = Math.max(0, totalLimits - spentSoFar);
+    const recommendedDailyMax = isCurrentMonth && remainingDays > 0 ? Math.round(remainingBudget / remainingDays) : 0;
+
+    // Diagnóstico
+    let alertType = 'info';
+    let alertMessage = '';
+
+    if (totalLimits === 0) {
+        alertType = 'info';
+        alertMessage = 'Configura los límites de tus categorías en la pestaña <strong>Presupuestos</strong> para recibir recomendaciones y alertas inteligentes en tiempo real.';
+    } else if (projectedTotal <= totalLimits) {
+        alertType = 'success';
+        const estSavings = totalLimits - projectedTotal;
+        alertMessage = `<strong>¡Ritmo financiero saludable!</strong> Al ritmo actual de <strong>${formatCOP.format(dailyPace)}/día</strong>, cerrarás el mes con un ahorro estimado de <strong>${formatCOP.format(estSavings)}</strong> respecto a tu límite global.`;
+    } else if (projectedTotal <= 1.05 * totalLimits) {
+        alertType = 'warning';
+        alertMessage = `<strong>Atención moderada:</strong> Estás al límite de tu presupuesto total. Te sugerimos mantener tu gasto diario por debajo de <strong>${formatCOP.format(recommendedDailyMax)}/día</strong> durante los <strong>${remainingDays} días restantes</strong>.`;
+    } else {
+        alertType = 'danger';
+        const over = projectedTotal - totalLimits;
+        alertMessage = `<strong>⚠️ Alerta de Sobre-gasto Proyectado:</strong> Al ritmo actual de <strong>${formatCOP.format(dailyPace)}/día</strong>, te sobrepasarás por <strong>${formatCOP.format(over)}</strong> al finalizar el mes. Para mantenerte en meta, te sugerimos gastar máximo <strong>${formatCOP.format(recommendedDailyMax)}/día</strong> en los <strong>${remainingDays} días restantes</strong>.`;
+    }
+
+    container.innerHTML = `
+        <!-- Metricas Principales -->
+        <div class="projection-grid">
+            <div class="projection-metric-card">
+                <span class="projection-metric-title">
+                    <i data-lucide="trending-up" style="color: var(--primary);"></i> Gastado a la Fecha
+                </span>
+                <span class="projection-metric-value" style="color: var(--text-primary);">${formatCOP.format(spentSoFar)}</span>
+                <span class="projection-metric-subtext">Acumulado en los primeros ${currentDay} días</span>
+            </div>
+
+            <div class="projection-metric-card">
+                <span class="projection-metric-title">
+                    <i data-lucide="calculator" style="color: var(--gold);"></i> Promedio Diario Actual
+                </span>
+                <span class="projection-metric-value" style="color: var(--gold);">${formatCOP.format(dailyPace)}</span>
+                <span class="projection-metric-subtext">Velocidad de consumo por día</span>
+            </div>
+
+            <div class="projection-metric-card">
+                <span class="projection-metric-title">
+                    <i data-lucide="flag" style="color: ${projectedTotal > totalLimits && totalLimits > 0 ? 'var(--danger)' : 'var(--success)'};"></i> Proyección Cierre de Mes
+                </span>
+                <span class="projection-metric-value" style="color: ${projectedTotal > totalLimits && totalLimits > 0 ? 'var(--danger)' : 'var(--success)'};">${formatCOP.format(projectedTotal)}</span>
+                <span class="projection-metric-subtext">${totalLimits > 0 ? `Límite asignado: ${formatCOP.format(totalLimits)}` : 'Sin límite global'}</span>
+            </div>
+
+            <div class="projection-metric-card">
+                <span class="projection-metric-title">
+                    <i data-lucide="shield-alert" style="color: var(--secondary);"></i> Meta Diaria Recomendada
+                </span>
+                <span class="projection-metric-value" style="color: var(--secondary);">${isCurrentMonth ? formatCOP.format(recommendedDailyMax) : '$ 0'}</span>
+                <span class="projection-metric-subtext">Máximo sugerido en los ${remainingDays} días rest.</span>
+            </div>
+        </div>
+
+        <!-- Banner de Diagnóstico -->
+        <div class="projection-alert ${alertType}">
+            <div style="font-size: 1.3rem; line-height: 1;">
+                ${alertType === 'success' ? '🟢' : alertType === 'warning' ? '🟡' : alertType === 'danger' ? '🚨' : '💡'}
+            </div>
+            <div>
+                ${alertMessage}
+            </div>
+        </div>
+
+        <!-- Tabla de Proyección por Categorías -->
+        <div style="margin-top: 2rem;">
+            <h3 style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 1rem;">
+                Desglose Proyectado por Categoría
+            </h3>
+            <div class="table-responsive">
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Categoría</th>
+                            <th class="text-right">Gastado a la Fecha</th>
+                            <th class="text-right">Proyección Cierre</th>
+                            <th class="text-right">Límite Asignado</th>
+                            <th class="text-right">Estado Est.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${categoriesList.map(cat => {
+                            const catSpent = spentMap[cat] || 0;
+                            const catDailyPace = currentDay > 0 ? (catSpent / currentDay) : catSpent;
+                            const catProj = isCurrentMonth ? Math.round(catSpent + (catDailyPace * remainingDays)) : catSpent;
+                            const catLimit = Number(categoryBudgets[cat]) || 0;
+                            const emoji = categoryEmojis[cat] || '⚙️';
+
+                            let statusBadge = '<span class="budget-status-tag normal">Sin límite</span>';
+                            if (catLimit > 0) {
+                                if (catProj > catLimit) {
+                                    const over = catProj - catLimit;
+                                    statusBadge = `<span class="budget-status-tag danger">🔴 +${formatCOP.format(over)}</span>`;
+                                } else {
+                                    statusBadge = `<span class="budget-status-tag normal">🟢 En meta</span>`;
+                                }
+                            }
+
+                            return `
+                                <tr>
+                                    <td><span style="font-weight: 600; color: var(--text-primary);">${emoji} ${escapeHTML(cat)}</span></td>
+                                    <td class="text-right" style="font-weight: 600;">${formatCOP.format(catSpent)}</td>
+                                    <td class="text-right" style="font-weight: 700; color: ${catLimit > 0 && catProj > catLimit ? 'var(--danger)' : 'var(--text-primary)'};">${formatCOP.format(catProj)}</td>
+                                    <td class="text-right" style="color: var(--text-muted);">${catLimit > 0 ? formatCOP.format(catLimit) : '—'}</td>
+                                    <td class="text-right">${statusBadge}</td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    `;
+
+    if (window.lucide) window.lucide.createIcons();
+}
+
 // Renderizar la lista de gastos con filtros aplicados
 function renderExpensesList(expenses, currentFilterMonth, categoryVal, searchVal) {
     const searchValLower = (searchVal || '').toLowerCase().trim();
