@@ -483,7 +483,157 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
                 </table>
             </div>
         </div>
+
+        <!-- Gráfico de Tendencia Diaria -->
+        <div style="margin-top: 2.5rem;">
+            <h3 style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 1rem;">
+                📈 Tendencia de Gasto Acumulado del Mes
+            </h3>
+            <div style="position: relative; background: rgba(255,255,255,0.7); border: 1px solid rgba(15,42,74,0.08); border-radius: 14px; padding: 1.25rem;">
+                <canvas id="projection-trend-chart" style="max-height: 280px;"></canvas>
+            </div>
+        </div>
     `;
+
+    // ── Construir el gráfico de tendencia diaria ──────────────────────────────
+    const trendCanvas = document.getElementById('projection-trend-chart');
+    if (trendCanvas && window.Chart) {
+
+        // Agrupar gastos reales por día del mes
+        const dailySpent = {};
+        monthExpenses.forEach(exp => {
+            const d = new Date(exp.date + 'T00:00:00').getDate();
+            dailySpent[d] = (dailySpent[d] || 0) + Number(exp.amount);
+        });
+
+        // Construir datos acumulados reales hasta el día actual
+        const labels = [];
+        const realAccum = [];
+        const projAccum = [];
+        const limitLine = [];
+
+        let accum = 0;
+        for (let d = 1; d <= daysInMonth; d++) {
+            labels.push(`${d}`);
+
+            if (d <= currentDay) {
+                accum += (dailySpent[d] || 0);
+                realAccum.push(accum);
+                projAccum.push(null);
+            } else if (isCurrentMonth) {
+                // La proyección parte desde el acumulado real y solo suma el ritmo variable diario
+                const gap = d - currentDay;
+                projAccum.push(Math.round(accum + (variableDailyPace * gap)));
+                realAccum.push(null);
+            } else {
+                realAccum.push(null);
+                projAccum.push(null);
+            }
+
+            limitLine.push(totalLimits > 0 ? totalLimits : null);
+        }
+
+        // Punto de unión: el último día real aparece también en proyección para que la línea sea continua
+        if (isCurrentMonth && currentDay > 0 && currentDay < daysInMonth) {
+            projAccum[currentDay - 1] = realAccum[currentDay - 1];
+        }
+
+        // Destruir instancia anterior si existe
+        if (window._projectionTrendChart instanceof Chart) {
+            window._projectionTrendChart.destroy();
+        }
+
+        window._projectionTrendChart = new Chart(trendCanvas.getContext('2d'), {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: 'Gasto Real Acumulado',
+                        data: realAccum,
+                        borderColor: '#0f2a4a',
+                        backgroundColor: 'rgba(15,42,74,0.08)',
+                        borderWidth: 2.5,
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                        fill: true,
+                        tension: 0.35,
+                        spanGaps: false,
+                    },
+                    {
+                        label: 'Proyección Estimada',
+                        data: projAccum,
+                        borderColor: '#d97706',
+                        backgroundColor: 'rgba(217,119,6,0.05)',
+                        borderWidth: 2,
+                        borderDash: [6, 4],
+                        pointRadius: 2,
+                        pointHoverRadius: 5,
+                        fill: false,
+                        tension: 0.35,
+                        spanGaps: false,
+                    },
+                    {
+                        label: 'Límite de Presupuesto',
+                        data: limitLine,
+                        borderColor: totalLimits > 0 ? '#e11d48' : 'transparent',
+                        borderWidth: 1.5,
+                        borderDash: [3, 5],
+                        pointRadius: 0,
+                        fill: false,
+                        tension: 0,
+                    },
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            font: { size: 11, weight: '600' },
+                            color: '#374151',
+                            padding: 16,
+                            usePointStyle: true,
+                            pointStyleWidth: 12,
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => {
+                                if (ctx.raw === null) return null;
+                                return ` ${ctx.dataset.label}: ${formatCOP.format(ctx.raw)}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { color: 'rgba(0,0,0,0.04)' },
+                        ticks: {
+                            font: { size: 10 },
+                            color: '#9ca3af',
+                            maxTicksLimit: 10,
+                        }
+                    },
+                    y: {
+                        grid: { color: 'rgba(0,0,0,0.04)' },
+                        ticks: {
+                            font: { size: 10 },
+                            color: '#9ca3af',
+                            callback: v => {
+                                if (v >= 1000000) return `$${(v/1000000).toFixed(1)}M`;
+                                if (v >= 1000) return `$${(v/1000).toFixed(0)}K`;
+                                return `$${v}`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
 
     if (window.lucide) window.lucide.createIcons();
 }
