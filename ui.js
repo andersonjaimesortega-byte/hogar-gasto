@@ -489,8 +489,8 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
             <h3 style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 1rem;">
                 📈 Tendencia de Gasto Acumulado del Mes
             </h3>
-            <div style="position: relative; background: rgba(255,255,255,0.7); border: 1px solid rgba(15,42,74,0.08); border-radius: 14px; padding: 1.25rem;">
-                <canvas id="projection-trend-chart" style="max-height: 280px;"></canvas>
+            <div class="projection-chart-wrapper">
+                <canvas id="projection-trend-chart"></canvas>
             </div>
         </div>
     `;
@@ -521,7 +521,6 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
                 realAccum.push(accum);
                 projAccum.push(null);
             } else if (isCurrentMonth) {
-                // La proyección parte desde el acumulado real y solo suma el ritmo variable diario
                 const gap = d - currentDay;
                 projAccum.push(Math.round(accum + (variableDailyPace * gap)));
                 realAccum.push(null);
@@ -533,10 +532,13 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
             limitLine.push(totalLimits > 0 ? totalLimits : null);
         }
 
-        // Punto de unión: el último día real aparece también en proyección para que la línea sea continua
+        // Punto de unión entre línea real y proyectada
         if (isCurrentMonth && currentDay > 0 && currentDay < daysInMonth) {
             projAccum[currentDay - 1] = realAccum[currentDay - 1];
         }
+
+        // Detectar si es pantalla pequeña para ajustar opciones
+        const isMobile = window.innerWidth < 600;
 
         // Destruir instancia anterior si existe
         if (window._projectionTrendChart instanceof Chart) {
@@ -549,35 +551,34 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
                 labels,
                 datasets: [
                     {
-                        label: 'Gasto Real Acumulado',
+                        label: 'Real',
                         data: realAccum,
                         borderColor: '#0f2a4a',
-                        backgroundColor: 'rgba(15,42,74,0.08)',
-                        borderWidth: 2.5,
-                        pointRadius: 3,
-                        pointHoverRadius: 5,
+                        backgroundColor: 'rgba(15,42,74,0.07)',
+                        borderWidth: isMobile ? 2 : 2.5,
+                        pointRadius: isMobile ? 0 : 2,
+                        pointHoverRadius: 4,
                         fill: true,
                         tension: 0.35,
                         spanGaps: false,
                     },
                     {
-                        label: 'Proyección Estimada',
+                        label: 'Proyección',
                         data: projAccum,
                         borderColor: '#d97706',
-                        backgroundColor: 'rgba(217,119,6,0.05)',
-                        borderWidth: 2,
-                        borderDash: [6, 4],
-                        pointRadius: 2,
-                        pointHoverRadius: 5,
+                        borderWidth: isMobile ? 1.5 : 2,
+                        borderDash: [5, 4],
+                        pointRadius: 0,
+                        pointHoverRadius: 4,
                         fill: false,
                         tension: 0.35,
                         spanGaps: false,
                     },
                     {
-                        label: 'Límite de Presupuesto',
+                        label: 'Límite',
                         data: limitLine,
                         borderColor: totalLimits > 0 ? '#e11d48' : 'transparent',
-                        borderWidth: 1.5,
+                        borderWidth: 1.2,
                         borderDash: [3, 5],
                         pointRadius: 0,
                         fill: false,
@@ -587,21 +588,25 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
+                maintainAspectRatio: false,
                 interaction: { mode: 'index', intersect: false },
                 plugins: {
                     legend: {
-                        position: 'top',
+                        position: 'bottom',
                         labels: {
-                            font: { size: 11, weight: '600' },
+                            font: { size: isMobile ? 10 : 11, weight: '600' },
                             color: '#374151',
-                            padding: 16,
+                            padding: isMobile ? 10 : 16,
                             usePointStyle: true,
-                            pointStyleWidth: 12,
+                            pointStyleWidth: 10,
+                            boxHeight: 6,
                         }
                     },
                     tooltip: {
+                        titleFont: { size: 11 },
+                        bodyFont: { size: 11 },
                         callbacks: {
+                            title: items => `Día ${items[0].label}`,
                             label: ctx => {
                                 if (ctx.raw === null) return null;
                                 return ` ${ctx.dataset.label}: ${formatCOP.format(ctx.raw)}`;
@@ -611,18 +616,22 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
                 },
                 scales: {
                     x: {
-                        grid: { color: 'rgba(0,0,0,0.04)' },
+                        grid: { color: 'rgba(0,0,0,0.03)', drawTicks: false },
+                        border: { display: false },
                         ticks: {
-                            font: { size: 10 },
+                            font: { size: isMobile ? 9 : 10 },
                             color: '#9ca3af',
-                            maxTicksLimit: 10,
+                            maxTicksLimit: isMobile ? 7 : 10,
+                            maxRotation: 0,
                         }
                     },
                     y: {
-                        grid: { color: 'rgba(0,0,0,0.04)' },
+                        grid: { color: 'rgba(0,0,0,0.03)', drawTicks: false },
+                        border: { display: false },
                         ticks: {
-                            font: { size: 10 },
+                            font: { size: isMobile ? 9 : 10 },
                             color: '#9ca3af',
+                            maxTicksLimit: isMobile ? 5 : 6,
                             callback: v => {
                                 if (v >= 1000000) return `$${(v/1000000).toFixed(1)}M`;
                                 if (v >= 1000) return `$${(v/1000).toFixed(0)}K`;
