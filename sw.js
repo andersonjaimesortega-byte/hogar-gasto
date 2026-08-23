@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hogargasto-cache-v10';
+const CACHE_NAME = 'hogargasto-cache-v12';
 const ASSETS_TO_CACHE = [
   './',
   'index.html',
@@ -15,21 +15,15 @@ const ASSETS_TO_CACHE = [
   'icons/icon-512.svg'
 ];
 
-// Evento de instalación: cachear recursos estáticos (App Shell)
+// Evento de instalación: cachear recursos y forzar activación inmediata
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('Service Worker: Caching App Shell...');
-        return cache.addAll(ASSETS_TO_CACHE);
-      })
-      .then(() => {
-        return self.skipWaiting();
-      })
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS_TO_CACHE))
   );
 });
 
-// Evento de activación: limpieza de cachés antiguos
+// Evento de activación: limpieza de cachés antiguas y reclamar clientes inmediatamente
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -41,50 +35,23 @@ self.addEventListener('activate', (event) => {
           }
         })
       );
-    }).then(() => {
-      return self.clients.claim();
-    })
+    }).then(() => self.clients.claim())
   );
 });
 
-// Evento de fetch: estrategia Cache-first, con caída en red
+// Evento de fetch: estrategia Network-First para siempre descargar la versión más reciente
 self.addEventListener('fetch', (event) => {
-  // Solo interceptar peticiones GET
   if (event.request.method !== 'GET') return;
 
   event.respondWith(
-    caches.match(event.request)
-      .then((cachedResponse) => {
-        if (cachedResponse) {
-          // Devolver el recurso en caché
-          return cachedResponse;
+    fetch(event.request)
+      .then((networkResponse) => {
+        if (networkResponse && networkResponse.ok && event.request.url.startsWith(self.location.origin)) {
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseToCache));
         }
-
-        // Si no está en caché, intentar traerlo de la red
-        return fetch(event.request)
-          .then((response) => {
-            // Verificar respuesta válida
-            if (!response || !response.ok) {
-              return response;
-            }
-
-            // Clonar la respuesta para guardarla solo si pertenece a la app.
-            const shouldCache = event.request.url.startsWith(self.location.origin);
-            
-            if (shouldCache) {
-              const responseToCache = response.clone();
-              caches.open(CACHE_NAME)
-                .then((cache) => {
-                  cache.put(event.request, responseToCache);
-                });
-            }
-
-            return response;
-          })
-          .catch(() => {
-            // Si falla la red y no está en caché, podemos mostrar una página de error o simplemente fallar
-            console.log('Recurso no disponible offline:', event.request.url);
-          });
+        return networkResponse;
       })
+      .catch(() => caches.match(event.request))
   );
 });

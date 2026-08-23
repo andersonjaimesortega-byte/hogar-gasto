@@ -1,3 +1,8 @@
+/**
+ * ─── APP CONTROLLER ──────────────────────────────────────────────────────────
+ * Orquestador principal de la aplicación Flayer (Hogar & Gasto).
+ * Gestiona el estado, persistencia local/nube, navegación y renderizado de UI.
+ */
 class AppController {
     constructor() {
         this.expenses = [];
@@ -7,6 +12,7 @@ class AppController {
         this.summaryCategory = 'all';
         this.categoryChart = null;
         this.syncTimer = null;
+        this.activeTab = 'dashboard';
         this.chartDistributionType = 'gasto';
         this.categoryBudgets = {
             'Mercado': 800000,
@@ -21,32 +27,44 @@ class AppController {
         };
     }
 
+    /**
+     * Inicialización principal de la app
+     */
     async initialize() {
         try {
             await initDB();
             this.monthlyBudget = await getSetting('monthly_budget', 1000000);
             this.categoryBudgets = await getSetting('category_budgets', this.categoryBudgets);
+            
             this.setupDefaultDates();
             this.bindEvents();
             await this.loadPeriodFilters();
             await this.refresh();
 
-            if (await initSupabase()) await this.syncAndRefresh();
+            if (await initSupabase()) {
+                await this.syncAndRefresh();
+            }
 
             registerServiceWorker();
             checkOnlineStatus(dom.connectionStatus, dom.statusText);
             this.enableAutomaticSync();
         } catch (error) {
             console.error('Error al inicializar la aplicación:', error);
-            alert('Hubo un error al inicializar la base de datos local. Por favor recarga la página.');
+            showToast('⚠️ Error al inicializar la base de datos local. Por favor recarga la página.', 'danger');
         }
     }
 
+    /**
+     * Configurar fecha por defecto a la fecha actual local
+     */
     setupDefaultDates() {
-        dom.expenseDate.value = getTodayStr();
+        if (dom.expenseDate) dom.expenseDate.value = getTodayStr();
         this.currentFilterMonth = getCurrentMonthStr();
     }
 
+    /**
+     * Cargar meses disponibles en los filtros de período
+     */
     async loadPeriodFilters() {
         const allExpenses = await getAllExpenses();
         const months = new Set([getCurrentMonthStr()]);
@@ -59,18 +77,22 @@ class AppController {
         this.currentFilterMonth = sortedMonths.includes(this.currentFilterMonth)
             ? this.currentFilterMonth
             : dom.filterMonth.value;
-        dom.filterMonth.value = this.currentFilterMonth;
+        if (dom.filterMonth) dom.filterMonth.value = this.currentFilterMonth;
     }
 
+    /**
+     * Refrescar todos los datos y vistas activas
+     */
     async refresh() {
         this.expenses = await getAllExpenses();
         this.categoryBudgets = await getSetting('category_budgets', this.categoryBudgets);
         const currentExpenses = this.expenses.filter(item => item.date?.startsWith(this.currentFilterMonth));
 
+        // Renderizado según pestaña o componente activo
         updateDashboardStats(this.expenses, this.currentFilterMonth);
         renderCategoryBudgets(this.expenses, this.currentFilterMonth, this.categoryBudgets);
         renderProjectionTab(this.expenses, this.currentFilterMonth, this.categoryBudgets);
-        renderExpensesList(this.expenses, this.currentFilterMonth, dom.filterCategory.value, '');
+        renderExpensesList(this.expenses, this.currentFilterMonth, dom.filterCategory?.value || 'all', '');
 
         const canvas = document.getElementById('categoryChart');
         if (canvas) {
@@ -86,6 +108,9 @@ class AppController {
         this.renderSummary();
     }
 
+    /**
+     * Vincular todos los eventos de la UI
+     */
     bindEvents() {
         setTransactionActionHandlers({
             onEdit: id => this.editTransaction(id),
@@ -93,67 +118,74 @@ class AppController {
         });
         updateCategoryOptions();
 
-        dom.filterMonth.addEventListener('change', async event => {
+        this.bindFilterEvents();
+        this.bindModalEvents();
+        this.bindTabEvents();
+        this.bindChartEvents();
+        this.bindSyncEvents();
+    }
+
+    /**
+     * Eventos de filtros de mes, categoría y formulario
+     */
+    bindFilterEvents() {
+        dom.filterMonth?.addEventListener('change', async event => {
             this.currentFilterMonth = event.target.value;
             await this.refresh();
         });
-        dom.filterCategory.addEventListener('change', () => {
+
+        dom.filterCategory?.addEventListener('change', () => {
             renderExpensesList(this.expenses, this.currentFilterMonth, dom.filterCategory.value, '');
         });
-        dom.expenseType.addEventListener('change', () => this.updateTransactionTypeUI());
-        dom.expenseForm.addEventListener('submit', event => this.saveTransaction(event));
-        dom.btnCancelEdit.addEventListener('click', () => {
+
+        dom.expenseType?.addEventListener('change', () => this.updateTransactionTypeUI());
+        dom.expenseForm?.addEventListener('submit', event => this.saveTransaction(event));
+        
+        dom.btnCancelEdit?.addEventListener('click', () => {
             this.resetForm();
-            const modal = document.getElementById('modal-add');
-            if (modal) {
-                modal.classList.remove('active');
-                modal.classList.add('hidden');
-            }
+            this.closeModal('modal-add');
         });
+
         dom.summaryYear?.addEventListener('change', event => {
             this.summaryYear = event.target.value;
             this.renderSummary();
         });
+
         dom.summaryCategory?.addEventListener('change', event => {
             this.summaryCategory = event.target.value;
             this.renderSummary();
         });
+    }
 
-        // Configuración de Modal de Presupuestos por Categoría
+    /**
+     * Eventos de modales (Transacciones y Presupuestos)
+     */
+    bindModalEvents() {
+        // Modal de Presupuestos por Categoría
         const btnOpenBudgetModal = document.getElementById('btn-open-budget-modal');
         const btnCloseBudgetModal = document.getElementById('btn-close-budget-modal');
         const btnCancelBudgetModal = document.getElementById('btn-cancel-budget-modal');
-        const modalBudgets = document.getElementById('modal-budgets');
         const formBudgets = document.getElementById('category-budgets-form');
 
         const openBudgetModal = () => {
-            if (!modalBudgets) return;
             const container = document.getElementById('budget-inputs-container');
             if (container) {
                 const categories = ['Mercado', 'D1', 'Servicios Públicos', 'Arriendo', 'Casa', 'Carne', 'Internet', 'Gas', 'Otros'];
                 container.innerHTML = categories.map(cat => `
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <label for="budget-input-${cat}" style="font-size: 0.85rem; font-weight: 600;">
+                    <div class="form-group" style="margin-bottom: 0.25rem;">
+                        <label for="budget-input-${cat}" style="font-size: 0.85rem; font-weight: 700;">
                             ${categoryEmojis[cat] || '⚙️'} ${cat}
                         </label>
                         <input type="number" id="budget-input-${cat}" data-category="${cat}" class="input-control budget-input-field" value="${this.categoryBudgets[cat] || 0}" placeholder="0" min="0" step="1000">
                     </div>
                 `).join('');
             }
-            modalBudgets.classList.remove('hidden');
-            modalBudgets.classList.add('active');
-        };
-
-        const closeBudgetModal = () => {
-            if (modalBudgets) {
-                modalBudgets.classList.remove('active');
-                modalBudgets.classList.add('hidden');
-            }
+            this.openModal('modal-budgets');
         };
 
         btnOpenBudgetModal?.addEventListener('click', openBudgetModal);
-        btnCloseBudgetModal?.addEventListener('click', closeBudgetModal);
-        btnCancelBudgetModal?.addEventListener('click', closeBudgetModal);
+        btnCloseBudgetModal?.addEventListener('click', () => this.closeModal('modal-budgets'));
+        btnCancelBudgetModal?.addEventListener('click', () => this.closeModal('modal-budgets'));
 
         formBudgets?.addEventListener('submit', async event => {
             event.preventDefault();
@@ -168,15 +200,39 @@ class AppController {
             if (typeof uploadSettingToSupabase === 'function') {
                 await uploadSettingToSupabase('category_budgets', newBudgets);
             }
-            closeBudgetModal();
+            this.closeModal('modal-budgets');
             renderCategoryBudgets(this.expenses, this.currentFilterMonth, this.categoryBudgets);
-            showToast('✅ Presupuestos actualizados y sincronizados en la nube', 'success');
+            showToast('✅ Presupuestos actualizados y sincronizados', 'success');
         });
 
+        // Botones para abrir modal de agregar transacción
+        const openAddModalHandler = () => {
+            this.resetForm();
+            this.openModal('modal-add');
+            setTimeout(() => dom.expenseAmount?.focus(), 300);
+        };
+
+        document.getElementById('fab-add')?.addEventListener('click', openAddModalHandler);
+        document.getElementById('btn-open-add-modal')?.addEventListener('click', openAddModalHandler);
+        document.getElementById('btn-close-modal')?.addEventListener('click', () => {
+            this.closeModal('modal-add');
+            this.resetForm();
+        });
+    }
+
+    /**
+     * Eventos de selección de pestañas
+     */
+    bindTabEvents() {
         document.querySelectorAll('.tab-button').forEach(button => {
             button.addEventListener('click', () => this.selectTab(button.dataset.tab));
         });
+    }
 
+    /**
+     * Eventos del gráfico de distribución
+     */
+    bindChartEvents() {
         const btnGastos = document.getElementById('btn-chart-gastos');
         const btnIngresos = document.getElementById('btn-chart-ingresos');
         
@@ -199,23 +255,30 @@ class AppController {
 
         btnGastos?.addEventListener('click', () => toggleChartType('gasto'));
         btnIngresos?.addEventListener('click', () => toggleChartType('ingreso'));
-
-        const openAddModalHandler = () => {
-            const modal = document.getElementById('modal-add');
-            if (modal) {
-                modal.classList.remove('hidden');
-                modal.classList.add('active');
-                this.resetForm();
-                setTimeout(() => dom.expenseAmount?.focus(), 300);
-            }
-        };
-
-        document.getElementById('fab-add')?.addEventListener('click', openAddModalHandler);
-        document.getElementById('btn-open-add-modal')?.addEventListener('click', openAddModalHandler);
-
-        this.bindSyncEvents();
     }
 
+    /**
+     * Métodos auxiliares para manejo de modales
+     */
+    openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.remove('hidden');
+            modal.classList.add('active');
+        }
+    }
+
+    closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.remove('active');
+            modal.classList.add('hidden');
+        }
+    }
+
+    /**
+     * Sincronización en segundo plano
+     */
     async syncAndRefresh() {
         if (!supabaseClient || !navigator.onLine) return false;
         try {
@@ -225,7 +288,7 @@ class AppController {
             await this.refresh();
             return true;
         } catch (error) {
-            console.warn('No se pudo sincronizar ahora; se reintentará automáticamente.', error);
+            console.warn('No se pudo sincronizar en este momento; se reintentará luego.', error);
             return false;
         }
     }
@@ -238,7 +301,11 @@ class AppController {
         this.syncTimer = window.setInterval(() => this.syncAndRefresh(), 45000);
     }
 
+    /**
+     * Cambio de Pestañas
+     */
     selectTab(tabName) {
+        this.activeTab = tabName;
         document.querySelectorAll('.tab-button').forEach(button => {
             const isActive = button.dataset.tab === tabName;
             button.classList.toggle('is-active', isActive);
@@ -286,6 +353,9 @@ class AppController {
         window.lucide?.createIcons();
     }
 
+    /**
+     * Sincronización remota modal
+     */
     bindSyncEvents() {
         const modal = document.getElementById('modal-sync');
         const button = document.getElementById('btn-sync-settings');
@@ -296,44 +366,37 @@ class AppController {
         const urlInput = document.getElementById('sync-url');
         const keyInput = document.getElementById('sync-key');
         const status = document.getElementById('sync-status-msg');
-        const closeSync = () => modal?.classList.remove('active');
-
-        const quickModal = document.getElementById('modal-add');
-        const quickCloseBtn = document.getElementById('btn-close-modal');
-        const quickCancelBtn = document.getElementById('btn-cancel-edit');
-        const quickCancelHandler = () => {
-            if (quickModal) {
-                quickModal.classList.remove('active');
-                quickModal.classList.add('hidden');
-                this.resetForm();
-            }
-        };
-        quickCloseBtn?.addEventListener('click', quickCancelHandler);
+        const closeSync = () => this.closeModal('modal-sync');
 
         const showStatus = (message, type) => {
+            if (!status) return;
             status.textContent = message;
             status.className = type;
             status.style.display = 'block';
         };
 
         button?.addEventListener('click', async () => {
-            urlInput.value = await getSetting('supabase_url', '');
-            keyInput.value = await getSetting('supabase_key', '');
-            disconnectButton.style.display = urlInput.value && keyInput.value ? 'block' : 'none';
-            status.style.display = 'none';
-            modal?.classList.add('active');
+            if (urlInput) urlInput.value = await getSetting('supabase_url', '');
+            if (keyInput) keyInput.value = await getSetting('supabase_key', '');
+            if (disconnectButton) disconnectButton.style.display = urlInput?.value && keyInput?.value ? 'block' : 'none';
+            if (status) status.style.display = 'none';
+            this.openModal('modal-sync');
         });
+
         closeButton?.addEventListener('click', closeSync);
         cancelButton?.addEventListener('click', closeSync);
+
         disconnectButton?.addEventListener('click', async () => {
-            if (!confirm('¿Estás seguro de que deseas desconectar la sincronización en la nube? Tu base de datos local no se borrará.')) return;
+            if (!confirm('¿Estás seguro de que deseas desconectar la sincronización en la nube? Tu base de datos local se mantendrá intacta.')) return;
             await disconnectSupabase();
             closeSync();
             await this.refresh();
+            showToast('Sincronización en la nube desconectada', 'info');
         });
+
         saveButton?.addEventListener('click', async () => {
-            const url = urlInput.value.trim();
-            const key = keyInput.value.trim();
+            const url = urlInput?.value.trim();
+            const key = keyInput?.value.trim();
             if (!url || !key) return showStatus('Por favor completa ambos campos.', 'error');
 
             saveButton.disabled = true;
@@ -342,6 +405,7 @@ class AppController {
                 if (!await saveSupabaseConfig(url, key)) throw new Error('Verifica la URL y la Key.');
                 await this.syncAndRefresh();
                 showStatus('¡Conectado y sincronizado con éxito!', 'success');
+                showToast('✅ Sincronización en la nube configurada con éxito', 'success');
                 setTimeout(closeSync, 1000);
             } catch (error) {
                 console.error(error);
@@ -352,6 +416,9 @@ class AppController {
         });
     }
 
+    /**
+     * Guardar / Editar transacción
+     */
     async saveTransaction(event) {
         event.preventDefault();
         const amount = Number(dom.expenseAmount.value);
@@ -362,8 +429,9 @@ class AppController {
             date: dom.expenseDate.value,
             type: dom.expenseType.value
         };
+
         if (!amount || amount <= 0 || !transaction.category || !transaction.date || (transaction.type === 'gasto' && !transaction.desc)) {
-            alert('Completa los campos obligatorios con un valor válido.');
+            showToast('⚠️ Completa los campos obligatorios con valores válidos', 'warning');
             return;
         }
 
@@ -372,35 +440,34 @@ class AppController {
         transaction.id = existingTransaction
             ? existingTransaction.id
             : `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+
         try {
             if (editedId) await updateExpense(transaction);
             else await addExpense(transaction);
 
             if (supabaseClient) {
                 try { await uploadToSupabase(transaction); }
-                catch (error) { console.warn('No se pudo subir ahora; se reintentará después.', error); }
+                catch (error) { console.warn('No se pudo subir a la nube en este momento.', error); }
             }
+
             const transactionMonth = transaction.date.substring(0, 7);
             this.resetForm();
+            this.closeModal('modal-add');
 
-            const quickModal = document.getElementById('modal-add');
-            if (quickModal) {
-                quickModal.classList.remove('active');
-                quickModal.classList.add('hidden');
-            }
             if (transactionMonth !== this.currentFilterMonth) this.currentFilterMonth = transactionMonth;
             await this.loadPeriodFilters();
             await this.refresh();
 
-            if (typeof showToast === 'function') {
-                showToast(editedId ? 'Transacción actualizada' : 'Transacción registrada con éxito', 'success');
-            }
+            showToast(editedId ? 'Transacción actualizada con éxito' : 'Transacción registrada con éxito', 'success');
         } catch (error) {
             console.error('Error al guardar la transacción:', error);
-            alert('No se pudo guardar la información localmente.');
+            showToast('❌ No se pudo guardar la información localmente', 'danger');
         }
     }
 
+    /**
+     * Limpiar formulario
+     */
     resetForm() {
         if (dom.expenseIdInput) dom.expenseIdInput.value = '';
         if (dom.expenseAmount) dom.expenseAmount.value = '';
@@ -415,6 +482,9 @@ class AppController {
         window.lucide?.createIcons();
     }
 
+    /**
+     * Cargar transacción en el formulario para editar
+     */
     editTransaction(id) {
         const transaction = this.expenses.find(item => String(item.id) === String(id));
         if (!transaction) return;
@@ -427,49 +497,46 @@ class AppController {
         dom.expenseCategory.value = transaction.category;
         dom.formTitle.innerHTML = '<i data-lucide="edit" style="color: var(--primary);"></i> Editar Transacción';
         dom.btnSaveExpense.textContent = 'Actualizar Transacción';
-        dom.btnCancelEdit.style.display = 'inline-flex';
+        if (dom.btnCancelEdit) dom.btnCancelEdit.style.display = 'inline-flex';
         
-        const modal = document.getElementById('modal-add');
-        if (modal) {
-            modal.classList.remove('hidden');
-            modal.classList.add('active');
-        }
+        this.openModal('modal-add');
         window.lucide?.createIcons();
     }
 
+    /**
+     * Confirmar y eliminar transacción
+     */
     async requestDeleteTransaction(id) {
         if (!confirm('¿Estás seguro de que deseas eliminar esta transacción?')) return;
         const transaction = this.expenses.find(item => String(item.id) === String(id));
-        if (!transaction) {
-            console.warn('Transacción no encontrada en memoria:', id);
-            return;
-        }
+        if (!transaction) return;
         const exactId = transaction.id;
         const idString = String(exactId);
+
         try {
             await deleteExpense(exactId);
             const deletedIds = await getSetting('deleted_ids', []);
             if (!deletedIds.includes(idString)) await saveSetting('deleted_ids', [...deletedIds, idString]);
+            
             if (supabaseClient) {
                 try {
                     await deleteFromSupabase(exactId);
                     const remaining = (await getSetting('deleted_ids', [])).filter(value => value !== idString);
                     await saveSetting('deleted_ids', remaining);
                 } catch (error) {
-                    console.warn('No se pudo borrar de la nube; se reintentará después.', error);
+                    console.warn('No se pudo borrar de la nube en este momento.', error);
                 }
             }
+
             await this.loadPeriodFilters();
             await this.refresh();
-
-            if (typeof showToast === 'function') {
-                showToast('Transacción eliminada con éxito', 'info');
-            }
+            showToast('Transacción eliminada con éxito', 'info');
         } catch (error) {
             console.error('Error al eliminar transacción:', error);
-            alert('No se pudo eliminar la transacción.');
+            showToast('❌ No se pudo eliminar la transacción', 'danger');
         }
     }
 }
 
+// Inicialización al cargar el DOM
 document.addEventListener('DOMContentLoaded', () => new AppController().initialize());

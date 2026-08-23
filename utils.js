@@ -115,7 +115,6 @@ function animateCurrencyCounter(element, targetAmount, duration = 800) {
     function update(currentTime) {
         const elapsed = currentTime - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        // Ease-out expo curve para animación ultra suave
         const easeOut = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
         const current = Math.round(start + (end - start) * easeOut);
         
@@ -127,5 +126,48 @@ function animateCurrencyCounter(element, targetAmount, duration = 800) {
     }
     
     requestAnimationFrame(update);
+}
+
+// Notificación emergente Toast global
+function showToast(message, type = 'info', duration = 3000) {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        container.className = 'toast-container';
+        document.body.appendChild(container);
+    }
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type} animate-entrance`;
+    toast.style.cssText = `
+        background: var(--bg-surface);
+        color: var(--text-primary);
+        padding: 0.8rem 1.25rem;
+        border-radius: 12px;
+        box-shadow: var(--glass-shadow-hover);
+        border: 1px solid var(--border-color);
+        margin-top: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-size: 0.88rem;
+        font-weight: 600;
+        backdrop-filter: var(--glass-blur);
+    `;
+    toast.innerHTML = message;
+    container.appendChild(toast);
+    container.classList.remove('hidden');
+
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        toast.style.transition = 'all 0.3s ease';
+        setTimeout(() => {
+            toast.remove();
+            if (container.children.length === 0) {
+                container.classList.add('hidden');
+            }
+        }, 300);
+    }, duration);
 }
 

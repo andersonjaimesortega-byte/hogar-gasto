@@ -1584,21 +1584,34 @@ footer.app-footer {
 }
 
 /* 2. 🌊 Floating Ambient Mesh Background Animation */
-@keyframes ambientMeshMove {
-    0% {
-        background-position: 0% 0%, 100% 0%, 50% 100%, 80% 60%;
-    }
-    50% {
-        background-position: 20% 15%, 80% 25%, 40% 85%, 85% 40%;
-    }
-    100% {
-        background-position: 0% 0%, 100% 0%, 50% 100%, 80% 60%;
-    }
+body::before {
+    content: '';
+    position: fixed;
+    top: -25%;
+    left: -25%;
+    width: 150%;
+    height: 150%;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 18% 22%, rgba(11, 29, 58, 0.16) 0%, transparent 42%),
+        radial-gradient(circle at 82% 18%, rgba(184, 121, 26, 0.20) 0%, transparent 38%),
+        radial-gradient(circle at 48% 82%, rgba(10, 124, 92, 0.16) 0%, transparent 42%),
+        radial-gradient(circle at 75% 70%, rgba(26, 52, 96, 0.14) 0%, transparent 36%);
+    filter: blur(45px);
+    animation: ambientGlowFloat 14s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
 }
 
-body {
-    background-size: 170% 170% !important;
-    animation: ambientMeshMove 22s ease-in-out infinite !important;
+@keyframes ambientGlowFloat {
+    0% {
+        transform: translate(0, 0) scale(1) rotate(0deg);
+    }
+    50% {
+        transform: translate(-35px, 28px) scale(1.08) rotate(2deg);
+    }
+    100% {
+        transform: translate(30px, -24px) scale(0.96) rotate(-2deg);
+    }
 }
 
 /* 3. 🎯 Staggered Entrance Animations (Cascada Fade + Slide Up) */
