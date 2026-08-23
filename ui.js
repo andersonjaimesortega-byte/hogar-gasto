@@ -1,33 +1,33 @@
-// Elementos DOM
+// Elementos DOM con getters dinámicos para garantizar referencias vivas sin errores null
 const dom = {
-    valBudget: document.getElementById('val-budget'),
-    valSpent: document.getElementById('val-spent'),
-    valSpentSubtext: document.getElementById('val-spent-subtext'),
-    valIncome: document.getElementById('val-income'),
-    valIncomeSubtext: document.getElementById('val-income-subtext'),
-    valBalance: document.getElementById('val-balance'),
-    valBalanceSubtext: document.getElementById('val-balance-subtext'),
-    cardBalance: document.getElementById('card-balance'),
-    iconBalance: document.getElementById('icon-balance'),
-    filterMonth: document.getElementById('filter-month'),
-    filterCategory: document.getElementById('filter-category'),
-    searchDesc: document.getElementById('search-desc'),
-    expensesList: document.getElementById('expenses-list'),
-    expenseForm: document.getElementById('expense-form'),
-    expenseIdInput: document.getElementById('expense-id'),
-    expenseType: document.getElementById('expense-type'),
-    expenseAmount: document.getElementById('expense-amount'),
-    expenseDesc: document.getElementById('expense-desc'),
-    expenseCategory: document.getElementById('expense-category'),
-    expenseDate: document.getElementById('expense-date'),
-    formTitle: document.getElementById('form-title'),
-    btnSaveExpense: document.getElementById('btn-save-expense'),
-    btnCancelEdit: document.getElementById('btn-cancel-edit'),
-    monthlySummaryBody: document.getElementById('monthly-summary-body'),
-    summaryYear: document.getElementById('summary-year'),
-    summaryCategory: document.getElementById('summary-category'),
-    connectionStatus: document.getElementById('connection-status'),
-    statusText: document.getElementById('status-text')
+    get valBudget() { return document.getElementById('val-budget'); },
+    get valSpent() { return document.getElementById('val-spent'); },
+    get valSpentSubtext() { return document.getElementById('val-spent-subtext'); },
+    get valIncome() { return document.getElementById('val-income'); },
+    get valIncomeSubtext() { return document.getElementById('val-income-subtext'); },
+    get valBalance() { return document.getElementById('val-balance'); },
+    get valBalanceSubtext() { return document.getElementById('val-balance-subtext'); },
+    get cardBalance() { return document.getElementById('card-balance'); },
+    get iconBalance() { return document.getElementById('icon-balance'); },
+    get filterMonth() { return document.getElementById('filter-month'); },
+    get filterCategory() { return document.getElementById('filter-category'); },
+    get searchDesc() { return document.getElementById('search-desc'); },
+    get expensesList() { return document.getElementById('expenses-list'); },
+    get expenseForm() { return document.getElementById('expense-form'); },
+    get expenseIdInput() { return document.getElementById('expense-id'); },
+    get expenseType() { return document.getElementById('expense-type'); },
+    get expenseAmount() { return document.getElementById('expense-amount'); },
+    get expenseDesc() { return document.getElementById('expense-desc'); },
+    get expenseCategory() { return document.getElementById('expense-category'); },
+    get expenseDate() { return document.getElementById('expense-date'); },
+    get formTitle() { return document.getElementById('form-title'); },
+    get btnSaveExpense() { return document.getElementById('btn-save-expense'); },
+    get btnCancelEdit() { return document.getElementById('btn-cancel-edit'); },
+    get monthlySummaryBody() { return document.getElementById('monthly-summary-body'); },
+    get summaryYear() { return document.getElementById('summary-year'); },
+    get summaryCategory() { return document.getElementById('summary-category'); },
+    get connectionStatus() { return document.getElementById('connection-status'); },
+    get statusText() { return document.getElementById('status-text'); }
 };
 
 // Handlers de acción inyectados desde AppController
@@ -165,7 +165,7 @@ function renderCategoryBudgets(allExpenses, currentFilterMonth, categoryBudgets 
 
     const cardsGrid = container.querySelector('.budget-cards-grid');
 
-    categoriesList.forEach(cat => {
+    categoriesList.forEach((cat, idx) => {
         const spent = spentMap[cat] || 0;
         const limit = Number(categoryBudgets[cat]) || 0;
         const emoji = categoryEmojis[cat] || '⚙️';
