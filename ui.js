@@ -48,7 +48,7 @@ function updateDashboardStats(allExpenses, currentFilterMonth) {
     // Gastos Totales (este mes)
     const totalSpent = currentMonthSpentOnly.reduce((sum, item) => sum + Number(item.amount), 0);
     if (dom.valSpent) {
-        dom.valSpent.textContent = formatCOP.format(totalSpent);
+        animateCurrencyCounter(dom.valSpent, totalSpent);
         dom.valSpentSubtext.textContent = `${currentMonthSpentOnly.length} transacciones este mes`;
     }
 
@@ -63,13 +63,13 @@ function updateDashboardStats(allExpenses, currentFilterMonth) {
 
     const balance = totalCumulativeIncome - totalCumulativeExpense;
     if (dom.valBalance) {
-        dom.valBalance.textContent = formatCOP.format(balance);
+        animateCurrencyCounter(dom.valBalance, balance);
     }
 
     if (dom.valIncome) {
         const currentMonthIncomes = currentMonthExpenses.filter(exp => exp.type === 'ingreso' || ['Juni', 'Isa'].includes(exp.category));
         const totalIncome = currentMonthIncomes.reduce((sum, item) => sum + Number(item.amount), 0);
-        dom.valIncome.textContent = formatCOP.format(totalIncome);
+        animateCurrencyCounter(dom.valIncome, totalIncome);
         if (dom.valIncomeSubtext) dom.valIncomeSubtext.textContent = `${currentMonthIncomes.length} aportes registrados`;
     }
 
@@ -197,7 +197,8 @@ function renderCategoryBudgets(allExpenses, currentFilterMonth, categoryBudgets 
         const barClass = limit > 0 ? statusClass : 'normal';
 
         const itemEl = document.createElement('div');
-        itemEl.className = 'budget-item';
+        const staggerClass = `stagger-${(idx % 5) + 1}`;
+        itemEl.className = `budget-item animate-entrance ${staggerClass}`;
         itemEl.innerHTML = `
             <div class="budget-item-header">
                 <span class="budget-cat-name">${emoji} ${escapeHTML(cat)}</span>
@@ -375,7 +376,7 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
     container.innerHTML = `
         <!-- Métricas Principales -->
         <div class="projection-grid">
-            <div class="projection-metric-card">
+            <div class="projection-metric-card animate-entrance stagger-1">
                 <span class="projection-metric-title">
                     <i data-lucide="trending-up" style="color: var(--primary);"></i> Gastado a la Fecha
                 </span>
@@ -383,7 +384,7 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
                 <span class="projection-metric-subtext">Fijos: ${formatCOP.format(fixedSpentSoFar)} | Var: ${formatCOP.format(variableSpentSoFar)}</span>
             </div>
 
-            <div class="projection-metric-card">
+            <div class="projection-metric-card animate-entrance stagger-2">
                 <span class="projection-metric-title">
                     <i data-lucide="calculator" style="color: var(--gold);"></i> Promedio Diario Variable
                 </span>
@@ -391,7 +392,7 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
                 <span class="projection-metric-subtext">Velocidad en Mercado, D1, Carne, etc.</span>
             </div>
 
-            <div class="projection-metric-card">
+            <div class="projection-metric-card animate-entrance stagger-3">
                 <span class="projection-metric-title">
                     <i data-lucide="flag" style="color: ${projectedTotal > totalLimits && totalLimits > 0 ? 'var(--danger)' : 'var(--success)'};"></i> Proyección Cierre de Mes
                 </span>
@@ -399,7 +400,7 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
                 <span class="projection-metric-subtext">${totalLimits > 0 ? `Límite asignado: ${formatCOP.format(totalLimits)}` : 'Sin límite global'}</span>
             </div>
 
-            <div class="projection-metric-card">
+            <div class="projection-metric-card animate-entrance stagger-4">
                 <span class="projection-metric-title">
                     <i data-lucide="shield-alert" style="color: var(--secondary);"></i> Meta Diaria Variable Rec.
                 </span>
@@ -407,7 +408,7 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
                 <span class="projection-metric-subtext">Máx. diario en compras rest. (${remainingDays} días)</span>
             </div>
 
-            <div class="projection-metric-card">
+            <div class="projection-metric-card animate-entrance stagger-5">
                 <span class="projection-metric-title">
                     <i data-lucide="history" style="color: var(--primary);"></i> Media Histórica Mensual
                 </span>
@@ -432,7 +433,7 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
                 Desglose Proyectado por Categoría (Fijos vs Variables)
             </h3>
             <div class="table-responsive">
-                <table class="summary-table">
+                <table class="summary-table cols-7">
                     <thead>
                         <tr>
                             <th>Categoría</th>
@@ -682,9 +683,10 @@ function renderExpensesList(expenses, currentFilterMonth, categoryVal, searchVal
         return;
     }
     
-    items.forEach(exp => {
+    items.forEach((exp, idx) => {
         const itemEl = document.createElement('div');
-        itemEl.className = 'expense-item';
+        const staggerClass = `stagger-${(idx % 5) + 1}`;
+        itemEl.className = `expense-item animate-entrance ${staggerClass}`;
         itemEl.dataset.transactionId = String(exp.id);
         
         const catClass = getCategoryIconClass(exp.category);

@@ -97,3 +97,35 @@ function escapeHTML(str) {
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
 }
+
+// Animación suave de conteo de dinero (Currency Counter Animation)
+function animateCurrencyCounter(element, targetAmount, duration = 800) {
+    if (!element) return;
+    const end = Number(targetAmount) || 0;
+    const start = element._currentVal !== undefined ? element._currentVal : 0;
+    element._currentVal = end;
+    
+    if (start === end) {
+        element.textContent = formatCOP.format(end);
+        return;
+    }
+    
+    const startTime = performance.now();
+    
+    function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        // Ease-out expo curve para animación ultra suave
+        const easeOut = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+        const current = Math.round(start + (end - start) * easeOut);
+        
+        element.textContent = formatCOP.format(current);
+        
+        if (progress < 1) {
+            requestAnimationFrame(update);
+        }
+    }
+    
+    requestAnimationFrame(update);
+}
+
