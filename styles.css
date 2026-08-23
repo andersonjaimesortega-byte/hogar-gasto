@@ -1562,8 +1562,8 @@ select.input-control {
     .table-responsive > .summary-table.cols-7 td:nth-child(7) { width: 11%; }
 }
 
-/* En móvil se preservan las columnas y se navegan con desplazamiento horizontal. */
-@media (max-width: 600px) and (hover: none) and (pointer: coarse) {
+/* Solo teléfonos estrechos conservan la tabla amplia con desplazamiento lateral. */
+@media (max-width: 480px) {
     .table-scroll-hint {
         display: flex;
         align-items: center;
@@ -1603,32 +1603,6 @@ select.input-control {
 
 /* Un monitor puede tener un viewport CSS estrecho por el zoom del navegador.
    En ese caso prevalece el diseño de escritorio y la tabla ocupa todo el panel. */
-html.wide-screen .table-scroll-hint {
-    display: none !important;
-}
-
-html.wide-screen .table-responsive > .summary-table {
-    display: table !important;
-    width: 100% !important;
-    min-width: 100% !important;
-    max-width: none !important;
-    table-layout: fixed !important;
-}
-
-html.wide-screen .summary-table.cols-7 th:nth-child(1),
-html.wide-screen .summary-table.cols-7 td:nth-child(1) { width: 18% !important; }
-html.wide-screen .summary-table.cols-7 th:nth-child(2),
-html.wide-screen .summary-table.cols-7 td:nth-child(2) { width: 10% !important; }
-html.wide-screen .summary-table.cols-7 th:nth-child(3),
-html.wide-screen .summary-table.cols-7 td:nth-child(3) { width: 17% !important; }
-html.wide-screen .summary-table.cols-7 th:nth-child(4),
-html.wide-screen .summary-table.cols-7 td:nth-child(4) { width: 17% !important; }
-html.wide-screen .summary-table.cols-7 th:nth-child(5),
-html.wide-screen .summary-table.cols-7 td:nth-child(5) { width: 14% !important; }
-html.wide-screen .summary-table.cols-7 th:nth-child(6),
-html.wide-screen .summary-table.cols-7 td:nth-child(6) { width: 13% !important; }
-html.wide-screen .summary-table.cols-7 th:nth-child(7),
-html.wide-screen .summary-table.cols-7 td:nth-child(7) { width: 11% !important; }
 
 .text-right {
     text-align: right;
