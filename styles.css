@@ -79,17 +79,42 @@
 }
 
 body {
-    background-color: var(--bg-base);
+    background-color: #e8edf5;
     background-image:
-        radial-gradient(ellipse at 0% 0%, rgba(11, 29, 58, 0.07) 0px, transparent 55%),
-        radial-gradient(ellipse at 100% 0%, rgba(183, 121, 26, 0.08) 0px, transparent 50%),
-        radial-gradient(ellipse at 50% 100%, rgba(10, 124, 92, 0.06) 0px, transparent 55%),
-        radial-gradient(ellipse at 80% 60%, rgba(26, 52, 96, 0.04) 0px, transparent 40%);
+        radial-gradient(ellipse 70% 55% at 0% 0%, rgba(34, 65, 116, 0.30) 0%, transparent 72%),
+        radial-gradient(ellipse 55% 50% at 100% 0%, rgba(210, 157, 51, 0.25) 0%, transparent 70%),
+        radial-gradient(ellipse 55% 45% at 88% 100%, rgba(22, 121, 101, 0.17) 0%, transparent 72%),
+        linear-gradient(145deg, #d9e2ef 0%, #f7f8fb 44%, #e9edf5 100%);
     background-attachment: fixed;
     color: var(--text-primary);
     min-height: 100vh;
     padding-bottom: 2rem;
     overflow-x: hidden;
+    position: relative;
+    isolation: isolate;
+}
+
+/* Luz ambiental y textura discreta para dar profundidad sin interferir con el contenido. */
+body::before,
+body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+body::before {
+    background:
+        radial-gradient(circle at 18% 16%, rgba(255, 255, 255, 0.72) 0 1px, transparent 2px),
+        radial-gradient(circle at 78% 28%, rgba(255, 255, 255, 0.55) 0 1px, transparent 2px);
+    background-size: 34px 34px, 48px 48px;
+    opacity: 0.32;
+}
+
+body::after {
+    background: linear-gradient(110deg, transparent 18%, rgba(255,255,255,0.26) 50%, transparent 82%);
+    opacity: 0.5;
 }
 
 /* Custom Scrollbar */
@@ -99,9 +124,13 @@ body {
 ::-webkit-scrollbar-thumb:hover { background: rgba(183, 121, 26, 0.5); }
 
 .container {
-    max-width: 1400px;
+    /* El tablero y sus tablas pueden usar el ancho real de la pantalla. */
+    width: 100%;
+    max-width: 1920px;
     margin: 0 auto;
-    padding: 1.5rem;
+    padding: clamp(1rem, 2vw, 2rem);
+    position: relative;
+    z-index: 1;
 }
 
 /* Chart Type Toggle Buttons */
@@ -331,6 +360,11 @@ body {
     background: linear-gradient(90deg, #f87171 0%, #e11d48 100%);
 }
 
+/* Los pagos fijos completados son informativos, no una alerta de exceso. */
+.budget-bar-fill.fixed {
+    background: linear-gradient(90deg, #2563eb 0%, #4f46e5 100%);
+}
+
 .budget-item-footer {
     display: flex;
     justify-content: space-between;
@@ -359,6 +393,11 @@ body {
 .budget-status-tag.danger {
     color: #e11d48;
     background: rgba(225, 29, 72, 0.15);
+}
+
+.budget-status-tag.fixed {
+    color: #4338ca;
+    background: rgba(79, 70, 229, 0.14);
 }
 
 /* Floating Action Button */
@@ -1402,23 +1441,45 @@ select.input-control {
 
 .table-responsive {
     display: block;
-    width: 100%;
+    width: 100% !important;
+    min-width: 0;
     max-width: 100%;
     overflow-x: auto;
+    overflow-y: hidden;
     border-radius: 14px;
     background: #ffffff;
     border: 1px solid rgba(11, 29, 58, 0.12);
     box-shadow: 0 4px 16px rgba(11, 29, 58, 0.05);
     -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(15, 42, 74, 0.32) transparent;
+}
+
+.table-responsive:focus-visible {
+    outline: 3px solid rgba(37, 99, 235, 0.35);
+    outline-offset: 3px;
+}
+
+.table-responsive::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: rgba(15, 42, 74, 0.28);
+    border-radius: 99px;
+}
+
+.table-scroll-hint {
+    display: none;
 }
 
 .summary-table {
-    display: table;
-    width: 100%;
+    width: 100% !important;
+    min-width: 100%;
     border-collapse: separate;
     border-spacing: 0;
     font-size: 0.88rem;
-    table-layout: auto;
+    table-layout: fixed;
 }
 
 .summary-table th,
@@ -1436,6 +1497,8 @@ select.input-control {
     text-transform: uppercase;
     letter-spacing: 0.06em;
     background: rgba(11, 29, 58, 0.04);
+    white-space: normal;
+    line-height: 1.25;
 }
 
 .summary-table th:first-child {
@@ -1472,6 +1535,100 @@ select.input-control {
 .summary-table td {
     color: var(--text-primary);
 }
+
+/* Regla explícita para monitores, incluso con zoom del navegador. */
+@media (hover: hover) and (pointer: fine) {
+    .table-responsive > .summary-table {
+        display: table !important;
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: none !important;
+        table-layout: fixed !important;
+    }
+
+    .table-responsive > .summary-table.cols-7 th:nth-child(1),
+    .table-responsive > .summary-table.cols-7 td:nth-child(1) { width: 18%; }
+    .table-responsive > .summary-table.cols-7 th:nth-child(2),
+    .table-responsive > .summary-table.cols-7 td:nth-child(2) { width: 10%; }
+    .table-responsive > .summary-table.cols-7 th:nth-child(3),
+    .table-responsive > .summary-table.cols-7 td:nth-child(3) { width: 17%; }
+    .table-responsive > .summary-table.cols-7 th:nth-child(4),
+    .table-responsive > .summary-table.cols-7 td:nth-child(4) { width: 17%; }
+    .table-responsive > .summary-table.cols-7 th:nth-child(5),
+    .table-responsive > .summary-table.cols-7 td:nth-child(5) { width: 14%; }
+    .table-responsive > .summary-table.cols-7 th:nth-child(6),
+    .table-responsive > .summary-table.cols-7 td:nth-child(6) { width: 13%; }
+    .table-responsive > .summary-table.cols-7 th:nth-child(7),
+    .table-responsive > .summary-table.cols-7 td:nth-child(7) { width: 11%; }
+}
+
+/* En móvil se preservan las columnas y se navegan con desplazamiento horizontal. */
+@media (max-width: 600px) and (hover: none) and (pointer: coarse) {
+    .table-scroll-hint {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 0.35rem;
+        margin: 0 0 0.35rem;
+        color: var(--text-muted);
+        font-size: 0.72rem;
+        font-weight: 700;
+    }
+
+    .table-scroll-hint span {
+        color: var(--primary);
+        font-size: 1rem;
+    }
+
+    .summary-table {
+        width: max-content !important;
+        min-width: 0;
+        table-layout: auto;
+        font-size: 0.82rem;
+    }
+
+    .summary-table th,
+    .summary-table td {
+        padding: 0.7rem 0.85rem;
+    }
+
+    .summary-table.cols-4 {
+        min-width: 620px;
+    }
+
+    .summary-table.cols-7 {
+        min-width: 1040px;
+    }
+}
+
+/* Un monitor puede tener un viewport CSS estrecho por el zoom del navegador.
+   En ese caso prevalece el diseño de escritorio y la tabla ocupa todo el panel. */
+html.wide-screen .table-scroll-hint {
+    display: none !important;
+}
+
+html.wide-screen .table-responsive > .summary-table {
+    display: table !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: none !important;
+    table-layout: fixed !important;
+}
+
+html.wide-screen .summary-table.cols-7 th:nth-child(1),
+html.wide-screen .summary-table.cols-7 td:nth-child(1) { width: 18% !important; }
+html.wide-screen .summary-table.cols-7 th:nth-child(2),
+html.wide-screen .summary-table.cols-7 td:nth-child(2) { width: 10% !important; }
+html.wide-screen .summary-table.cols-7 th:nth-child(3),
+html.wide-screen .summary-table.cols-7 td:nth-child(3) { width: 17% !important; }
+html.wide-screen .summary-table.cols-7 th:nth-child(4),
+html.wide-screen .summary-table.cols-7 td:nth-child(4) { width: 17% !important; }
+html.wide-screen .summary-table.cols-7 th:nth-child(5),
+html.wide-screen .summary-table.cols-7 td:nth-child(5) { width: 14% !important; }
+html.wide-screen .summary-table.cols-7 th:nth-child(6),
+html.wide-screen .summary-table.cols-7 td:nth-child(6) { width: 13% !important; }
+html.wide-screen .summary-table.cols-7 th:nth-child(7),
+html.wide-screen .summary-table.cols-7 td:nth-child(7) { width: 11% !important; }
 
 .text-right {
     text-align: right;

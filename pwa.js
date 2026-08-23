@@ -18,6 +18,7 @@ function registerServiceWorker() {
 // Monitoreo de estado Online/Offline
 function checkOnlineStatus(connectionStatusEl, statusTextEl) {
     const updateStatus = () => {
+        if (!connectionStatusEl || !statusTextEl) return;
         if (navigator.onLine) {
             connectionStatusEl.className = 'status-badge online';
             statusTextEl.textContent = 'En línea';
@@ -40,8 +41,8 @@ function setupInstallPrompt(btnInstall, installPromo, btnPromoInstall) {
         deferredPrompt = e;
         
         // Mostrar botones de instalación
-        btnInstall.style.display = 'inline-flex';
-        installPromo.style.display = 'flex';
+        if (btnInstall) btnInstall.style.display = 'inline-flex';
+        if (installPromo) installPromo.style.display = 'flex';
     });
 
     const triggerInstallFlow = async () => {
@@ -54,16 +55,16 @@ function setupInstallPrompt(btnInstall, installPromo, btnPromoInstall) {
         
         // Limpiar el prompt diferido
         deferredPrompt = null;
-        btnInstall.style.display = 'none';
-        installPromo.style.display = 'none';
+        if (btnInstall) btnInstall.style.display = 'none';
+        if (installPromo) installPromo.style.display = 'none';
     };
 
-    btnInstall.addEventListener('click', triggerInstallFlow);
-    btnPromoInstall.addEventListener('click', triggerInstallFlow);
+    btnInstall?.addEventListener('click', triggerInstallFlow);
+    btnPromoInstall?.addEventListener('click', triggerInstallFlow);
 
     window.addEventListener('appinstalled', () => {
         console.log('Aplicación instalada con éxito en el sistema.');
-        btnInstall.style.display = 'none';
-        installPromo.style.display = 'none';
+        if (btnInstall) btnInstall.style.display = 'none';
+        if (installPromo) installPromo.style.display = 'none';
     });
 }

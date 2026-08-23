@@ -201,7 +201,7 @@ class AppController {
                 await uploadSettingToSupabase('category_budgets', newBudgets);
             }
             this.closeModal('modal-budgets');
-            renderCategoryBudgets(this.expenses, this.currentFilterMonth, this.categoryBudgets);
+            await this.refresh();
             showToast('✅ Presupuestos actualizados y sincronizados', 'success');
         });
 
@@ -265,6 +265,7 @@ class AppController {
         if (modal) {
             modal.classList.remove('hidden');
             modal.classList.add('active');
+            modal.setAttribute('aria-hidden', 'false');
         }
     }
 
@@ -273,6 +274,7 @@ class AppController {
         if (modal) {
             modal.classList.remove('active');
             modal.classList.add('hidden');
+            modal.setAttribute('aria-hidden', 'true');
         }
     }
 

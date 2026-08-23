@@ -17,7 +17,13 @@
     <link rel="apple-touch-icon" href="icons/icon-192.svg">
     
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="styles.css?v=1.3.0">
+    <link rel="stylesheet" href="styles.css?v=1.3.6">
+    <script>
+        // Evita que el zoom del navegador trate un monitor como pantalla móvil.
+        if (window.screen && window.screen.width >= 900) {
+            document.documentElement.classList.add('wide-screen');
+        }
+    </script>
     
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -227,7 +233,7 @@
         </section>
 
         <!-- Floating Action Button -->
-        <button id="fab-add" class="fab" title="Registrar Gasto Rápido">
+        <button id="fab-add" class="fab" type="button" title="Registrar Gasto Rápido">
             <i data-lucide="plus"></i>
         </button>
 
@@ -268,8 +274,10 @@
                 </div>
             </div>
             <div class="panel-content" style="margin-top: 1rem;">
-                <div class="table-responsive">
-                    <table class="summary-table cols-4">
+                <div class="table-section">
+                    <p class="table-scroll-hint" aria-hidden="true">Desliza lateralmente para ver todas las columnas <span>↔</span></p>
+                    <div class="table-responsive" tabindex="0" role="region" aria-label="Tabla de resumen mensual">
+                        <table class="summary-table cols-4">
                         <thead>
                             <tr id="summary-table-header">
                                 <th>Mes</th>
@@ -281,7 +289,8 @@
                         <tbody id="monthly-summary-body">
                             <!-- Carga dinámica -->
                         </tbody>
-                    </table>
+                        </table>
+                    </div>
                 </div>
 
                 <!-- Gráfica mensual -->
@@ -302,7 +311,7 @@
 
 
     <!-- Supabase Sync Modal -->
-    <div id="modal-sync" class="modal-overlay">
+    <div id="modal-sync" class="modal-overlay hidden" aria-hidden="true">
         <div class="glass-panel modal-container">
             <div class="panel-header">
                 <h3 class="panel-title">Sincronización en la Nube</h3>
@@ -359,7 +368,7 @@
     <div id="modal-add" class="modal-overlay hidden">
       <div class="modal-container glass-panel">
         <div class="modal-header">
-          <h3 class="modal-title">Registrar Operación</h3>
+          <h3 id="form-title" class="modal-title">Registrar Operación</h3>
           <button id="btn-close-modal" class="btn btn-secondary btn-icon" title="Cerrar">
             <i data-lucide="x"></i>
           </button>

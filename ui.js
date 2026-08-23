@@ -114,6 +114,7 @@ function renderCategoryBudgets(allExpenses, currentFilterMonth, categoryBudgets 
     });
 
     const categoriesList = ['Mercado', 'D1', 'Servicios Públicos', 'Arriendo', 'Casa', 'Carne', 'Internet', 'Gas', 'Otros'];
+    const fixedCategories = new Set(['Arriendo', 'Internet', 'Gas']);
 
     // Calcular totales globales de presupuestos asignados y consumidos
     const totalLimits = categoriesList.reduce((sum, cat) => sum + (Number(categoryBudgets[cat]) || 0), 0);
@@ -168,6 +169,7 @@ function renderCategoryBudgets(allExpenses, currentFilterMonth, categoryBudgets 
     categoriesList.forEach((cat, idx) => {
         const spent = spentMap[cat] || 0;
         const limit = Number(categoryBudgets[cat]) || 0;
+        const isFixed = fixedCategories.has(cat);
         const emoji = categoryEmojis[cat] || '⚙️';
 
         let pct = 0;
@@ -176,7 +178,12 @@ function renderCategoryBudgets(allExpenses, currentFilterMonth, categoryBudgets 
 
         if (limit > 0) {
             pct = Math.round((spent / limit) * 100);
-            if (spent >= limit) {
+            if (spent >= limit && isFixed) {
+                statusClass = 'fixed';
+                statusText = spent === limit
+                    ? '📌 Pago fijo completado'
+                    : `📌 Pago fijo registrado: ${formatCOP.format(spent)}`;
+            } else if (spent >= limit) {
                 statusClass = 'danger';
                 const over = spent - limit;
                 statusText = `Excedido por ${formatCOP.format(over)}`;
@@ -432,8 +439,10 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
             <h3 style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 1rem;">
                 Desglose Proyectado por Categoría (Fijos vs Variables)
             </h3>
-            <div class="table-responsive">
-                <table class="summary-table cols-7">
+            <div class="table-section">
+                <p class="table-scroll-hint" aria-hidden="true">Desliza lateralmente para ver todas las columnas <span>↔</span></p>
+                <div class="table-responsive" tabindex="0" role="region" aria-label="Tabla de proyección por categoría">
+                    <table class="summary-table cols-7">
                     <thead>
                         <tr>
                             <th>Categoría</th>
@@ -481,7 +490,8 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
                             `;
                         }).join('')}
                     </tbody>
-                </table>
+                    </table>
+                </div>
             </div>
         </div>
 
