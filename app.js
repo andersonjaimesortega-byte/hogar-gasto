@@ -155,6 +155,11 @@ class AppController {
             this.summaryCategory = event.target.value;
             this.renderSummary();
         });
+
+        dom.summaryViewMode?.addEventListener('change', event => {
+            this.summaryViewMode = event.target.value;
+            this.renderSummary();
+        });
     }
 
     /**
@@ -324,7 +329,12 @@ class AppController {
         if (fab) fab.style.display = isDashboard ? '' : 'none';
 
         if (tabName === 'summary') this.renderSummary();
-        if (tabName === 'budgets') renderCategoryBudgets(this.expenses, this.currentFilterMonth, this.categoryBudgets);
+        if (tabName === 'budgets') {
+            renderCategoryBudgets(this.expenses, this.currentFilterMonth, this.categoryBudgets);
+            if (typeof window.triggerBudgetBarsAnimation === 'function') {
+                window.triggerBudgetBarsAnimation();
+            }
+        }
         if (tabName === 'projection') renderProjectionTab(this.expenses, this.currentFilterMonth, this.categoryBudgets);
 
         window.lucide?.createIcons();
@@ -343,8 +353,9 @@ class AppController {
 
     renderSummary() {
         const selectedCat = dom.summaryCategory ? dom.summaryCategory.value : (this.summaryCategory || 'all');
-        renderMonthlySummary(this.expenses, this.monthlyBudget, this.summaryYear, selectedCat);
-        renderMonthlyChart(this.expenses, this.summaryYear, selectedCat);
+        const viewMode = dom.summaryViewMode ? dom.summaryViewMode.value : (this.summaryViewMode || 'monthly');
+        renderMonthlySummary(this.expenses, this.monthlyBudget, this.summaryYear, selectedCat, viewMode);
+        renderMonthlyChart(this.expenses, this.summaryYear, selectedCat, viewMode);
     }
 
     updateTransactionTypeUI() {

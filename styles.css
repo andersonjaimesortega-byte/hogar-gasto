@@ -79,42 +79,17 @@
 }
 
 body {
-    background-color: #e8edf5;
+    background-color: var(--bg-base);
     background-image:
-        radial-gradient(ellipse 70% 55% at 0% 0%, rgba(34, 65, 116, 0.30) 0%, transparent 72%),
-        radial-gradient(ellipse 55% 50% at 100% 0%, rgba(210, 157, 51, 0.25) 0%, transparent 70%),
-        radial-gradient(ellipse 55% 45% at 88% 100%, rgba(22, 121, 101, 0.17) 0%, transparent 72%),
-        linear-gradient(145deg, #d9e2ef 0%, #f7f8fb 44%, #e9edf5 100%);
+        radial-gradient(ellipse at 0% 0%, rgba(11, 29, 58, 0.07) 0px, transparent 55%),
+        radial-gradient(ellipse at 100% 0%, rgba(183, 121, 26, 0.08) 0px, transparent 50%),
+        radial-gradient(ellipse at 50% 100%, rgba(10, 124, 92, 0.06) 0px, transparent 55%),
+        radial-gradient(ellipse at 80% 60%, rgba(26, 52, 96, 0.04) 0px, transparent 40%);
     background-attachment: fixed;
     color: var(--text-primary);
     min-height: 100vh;
     padding-bottom: 2rem;
     overflow-x: hidden;
-    position: relative;
-    isolation: isolate;
-}
-
-/* Luz ambiental y textura discreta para dar profundidad sin interferir con el contenido. */
-body::before,
-body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-}
-
-body::before {
-    background:
-        radial-gradient(circle at 18% 16%, rgba(255, 255, 255, 0.72) 0 1px, transparent 2px),
-        radial-gradient(circle at 78% 28%, rgba(255, 255, 255, 0.55) 0 1px, transparent 2px);
-    background-size: 34px 34px, 48px 48px;
-    opacity: 0.32;
-}
-
-body::after {
-    background: linear-gradient(110deg, transparent 18%, rgba(255,255,255,0.26) 50%, transparent 82%);
-    opacity: 0.5;
 }
 
 /* Custom Scrollbar */
@@ -124,13 +99,9 @@ body::after {
 ::-webkit-scrollbar-thumb:hover { background: rgba(183, 121, 26, 0.5); }
 
 .container {
-    /* El tablero y sus tablas pueden usar el ancho real de la pantalla. */
-    width: 100%;
-    max-width: 1920px;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: clamp(1rem, 2vw, 2rem);
-    position: relative;
-    z-index: 1;
+    padding: 1.5rem;
 }
 
 /* Chart Type Toggle Buttons */
@@ -482,13 +453,6 @@ body::after {
 
 /* Day header */
 .day-header { font-size: 0.9rem; font-weight: 600; color: var(--text-secondary); margin: 0.75rem 0 0.25rem; }
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 1.5rem;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 1.5rem;
-}
 
 /* Navegación simple entre el trabajo diario y la vista de análisis. */
 .app-tabs {
@@ -1200,6 +1164,10 @@ select.input-control {
         transform: translateY(10px);
     }
     to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 .cat-icon-carne { background-color: var(--cat-carne); }
 .cat-icon-internet { background-color: var(--cat-internet); }
 .cat-icon-gas { background-color: var(--cat-gas); }
@@ -1446,10 +1414,11 @@ select.input-control {
     max-width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
-    border-radius: 14px;
-    background: #ffffff;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
     border: 1px solid rgba(11, 29, 58, 0.12);
-    box-shadow: 0 4px 16px rgba(11, 29, 58, 0.05);
+    border-top: 3px solid #b8791a;
+    box-shadow: 0 12px 32px rgba(11, 29, 58, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
     -webkit-overflow-scrolling: touch;
     scrollbar-width: thin;
     scrollbar-color: rgba(15, 42, 74, 0.32) transparent;
@@ -1474,39 +1443,69 @@ select.input-control {
 }
 
 .summary-table {
+    display: table !important;
     width: 100% !important;
-    min-width: 100%;
+    min-width: 100% !important;
+    max-width: 100% !important;
     border-collapse: separate;
     border-spacing: 0;
     font-size: 0.88rem;
-    table-layout: fixed;
+    table-layout: fixed !important;
+    font-variant-numeric: tabular-nums;
 }
 
 .summary-table th,
 .summary-table td {
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid rgba(11, 29, 58, 0.08);
+    padding: 0.95rem 1.25rem;
+    border-bottom: 1px solid rgba(11, 29, 58, 0.06);
     white-space: nowrap;
     vertical-align: middle;
 }
 
 .summary-table th {
     font-weight: 800;
-    color: var(--text-secondary);
-    font-size: 0.76rem;
+    color: #0b1d3a;
+    font-size: 0.74rem;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
-    background: rgba(11, 29, 58, 0.04);
+    letter-spacing: 0.08em;
+    background: linear-gradient(180deg, rgba(11, 29, 58, 0.07) 0%, rgba(11, 29, 58, 0.04) 100%);
+    border-bottom: 2px solid rgba(184, 121, 26, 0.35);
     white-space: normal;
     line-height: 1.25;
 }
 
 .summary-table th:first-child {
-    border-top-left-radius: 14px;
+    border-top-left-radius: 13px;
 }
 
 .summary-table th:last-child {
-    border-top-right-radius: 14px;
+    border-top-right-radius: 13px;
+}
+
+/* Interacción táctil y elevación flotante 3D al pasar el cursor por cada fila */
+.summary-table tbody tr {
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.summary-table tbody tr:hover {
+    background: #ffffff !important;
+    transform: translateY(-2.5px);
+    box-shadow: 0 8px 24px rgba(11, 29, 58, 0.09);
+    position: relative;
+    z-index: 2;
+}
+
+.summary-table tbody tr:hover td {
+    color: var(--text-primary);
+}
+
+.summary-table tr:last-child td {
+    border-bottom: none;
+}
+
+.summary-table td {
+    color: var(--text-primary);
+    font-weight: 600;
 }
 
 /* Width distribution for 4-column tables (Resumen) */
@@ -1516,60 +1515,72 @@ select.input-control {
 .summary-table.cols-4 th:nth-child(4), .summary-table.cols-4 td:nth-child(4) { width: 24%; }
 
 /* Width distribution for 7-column tables (Proyección) */
-.summary-table.cols-7 th:nth-child(1), .summary-table.cols-7 td:nth-child(1) { width: 20%; }
-.summary-table.cols-7 th:nth-child(2), .summary-table.cols-7 td:nth-child(2) { width: 12%; }
-.summary-table.cols-7 th:nth-child(3), .summary-table.cols-7 td:nth-child(3) { width: 17%; }
-.summary-table.cols-7 th:nth-child(4), .summary-table.cols-7 td:nth-child(4) { width: 17%; }
-.summary-table.cols-7 th:nth-child(5), .summary-table.cols-7 td:nth-child(5) { width: 14%; }
-.summary-table.cols-7 th:nth-child(6), .summary-table.cols-7 td:nth-child(6) { width: 10%; }
-.summary-table.cols-7 th:nth-child(7), .summary-table.cols-7 td:nth-child(7) { width: 10%; }
+.summary-table.cols-7 th:nth-child(1), .summary-table.cols-7 td:nth-child(1) { width: 22%; }
+.summary-table.cols-7 th:nth-child(2), .summary-table.cols-7 td:nth-child(2) { width: 11%; }
+.summary-table.cols-7 th:nth-child(3), .summary-table.cols-7 td:nth-child(3) { width: 16%; }
+.summary-table.cols-7 th:nth-child(4), .summary-table.cols-7 td:nth-child(4) { width: 16%; }
+.summary-table.cols-7 th:nth-child(5), .summary-table.cols-7 td:nth-child(5) { width: 13%; }
+.summary-table.cols-7 th:nth-child(6), .summary-table.cols-7 td:nth-child(6) { width: 11%; }
+.summary-table.cols-7 th:nth-child(7), .summary-table.cols-7 td:nth-child(7) { width: 11%; }
 
-.summary-table tr:last-child td {
-    border-bottom: none;
+/* 💎 Badges e Insignias Premium para las Tablas */
+.badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 99px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
-.summary-table tr:hover td {
-    background: rgba(11, 29, 58, 0.025);
+.badge-income {
+    background: rgba(10, 124, 92, 0.10);
+    color: #0a7c5c;
+    border: 1px solid rgba(10, 124, 92, 0.22);
 }
 
-.summary-table td {
-    color: var(--text-primary);
+.badge-expense {
+    background: rgba(225, 29, 72, 0.09);
+    color: #e11d48;
+    border: 1px solid rgba(225, 29, 72, 0.20);
 }
 
-/* Regla explícita para monitores, incluso con zoom del navegador. */
-@media (hover: hover) and (pointer: fine) {
-    .table-responsive > .summary-table {
-        display: table !important;
-        width: 100% !important;
-        min-width: 100% !important;
-        max-width: none !important;
-        table-layout: fixed !important;
-    }
-
-    .table-responsive > .summary-table.cols-7 th:nth-child(1),
-    .table-responsive > .summary-table.cols-7 td:nth-child(1) { width: 18%; }
-    .table-responsive > .summary-table.cols-7 th:nth-child(2),
-    .table-responsive > .summary-table.cols-7 td:nth-child(2) { width: 10%; }
-    .table-responsive > .summary-table.cols-7 th:nth-child(3),
-    .table-responsive > .summary-table.cols-7 td:nth-child(3) { width: 17%; }
-    .table-responsive > .summary-table.cols-7 th:nth-child(4),
-    .table-responsive > .summary-table.cols-7 td:nth-child(4) { width: 17%; }
-    .table-responsive > .summary-table.cols-7 th:nth-child(5),
-    .table-responsive > .summary-table.cols-7 td:nth-child(5) { width: 14%; }
-    .table-responsive > .summary-table.cols-7 th:nth-child(6),
-    .table-responsive > .summary-table.cols-7 td:nth-child(6) { width: 13%; }
-    .table-responsive > .summary-table.cols-7 th:nth-child(7),
-    .table-responsive > .summary-table.cols-7 td:nth-child(7) { width: 11%; }
+.badge-fixed {
+    background: rgba(11, 29, 58, 0.08);
+    color: #0b1d3a;
+    border: 1px solid rgba(11, 29, 58, 0.16);
 }
 
-/* Solo teléfonos estrechos conservan la tabla amplia con desplazamiento lateral. */
-@media (max-width: 480px) {
+.badge-variable {
+    background: rgba(184, 121, 26, 0.10);
+    color: #b8791a;
+    border: 1px solid rgba(184, 121, 26, 0.22);
+}
+
+.badge-meta-ok {
+    background: rgba(16, 185, 129, 0.10);
+    color: #047857;
+    border: 1px solid rgba(16, 185, 129, 0.22);
+}
+
+.badge-meta-over {
+    background: rgba(239, 68, 68, 0.10);
+    color: #dc2626;
+    border: 1px solid rgba(239, 68, 68, 0.22);
+}
+
+/* En teléfonos o pantallas estrechas (<= 768px): Scroll horizontal fluido */
+@media (max-width: 768px) {
     .table-scroll-hint {
-        display: flex;
+        display: flex !important;
         align-items: center;
         justify-content: flex-end;
         gap: 0.35rem;
-        margin: 0 0 0.35rem;
+        margin: 0 0 0.4rem;
         color: var(--text-muted);
         font-size: 0.72rem;
         font-weight: 700;
@@ -1580,12 +1591,6 @@ select.input-control {
         font-size: 1rem;
     }
 
-    .summary-table {
-        width: max-content !important;
-        min-width: 0;
-        table-layout: auto;
-        font-size: 0.82rem;
-    }
 
     .summary-table th,
     .summary-table td {
@@ -1600,9 +1605,6 @@ select.input-control {
         min-width: 1040px;
     }
 }
-
-/* Un monitor puede tener un viewport CSS estrecho por el zoom del navegador.
-   En ese caso prevalece el diseño de escritorio y la tabla ocupa todo el panel. */
 
 .text-right {
     text-align: right;
@@ -1739,16 +1741,28 @@ body::before {
 
 /* 4. 📊 Animated Progress Bar Fill */
 @keyframes fillProgressSmooth {
-    from { transform: scaleX(0); }
-    to   { transform: scaleX(1); }
+    0% {
+        transform: scaleX(0);
+        opacity: 0.3;
+    }
+    100% {
+        transform: scaleX(1);
+        opacity: 1;
+    }
 }
 
 .budget-bar-track {
     overflow: hidden;
+    position: relative;
 }
 
 .budget-bar-fill {
     transform-origin: left center;
+    transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: fillProgressSmooth 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.budget-bar-fill.animate-bar {
     animation: fillProgressSmooth 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 

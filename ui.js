@@ -26,6 +26,7 @@ const dom = {
     get monthlySummaryBody() { return document.getElementById('monthly-summary-body'); },
     get summaryYear() { return document.getElementById('summary-year'); },
     get summaryCategory() { return document.getElementById('summary-category'); },
+    get summaryViewMode() { return document.getElementById('summary-view-mode'); },
     get connectionStatus() { return document.getElementById('connection-status'); },
     get statusText() { return document.getElementById('status-text'); }
 };
@@ -224,6 +225,17 @@ function renderCategoryBudgets(allExpenses, currentFilterMonth, categoryBudgets 
         cardsGrid.appendChild(itemEl);
     });
 }
+
+// Re-activar la animación fluida de las barras de presupuesto al entrar a la sección
+function triggerBudgetBarsAnimation() {
+    const bars = document.querySelectorAll('#tab-budgets .budget-bar-fill');
+    bars.forEach(bar => {
+        bar.classList.remove('animate-bar');
+        void bar.offsetWidth; // Forzar reflujo del navegador
+        bar.classList.add('animate-bar');
+    });
+}
+window.triggerBudgetBarsAnimation = triggerBudgetBarsAnimation;
 
 // Renderizar el Dashboard de Proyección e Inteligencia Financiera
 function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = {}) {
@@ -463,19 +475,19 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
                             const catHistAvg = historicalCatAvg[cat] || 0;
                             const emoji = categoryEmojis[cat] || '⚙️';
 
-                            let statusBadge = '<span class="budget-status-tag normal">Sin límite</span>';
+                            let statusBadge = '<span class="badge-pill" style="background: rgba(11, 29, 58, 0.05); color: var(--text-muted);">Sin límite</span>';
                             if (catLimit > 0) {
                                 if (catProj > catLimit) {
                                     const over = catProj - catLimit;
-                                    statusBadge = `<span class="budget-status-tag danger">🔴 +${formatCOP.format(over)}</span>`;
+                                    statusBadge = `<span class="badge-pill badge-meta-over">🔴 +${formatCOP.format(over)}</span>`;
                                 } else {
-                                    statusBadge = `<span class="budget-status-tag normal">🟢 En meta</span>`;
+                                    statusBadge = `<span class="badge-pill badge-meta-ok">🟢 En meta</span>`;
                                 }
                             }
 
                             const typeTag = isFixed 
-                                ? `<span style="font-size: 0.72rem; font-weight: 700; color: #1e40af; background: rgba(30,64,175,0.1); padding: 0.15rem 0.45rem; border-radius: 4px;">📌 Fijo</span>`
-                                : `<span style="font-size: 0.72rem; font-weight: 700; color: #d97706; background: rgba(217,119,6,0.12); padding: 0.15rem 0.45rem; border-radius: 4px;">🔄 Variable</span>`;
+                                ? `<span class="badge-pill badge-fixed">📌 Fijo</span>`
+                                : `<span class="badge-pill badge-variable">🔄 Variable</span>`;
 
                             return `
                                 <tr>
@@ -790,11 +802,169 @@ function populatePeriodFilters(sortedMonths, currentFilterMonth) {
 }
 
 // Renderizar la tabla de resumen mensual acumulado (General o por Categoría)
-function renderMonthlySummary(allExpenses, monthlyBudget, selectedYear, selectedCategory = 'all') {
+// Renderizar la tabla de resumen mensual/trimestral acumulado (General o por Categoría)
+function renderMonthlySummary(allExpenses, monthlyBudget, selectedYear, selectedCategory = 'all', viewMode = 'monthly') {
     if (!dom.monthlySummaryBody) return;
 
     const tableHeader = document.getElementById('summary-table-header');
 
+    if (viewMode === 'quarterly') {
+        // ── VISTA TRIMESTRAL (Q1 - Q4) ──────────────────────────────────────────
+        const quarters = [
+            { id: 'Q1', months: ['01', '02', '03'], label: 'Q1 (Ene - Mar)' },
+            { id: 'Q2', months: ['04', '05', '06'], label: 'Q2 (Abr - Jun)' },
+            { id: 'Q3', months: ['07', '08', '09'], label: 'Q3 (Jul - Sep)' },
+            { id: 'Q4', months: ['10', '11', '12'], label: 'Q4 (Oct - Dic)' }
+        ];
+
+        if (selectedCategory === 'all') {
+            if (tableHeader) {
+                tableHeader.innerHTML = `
+                    <th>Trimestre</th>
+                    <th class="text-right">Ingresos</th>
+                    <th class="text-right">Gastos</th>
+                    <th class="text-right">Balance Neto</th>
+                `;
+            }
+
+            const qMap = { Q1: { income: 0, expenses: 0 }, Q2: { income: 0, expenses: 0 }, Q3: { income: 0, expenses: 0 }, Q4: { income: 0, expenses: 0 } };
+            let totalYearIncome = 0;
+            let totalYearExpenses = 0;
+
+            allExpenses.forEach(exp => {
+                if (!exp.date || (selectedYear && !exp.date.startsWith(`${selectedYear}-`))) return;
+                const monthStr = exp.date.substring(5, 7);
+                const qObj = quarters.find(q => q.months.includes(monthStr));
+                if (!qObj) return;
+
+                const isIncome = exp.type === 'ingreso' || (!exp.type && ['Juni', 'Isa'].includes(exp.category));
+                const amt = Number(exp.amount);
+                if (isIncome) {
+                    qMap[qObj.id].income += amt;
+                    totalYearIncome += amt;
+                } else {
+                    qMap[qObj.id].expenses += amt;
+                    totalYearExpenses += amt;
+                }
+            });
+
+            dom.monthlySummaryBody.innerHTML = '';
+
+            quarters.forEach(q => {
+                const { income, expenses } = qMap[q.id];
+                const balance = income - expenses;
+                const balanceClass = balance >= 0 ? 'balance-positive' : 'balance-negative';
+                const balancePrefix = balance >= 0 ? '+' : '';
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><span class="badge-pill badge-fixed" style="font-size: 0.78rem;">${q.label}</span></td>
+                    <td class="text-right"><span class="badge-pill badge-income">+ ${formatCOP.format(income)}</span></td>
+                    <td class="text-right"><span class="badge-pill badge-expense">- ${formatCOP.format(expenses)}</span></td>
+                    <td class="text-right ${balanceClass}" style="font-size: 0.92rem;">${balancePrefix}${formatCOP.format(balance)}</td>
+                `;
+                dom.monthlySummaryBody.appendChild(tr);
+            });
+
+            // Fila de Total Acumulado del Año
+            const totalBalance = totalYearIncome - totalYearExpenses;
+            const totalBalanceClass = totalBalance >= 0 ? 'balance-positive' : 'balance-negative';
+            const totalPrefix = totalBalance >= 0 ? '+' : '';
+
+            const totalTr = document.createElement('tr');
+            totalTr.style.background = 'rgba(11, 29, 58, 0.04)';
+            totalTr.style.fontWeight = '800';
+            totalTr.innerHTML = `
+                <td><span style="font-weight: 800; color: #0b1d3a;">Total Año ${selectedYear || ''}</span></td>
+                <td class="text-right" style="color: var(--success); font-weight: 800;">+ ${formatCOP.format(totalYearIncome)}</td>
+                <td class="text-right" style="color: var(--danger); font-weight: 800;">- ${formatCOP.format(totalYearExpenses)}</td>
+                <td class="text-right ${totalBalanceClass}" style="font-weight: 800; font-size: 0.95rem;">${totalPrefix}${formatCOP.format(totalBalance)}</td>
+            `;
+            dom.monthlySummaryBody.appendChild(totalTr);
+        } else {
+            // Trimestral por Categoría Específica
+            const isIncomeCat = ['Juni', 'Isa'].includes(selectedCategory);
+
+            if (tableHeader) {
+                tableHeader.innerHTML = `
+                    <th>Trimestre</th>
+                    <th class="text-right">Monto (${selectedCategory})</th>
+                    <th class="text-right">% del Trimestre</th>
+                    <th class="text-right">vs. Trim. Anterior</th>
+                `;
+            }
+
+            const qMap = { Q1: { catAmount: 0, totalGroupAmount: 0 }, Q2: { catAmount: 0, totalGroupAmount: 0 }, Q3: { catAmount: 0, totalGroupAmount: 0 }, Q4: { catAmount: 0, totalGroupAmount: 0 } };
+            
+            allExpenses.forEach(exp => {
+                if (!exp.date || (selectedYear && !exp.date.startsWith(`${selectedYear}-`))) return;
+                const monthStr = exp.date.substring(5, 7);
+                const qObj = quarters.find(q => q.months.includes(monthStr));
+                if (!qObj) return;
+
+                const isIncome = exp.type === 'ingreso' || (!exp.type && ['Juni', 'Isa'].includes(exp.category));
+                const belongsToGroup = isIncomeCat ? isIncome : !isIncome;
+
+                if (belongsToGroup) {
+                    qMap[qObj.id].totalGroupAmount += Number(exp.amount);
+                }
+                if (exp.category === selectedCategory) {
+                    qMap[qObj.id].catAmount += Number(exp.amount);
+                }
+            });
+
+            const qIds = ['Q1', 'Q2', 'Q3', 'Q4'];
+            dom.monthlySummaryBody.innerHTML = '';
+
+            qIds.forEach((qId, idx) => {
+                const qObj = quarters.find(q => q.id === qId);
+                const { catAmount, totalGroupAmount } = qMap[qId];
+
+                let diff = 0;
+                let pct = 0;
+                const isFirst = idx === 0;
+                if (!isFirst) {
+                    const prevAmount = qMap[qIds[idx - 1]].catAmount;
+                    diff = catAmount - prevAmount;
+                    pct = prevAmount > 0 ? (diff / prevAmount) * 100 : (catAmount > 0 ? 100 : 0);
+                }
+
+                const sharePct = totalGroupAmount > 0 ? ((catAmount / totalGroupAmount) * 100).toFixed(1) : '0.0';
+
+                let compHtml = '';
+                if (isFirst || diff === 0) {
+                    compHtml = `<span style="color: var(--text-muted); font-size: 0.85rem;">—</span>`;
+                } else if (diff > 0) {
+                    const color = isIncomeCat ? 'var(--success)' : 'var(--danger)';
+                    compHtml = `<span style="color: ${color}; font-weight: 600;">+${formatCOP.format(diff)} <small>(▲ ${pct.toFixed(1)}%)</small></span>`;
+                } else {
+                    const color = isIncomeCat ? 'var(--danger)' : 'var(--success)';
+                    compHtml = `<span style="color: ${color}; font-weight: 600;">${formatCOP.format(diff)} <small>(▼ ${Math.abs(pct).toFixed(1)}%)</small></span>`;
+                }
+
+                const amountColor = isIncomeCat ? 'var(--success)' : 'var(--text-primary)';
+                const amountPrefix = isIncomeCat ? '+' : '-';
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><span class="badge-pill badge-fixed" style="font-size: 0.78rem;">${qObj.label}</span></td>
+                    <td class="text-right" style="color: ${amountColor}; font-weight: 700;">
+                        ${catAmount > 0 ? `${amountPrefix} ${formatCOP.format(catAmount)}` : '$ 0'}
+                    </td>
+                    <td class="text-right" style="font-weight: 600; color: var(--text-secondary);">
+                        ${sharePct}%
+                    </td>
+                    <td class="text-right">
+                        ${compHtml}
+                    </td>
+                `;
+                dom.monthlySummaryBody.appendChild(tr);
+            });
+        }
+        return;
+    }
+
+    // ── VISTA MENSUAL (TRADICIONAL) ──────────────────────────────────────────
     if (selectedCategory === 'all') {
         if (tableHeader) {
             tableHeader.innerHTML = `
@@ -842,15 +1012,15 @@ function renderMonthlySummary(allExpenses, monthlyBudget, selectedYear, selected
 
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td><span style="font-weight: 600; color: var(--text-primary);">${monthName}</span></td>
-                <td class="text-right" style="color: var(--success); font-weight: 600;">+ ${formatCOP.format(income)}</td>
-                <td class="text-right" style="color: var(--danger); font-weight: 600;">- ${formatCOP.format(expenses)}</td>
-                <td class="text-right ${balanceClass}">${balancePrefix}${formatCOP.format(balance)}</td>
+                <td><span style="font-weight: 700; color: var(--text-primary);">${monthName}</span></td>
+                <td class="text-right"><span class="badge-pill badge-income">+ ${formatCOP.format(income)}</span></td>
+                <td class="text-right"><span class="badge-pill badge-expense">- ${formatCOP.format(expenses)}</span></td>
+                <td class="text-right ${balanceClass}" style="font-size: 0.92rem;">${balancePrefix}${formatCOP.format(balance)}</td>
             `;
             dom.monthlySummaryBody.appendChild(tr);
         });
     } else {
-        // Comparativo por categoría específica
+        // Comparativo por categoría específica mensual
         const isIncomeCat = ['Juni', 'Isa'].includes(selectedCategory);
 
         if (tableHeader) {
@@ -955,7 +1125,7 @@ function renderMonthlySummary(allExpenses, monthlyBudget, selectedYear, selected
 let monthlyChartInstance = null;
 
 // Renderizar gráfica de barras: General (Ingresos vs Gastos) o Evolución por Categoría
-function renderMonthlyChart(allExpenses, selectedYear, selectedCategory = 'all') {
+function renderMonthlyChart(allExpenses, selectedYear, selectedCategory = 'all', viewMode = 'monthly') {
     const canvas = document.getElementById('monthlyChart');
     const chartTitleEl = document.getElementById('summary-chart-title');
     if (!canvas) return;
@@ -963,6 +1133,115 @@ function renderMonthlyChart(allExpenses, selectedYear, selectedCategory = 'all')
     if (monthlyChartInstance) {
         monthlyChartInstance.destroy();
         monthlyChartInstance = null;
+    }
+
+    if (viewMode === 'quarterly') {
+        const quarters = [
+            { id: 'Q1', months: ['01', '02', '03'], label: 'Q1 (Ene-Mar)' },
+            { id: 'Q2', months: ['04', '05', '06'], label: 'Q2 (Abr-Jun)' },
+            { id: 'Q3', months: ['07', '08', '09'], label: 'Q3 (Jul-Sep)' },
+            { id: 'Q4', months: ['10', '11', '12'], label: 'Q4 (Oct-Dic)' }
+        ];
+
+        const labels = quarters.map(q => q.label);
+        const qMap = { Q1: { income: 0, expenses: 0 }, Q2: { income: 0, expenses: 0 }, Q3: { income: 0, expenses: 0 }, Q4: { income: 0, expenses: 0 } };
+
+        allExpenses.forEach(exp => {
+            if (!exp.date || (selectedYear && !exp.date.startsWith(`${selectedYear}-`))) return;
+            const monthStr = exp.date.substring(5, 7);
+            const qObj = quarters.find(q => q.months.includes(monthStr));
+            if (!qObj) return;
+
+            const isIncome = exp.type === 'ingreso' || (!exp.type && ['Juni', 'Isa'].includes(exp.category));
+            const amt = Number(exp.amount);
+            if (selectedCategory === 'all' || exp.category === selectedCategory) {
+                if (isIncome) qMap[qObj.id].income += amt;
+                else qMap[qObj.id].expenses += amt;
+            }
+        });
+
+        const incomeData = quarters.map(q => qMap[q.id].income);
+        const expenseData = quarters.map(q => qMap[q.id].expenses);
+        const ctx = canvas.getContext('2d');
+
+        if (chartTitleEl) chartTitleEl.textContent = `Consolidado por Trimestres ${selectedYear || ''}`;
+
+        monthlyChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: 'Ingresos',
+                        data: incomeData,
+                        backgroundColor: 'rgba(5, 150, 105, 0.75)',
+                        borderColor: 'rgba(5, 150, 105, 1)',
+                        borderWidth: 2,
+                        borderRadius: 8,
+                        borderSkipped: false,
+                    },
+                    {
+                        label: 'Gastos',
+                        data: expenseData,
+                        backgroundColor: 'rgba(207, 102, 90, 0.72)',
+                        borderColor: 'rgba(207, 102, 90, 1)',
+                        borderWidth: 2,
+                        borderRadius: 8,
+                        borderSkipped: false,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: '#4b5563',
+                            font: { family: "'Plus Jakarta Sans', sans-serif", size: 12, weight: '600' },
+                            boxWidth: 12,
+                            borderRadius: 4,
+                            padding: 16
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(255,255,255,0.97)',
+                        titleColor: '#1d3448',
+                        bodyColor: '#4b5563',
+                        borderColor: 'rgba(36,99,143,0.2)',
+                        borderWidth: 1,
+                        padding: 12,
+                        cornerRadius: 10,
+                        callbacks: {
+                            label: ctx => ` ${ctx.dataset.label}: ${formatCOP.format(ctx.raw)}`
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#6b7280', font: { family: "'Plus Jakarta Sans', sans-serif", size: 11 } },
+                        border: { display: false }
+                    },
+                    y: {
+                        grid: { color: 'rgba(36,99,143,0.08)', drawBorder: false },
+                        ticks: {
+                            color: '#6b7280',
+                            font: { family: "'Plus Jakarta Sans', sans-serif", size: 11 },
+                            callback: v => {
+                                if (v >= 1000000) return '$' + (v / 1000000).toFixed(1) + 'M';
+                                if (v >= 1000) return '$' + (v / 1000).toFixed(0) + 'k';
+                                return '$' + v;
+                            }
+                        },
+                        border: { display: false }
+                    }
+                }
+            }
+        });
+        return;
     }
 
     if (selectedCategory === 'all') {
