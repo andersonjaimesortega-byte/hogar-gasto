@@ -456,7 +456,7 @@ body {
 
 /* Navegación simple entre el trabajo diario y la vista de análisis. */
 .app-tabs {
-    display: inline-flex;
+    display: flex;
     gap: 0.35rem;
     padding: 0.35rem;
     margin: 0 0 1.25rem;
@@ -464,7 +464,12 @@ body {
     border: 1px solid rgba(11, 29, 58, 0.10);
     border-radius: 16px;
     box-shadow: inset 0 1px 3px rgba(11, 29, 58, 0.06);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    width: 100%;
 }
+.app-tabs::-webkit-scrollbar { display: none; }
 
 .tab-button {
     display: inline-flex;
@@ -480,6 +485,8 @@ body {
     font-size: 0.85rem;
     font-weight: 700;
     transition: all 0.25s ease;
+    flex-shrink: 0;
+    white-space: nowrap;
 }
 
 .tab-button svg { width: 16px; height: 16px; }
@@ -1778,3 +1785,135 @@ body::before {
 .summary-card:hover, .projection-metric-card:hover {
     box-shadow: 0 14px 36px rgba(11, 29, 58, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+/* 📱 MOBILE RESPONSIVE FIXES — Pestañas, Tablas, Paneles                     */
+/* ─────────────────────────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+
+    /* 1. Pestañas: deslizables horizontalmente sin encimarse */
+    .app-tabs {
+        border-radius: 12px;
+        padding: 0.28rem;
+        gap: 0.25rem;
+    }
+
+    .tab-button {
+        padding: 0.55rem 0.75rem;
+        font-size: 0.78rem;
+        gap: 0.35rem;
+        border-radius: 9px;
+    }
+
+    .tab-button svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    /* 2. Panel header de Resumen/Proyección: se apila en columna */
+    .glass-panel > .panel-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.75rem !important;
+        padding: 0.9rem 1rem !important;
+    }
+
+    .glass-panel > .panel-header > div {
+        flex-wrap: wrap;
+        gap: 0.5rem !important;
+        width: 100%;
+    }
+
+    /* 3. Filtros de año/categoría/vista: se apilan y ocupan el ancho completo */
+    .year-filter {
+        flex-direction: row;
+        align-items: center;
+        gap: 0.35rem;
+        width: 100%;
+    }
+
+    .year-filter .input-control {
+        flex: 1;
+        min-width: 0 !important;
+        width: 100% !important;
+        font-size: 0.82rem;
+    }
+
+    /* 4. Tablas: contenedor con scroll horizontal obligatorio */
+    .table-responsive {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 12px;
+        width: 100% !important;
+    }
+
+    /* 5. Tabla de Resumen General (4 columnas): ancho mínimo legible */
+    .summary-table {
+        min-width: 560px !important;
+        font-size: 0.80rem;
+    }
+
+    /* 6. Tabla de Proyección (7 columnas): más ancha para que no colapsen */
+    .projection-table {
+        min-width: 760px !important;
+        font-size: 0.80rem;
+    }
+
+    /* 7. Tabla genérica con .cols-4 y .cols-7 (respaldo) */
+    .summary-table.cols-4 { min-width: 560px !important; }
+    .summary-table.cols-7 { min-width: 900px !important; }
+
+    /* 8. Celdas de tabla más compactas en móvil */
+    .summary-table th,
+    .summary-table td,
+    .projection-table th,
+    .projection-table td {
+        padding: 0.6rem 0.7rem !important;
+    }
+
+    /* 9. Hint de scroll: visible en móvil */
+    .table-scroll-hint {
+        display: flex !important;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 0.3rem;
+        margin-bottom: 0.3rem;
+        color: var(--text-muted);
+        font-size: 0.7rem;
+        font-weight: 700;
+    }
+
+    /* 10. Panel content: menos padding en móvil */
+    .panel-content {
+        padding: 0.85rem !important;
+    }
+
+    /* 11. Grid de tarjetas de Proyección: 1 columna en móvil */
+    .projection-grid {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem;
+    }
+
+    /* 12. Grid de resumen principal: 2 columnas ajustadas en móvil */
+    .summary-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.65rem;
+    }
+
+    .card-value { font-size: 1.1rem; }
+    .card-subtext { font-size: 0.72rem; }
+}
+
+/* Pantallas muy pequeñas (<= 400px): 1 columna para tarjetas de resumen */
+@media (max-width: 400px) {
+    .summary-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .tab-button {
+        padding: 0.5rem 0.6rem;
+        font-size: 0.74rem;
+    }
+}
+
