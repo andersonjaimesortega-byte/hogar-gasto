@@ -1,13 +1,16 @@
 // Formateador para pesos colombianos (COP)
-const formatCOP = new Intl.NumberFormat('es-CO', {
+var formatCOP = new Intl.NumberFormat('es-CO', {
     style: 'currency',
     currency: 'COP',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0
 });
+if (typeof window !== 'undefined') {
+    window.formatCOP = formatCOP;
+}
 
 // Colores de las categorías correspondientes al tema Navy Blue, Verde Esmeralda y Dorado
-const categoryColors = {
+var categoryColors = {
     'Mercado': '#d97706',           // Dorado Cálido
     'D1': '#e11d48',                // Carmín
     'Servicios Públicos': '#0f2a4a',// Navy Blue Imperial
@@ -22,7 +25,7 @@ const categoryColors = {
 };
 
 // Emojis de las categorías
-const categoryEmojis = {
+var categoryEmojis = {
     'Mercado': '🛒',
     'D1': '🔴',
     'Servicios Públicos': '⚡',
@@ -35,6 +38,11 @@ const categoryEmojis = {
     'Juni': '🙋‍♂️',
     'Isa': '🙋‍♀️'
 };
+
+if (typeof window !== 'undefined') {
+    window.categoryColors = categoryColors;
+    window.categoryEmojis = categoryEmojis;
+}
 
 // Retornar clase CSS para los colores de las categorías
 function getCategoryIconClass(cat) {
@@ -163,8 +171,12 @@ function showToast(message, type = 'info', duration = 3000) {
         toast.style.transform = 'translateY(10px)';
         toast.style.transition = 'all 0.3s ease';
         setTimeout(() => {
-            toast.remove();
-            if (container.children.length === 0) {
+            if (typeof toast.remove === 'function') {
+                toast.remove();
+            } else if (toast.parentNode && typeof toast.parentNode.removeChild === 'function') {
+                toast.parentNode.removeChild(toast);
+            }
+            if (container && container.children && container.children.length === 0) {
                 container.classList.add('hidden');
             }
         }, 300);

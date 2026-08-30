@@ -23,8 +23,10 @@ function updateCategoryChart(ctx, filteredExpenses, currentChartInstance, legend
         }
     });
     
-    // Filtrar categorías que tienen un valor mayor a cero
-    const activeCategories = Object.keys(categoriesSum).filter(cat => categoriesSum[cat] > 0);
+    // Filtrar categorías con valor mayor a cero y ordenarlas de menor a mayor por su monto
+    const activeCategories = Object.keys(categoriesSum)
+        .filter(cat => categoriesSum[cat] > 0)
+        .sort((a, b) => categoriesSum[a] - categoriesSum[b]);
     const dataValues = activeCategories.map(cat => categoriesSum[cat]);
     const backgroundColors = activeCategories.map(cat => categoryColors[cat]);
     

@@ -372,6 +372,43 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
         ? Math.round(remainingVariableBudget / remainingDays) 
         : 0;
 
+    // 🔮 CÁLCULO DE PROYECCIÓN ANUAL A CIERRE DE AÑO (31 DIC)
+    const currentYearStr = currentFilterMonth ? currentFilterMonth.substring(0, 4) : new Date().getFullYear().toString();
+    const currentMonthNum = currentFilterMonth ? parseInt(currentFilterMonth.substring(5, 7), 10) : (new Date().getMonth() + 1);
+
+    const monthIncomes = (allExpenses || []).filter(exp => 
+        exp.date && 
+        exp.date.startsWith(currentFilterMonth) && 
+        (exp.type === 'ingreso' || (!exp.type && ['Juni', 'Isa'].includes(exp.category)))
+    );
+    const totalIncomeSoFar = monthIncomes.reduce((sum, exp) => sum + (Number(exp.amount) || 0), 0);
+
+    let yearClosedIncome = 0;
+    let yearClosedExpenses = 0;
+    let yearClosedMonthCount = 0;
+
+    for (let m = 1; m < currentMonthNum; m++) {
+        const mStr = `${currentYearStr}-${String(m).padStart(2, '0')}`;
+        const mExpenses = (allExpenses || []).filter(exp => exp.date && exp.date.startsWith(mStr));
+        if (mExpenses.length > 0) {
+            yearClosedMonthCount++;
+            mExpenses.forEach(exp => {
+                const amt = Number(exp.amount) || 0;
+                const isIncome = exp.type === 'ingreso' || (!exp.type && ['Juni', 'Isa'].includes(exp.category));
+                if (isIncome) yearClosedIncome += amt;
+                else yearClosedExpenses += amt;
+            });
+        }
+    }
+
+    const avgMonthlyIncome = yearClosedMonthCount > 0 ? (yearClosedIncome / yearClosedMonthCount) : totalIncomeSoFar;
+    const avgMonthlyExpenses = yearClosedMonthCount > 0 ? (yearClosedExpenses / yearClosedMonthCount) : projectedTotal;
+    const remainingMonthsInYear = Math.max(0, 12 - currentMonthNum);
+
+    const projectedAnnualIncome = yearClosedIncome + totalIncomeSoFar + (remainingMonthsInYear * avgMonthlyIncome);
+    const projectedAnnualExpenses = yearClosedExpenses + projectedTotal + (remainingMonthsInYear * avgMonthlyExpenses);
+    const projectedAnnualSavings = projectedAnnualIncome - projectedAnnualExpenses;
+
     // Diagnóstico inteligente
     let alertType = 'info';
     let alertMessage = '';
@@ -391,6 +428,14 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
         const over = projectedTotal - totalLimits;
         alertMessage = `<strong>⚠️ Alerta de Sobre-gasto Proyectado:</strong> Al ritmo actual en gastos variables (<strong>${formatCOP.format(variableDailyPace)}/día</strong>), te sobrepasarás en <strong>${formatCOP.format(over)}</strong> al finalizar el mes. Para mantenerte en meta, limita tus compras variables a <strong>${formatCOP.format(recommendedDailyVariableMax)}/día</strong> en los <strong>${remainingDays} días restantes</strong>.`;
     }
+
+    // Contar categorías en alerta
+    let alertCount = 0;
+    categoriesList.forEach(cat => {
+        const catProj = catProjections[cat] || 0;
+        const catLimit = Number(categoryBudgets[cat]) || 0;
+        if (catLimit > 0 && catProj > catLimit) alertCount++;
+    });
 
     container.innerHTML = `
         <!-- Métricas Principales -->
@@ -446,19 +491,42 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
             </div>
         </div>
 
+        <!-- 🏆 Medalla de Logro Visual de Ahorro Proyectado -->
+        ${(projectedTotal <= totalLimits && totalLimits > 0) ? `
+            <div class="achievement-badge-card animate-entrance">
+                <div class="achievement-badge-icon">🏆</div>
+                <div>
+                    <div style="font-size: 0.95rem; font-weight: 800; color: #b8791a;">¡Camino al Ahorro de ${formatCOP.format(totalLimits - projectedTotal)}!</div>
+                    <div style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.15rem;">
+                        Mantienes un excelente ritmo financiero. Al ritmo actual cerrarás el mes con saldo a favor respecto a tu presupuesto asignado.
+                    </div>
+                </div>
+            </div>
+        ` : ''}
+
         <!-- Tabla de Proyección por Categorías -->
         <div style="margin-top: 2rem;">
-            <h3 style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 1rem;">
-                Desglose Proyectado por Categoría (Fijos vs Variables)
-            </h3>
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.85rem;">
+                <h3 style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin: 0;">
+                    Desglose Proyectado por Categoría (Fijos vs Variables)
+                </h3>
+            </div>
+
+            <!-- 🎛️ Píldoras de Filtro Rápido en la Tabla -->
+            <div class="projection-filter-pills">
+                <button class="projection-filter-btn is-active" data-proj-filter="all">Todas (${categoriesList.length})</button>
+                <button class="projection-filter-btn" data-proj-filter="fixed">📌 Solo Fijos (${fixedCategories.length})</button>
+                <button class="projection-filter-btn" data-proj-filter="variable">🔄 Solo Variables (${variableCategories.length})</button>
+                <button class="projection-filter-btn" data-proj-filter="alert">🚨 En Alerta (${alertCount})</button>
+            </div>
+
             <div class="table-section">
                 <p class="table-scroll-hint" aria-hidden="true">Desliza lateralmente para ver todas las columnas <span>↔</span></p>
                 <div class="table-responsive" tabindex="0" role="region" aria-label="Tabla de proyección por categoría">
-                    <table class="summary-table cols-7">
+                    <table class="summary-table cols-6">
                     <thead>
                         <tr>
                             <th>Categoría</th>
-                            <th>Tipo</th>
                             <th class="text-right">Gastado a la Fecha</th>
                             <th class="text-right">Proyección Cierre</th>
                             <th class="text-right">Media Histórica</th>
@@ -474,10 +542,11 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
                             const catLimit = Number(categoryBudgets[cat]) || 0;
                             const catHistAvg = historicalCatAvg[cat] || 0;
                             const emoji = categoryEmojis[cat] || '⚙️';
+                            const isOver = catLimit > 0 && catProj > catLimit;
 
                             let statusBadge = '<span class="badge-pill" style="background: rgba(11, 29, 58, 0.05); color: var(--text-muted);">Sin límite</span>';
                             if (catLimit > 0) {
-                                if (catProj > catLimit) {
+                                if (isOver) {
                                     const over = catProj - catLimit;
                                     statusBadge = `<span class="badge-pill badge-meta-over">🔴 +${formatCOP.format(over)}</span>`;
                                 } else {
@@ -485,16 +554,11 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
                                 }
                             }
 
-                            const typeTag = isFixed 
-                                ? `<span class="badge-pill badge-fixed">📌 Fijo</span>`
-                                : `<span class="badge-pill badge-variable">🔄 Variable</span>`;
-
                             return `
-                                <tr>
+                                <tr class="projection-table-row" data-type="${isFixed ? 'fixed' : 'variable'}" data-over="${isOver ? 'true' : 'false'}">
                                     <td><span style="font-weight: 600; color: var(--text-primary);">${emoji} ${escapeHTML(cat)}</span></td>
-                                    <td>${typeTag}</td>
                                     <td class="text-right" style="font-weight: 600;">${formatCOP.format(catSpent)}</td>
-                                    <td class="text-right" style="font-weight: 700; color: ${catLimit > 0 && catProj > catLimit ? 'var(--danger)' : 'var(--text-primary)'};">${formatCOP.format(catProj)}</td>
+                                    <td class="text-right" style="font-weight: 700; color: ${isOver ? 'var(--danger)' : 'var(--text-primary)'};">${formatCOP.format(catProj)}</td>
                                     <td class="text-right" style="color: var(--text-muted); font-size: 0.85rem;">${catHistAvg > 0 ? formatCOP.format(catHistAvg) : '—'}</td>
                                     <td class="text-right" style="color: var(--text-muted);">${catLimit > 0 ? formatCOP.format(catLimit) : '—'}</td>
                                     <td class="text-right">${statusBadge}</td>
@@ -517,6 +581,29 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
             </div>
         </div>
     `;
+
+    // ── Listener de clics para píldoras de filtro rápido de Proyección ─────────
+    container.querySelectorAll('.projection-filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            container.querySelectorAll('.projection-filter-btn').forEach(b => b.classList.remove('is-active'));
+            btn.classList.add('is-active');
+            const filterType = btn.dataset.projFilter;
+            const rows = container.querySelectorAll('.projection-table-row');
+            rows.forEach(tr => {
+                const rowType = tr.dataset.type;
+                const isOver = tr.dataset.over === 'true';
+                if (filterType === 'all') {
+                    tr.style.display = '';
+                } else if (filterType === 'fixed') {
+                    tr.style.display = rowType === 'fixed' ? '' : 'none';
+                } else if (filterType === 'variable') {
+                    tr.style.display = rowType === 'variable' ? '' : 'none';
+                } else if (filterType === 'alert') {
+                    tr.style.display = isOver ? '' : 'none';
+                }
+            });
+        });
+    });
 
     // ── Construir el gráfico de tendencia diaria ──────────────────────────────
     const trendCanvas = document.getElementById('projection-trend-chart');
