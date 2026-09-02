@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hogargasto-cache-v160';
+const CACHE_NAME = 'hogargasto-cache-v170';
 const ASSETS_TO_CACHE = [
   './',
   'index.html',

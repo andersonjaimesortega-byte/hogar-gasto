@@ -26,7 +26,7 @@
     </script>
     
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="styles.css?v=16.0.0">
+    <link rel="stylesheet" href="styles.css?v=17.0.0">
     
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -46,11 +46,17 @@
                 </div>
             </div>
             
-            <div class="header-actions">
+            <div class="header-actions" style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                <div id="streak-badge" class="badge-pill badge-fixed" style="display: flex; align-items: center; gap: 0.3rem; font-weight: 800; background: rgba(217, 119, 6, 0.12); color: #d97706; border: 1px solid rgba(217, 119, 6, 0.25);" title="Racha de control financiero">
+                    🔥 <span id="streak-count">0d</span>
+                </div>
                 <div id="connection-status" class="status-badge online">
                     <div class="status-dot"></div>
                     <span id="status-text">En línea</span>
                 </div>
+                <button id="btn-toggle-theme" class="btn btn-secondary btn-icon" title="Alternar Modo Oscuro / Claro">
+                    <i data-lucide="moon"></i>
+                </button>
                 <button id="btn-sync-settings" class="btn btn-secondary btn-icon" title="Sincronización en la nube" style="position: relative;">
                     <i data-lucide="cloud"></i>
                     <span id="sync-active-dot" style="display: none; position: absolute; top: 2px; right: 2px; width: 6px; height: 6px; background-color: var(--success); border-radius: 50%;"></span>
@@ -281,9 +287,6 @@
                     </label>
                 </div>
             <div class="panel-content" style="margin-top: 1rem;">
-                <!-- Tarjeta de Contexto de Media Histórica Mensual Global -->
-                <div id="summary-meta-card"></div>
-
                 <div class="table-section">
                     <p class="table-scroll-hint" aria-hidden="true">Desliza lateralmente para ver todas las columnas <span>↔</span></p>
                     <div class="table-responsive" tabindex="0" role="region" aria-label="Tabla de resumen mensual">
@@ -433,12 +436,12 @@
     <!-- Supabase Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- App Logic Scripts -->
-    <script src="utils.js?v=16.0.0"></script>
-    <script src="db.js?v=16.0.0"></script>
-    <script src="sync.js?v=16.0.0"></script>
-    <script src="chart.js?v=16.0.0"></script>
-    <script src="ui.js?v=16.0.0"></script>
-    <script src="pwa.js?v=16.0.0"></script>
-    <script src="app.js?v=16.0.0"></script>
+    <script src="utils.js?v=17.0.0"></script>
+    <script src="db.js?v=17.0.0"></script>
+    <script src="sync.js?v=17.0.0"></script>
+    <script src="chart.js?v=17.0.0"></script>
+    <script src="ui.js?v=17.0.0"></script>
+    <script src="pwa.js?v=17.0.0"></script>
+    <script src="app.js?v=17.0.0"></script>
 </body>
 </html>

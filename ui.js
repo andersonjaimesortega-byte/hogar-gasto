@@ -982,37 +982,6 @@ function populatePeriodFilters(sortedMonths, currentFilterMonth) {
 function renderMonthlySummary(allExpenses, monthlyBudget, selectedYear, selectedCategory = 'all', viewMode = 'monthly') {
     if (!dom.monthlySummaryBody) return;
 
-    // 🏛️ Contextualización con Media Histórica Mensual Global
-    const globalPastMonthsSet = new Set(
-        allExpenses.filter(e => e.date && (e.type === 'gasto' || (!e.type && !['Juni', 'Isa'].includes(e.category)))).map(e => e.date.substring(0, 7))
-    );
-    const globalPastMonthsCount = globalPastMonthsSet.size;
-    const globalTotalSpentSum = allExpenses.filter(e => e.date && (e.type === 'gasto' || (!e.type && !['Juni', 'Isa'].includes(e.category)))).reduce((sum, e) => sum + Number(e.amount), 0);
-    const globalMonthlyAvgSpent = globalPastMonthsCount > 0 ? Math.round(globalTotalSpentSum / globalPastMonthsCount) : 0;
-
-    const summaryMetaCardEl = document.getElementById('summary-meta-card');
-    if (summaryMetaCardEl) {
-        summaryMetaCardEl.innerHTML = `
-            <div class="glass-panel" style="margin-bottom: 1.25rem; padding: 0.9rem 1.25rem; border-left: 4px solid var(--primary); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
-                <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <div style="width: 38px; height: 38px; border-radius: 10px; background: rgba(11, 29, 58, 0.08); display: flex; align-items: center; justify-content: center; color: var(--primary); flex-shrink: 0;">
-                        <i data-lucide="history" style="width: 20px; height: 20px;"></i>
-                    </div>
-                    <div>
-                        <div style="font-size: 0.76rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Media Histórica Mensual Global</div>
-                        <div style="font-size: 1.08rem; font-weight: 800; color: var(--text-primary); margin-top: 0.1rem;">
-                            ${globalPastMonthsCount > 0 ? formatCOP.format(globalMonthlyAvgSpent) : '—'} <small style="font-size: 0.75rem; font-weight: 600; color: var(--text-secondary);">/ mes</small>
-                        </div>
-                    </div>
-                </div>
-                <span class="badge-pill badge-fixed" style="font-size: 0.76rem;">
-                    ${globalPastMonthsCount > 0 ? `Promedio de gasto basado en ${globalPastMonthsCount} mes(es) registrados` : 'Sin meses registrados'}
-                </span>
-            </div>
-        `;
-        if (window.lucide) window.lucide.createIcons();
-    }
-
     const tableHeader = document.getElementById('summary-table-header');
 
     if (viewMode === 'quarterly') {
@@ -1705,3 +1674,75 @@ function showToast(message, type = 'info', duration = 3000) {
         }
     }, duration);
 }
+
+// 🌙 Inicialización del Modo Oscuro Profundo (OLED Dark Mode)
+function initTheme() {
+    const savedTheme = localStorage.getItem('hogargasto_theme');
+    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.body.classList.add('dark-mode');
+        updateThemeIcon(true);
+    } else {
+        document.body.classList.remove('dark-mode');
+        updateThemeIcon(false);
+    }
+
+    const btnToggle = document.getElementById('btn-toggle-theme');
+    if (btnToggle) {
+        btnToggle.addEventListener('click', () => {
+            const isDark = document.body.classList.toggle('dark-mode');
+            localStorage.setItem('hogargasto_theme', isDark ? 'dark' : 'light');
+            updateThemeIcon(isDark);
+        });
+    }
+}
+
+function updateThemeIcon(isDark) {
+    const btnToggle = document.getElementById('btn-toggle-theme');
+    if (!btnToggle) return;
+    btnToggle.innerHTML = isDark ? '<i data-lucide="sun"></i>' : '<i data-lucide="moon"></i>';
+    if (window.lucide) window.lucide.createIcons();
+}
+window.initTheme = initTheme;
+
+// 🔥 Medidor de Racha de Control Financiero (Streaks)
+function updateStreakBadge(allExpenses) {
+    const streakCountEl = document.getElementById('streak-count');
+    if (!streakCountEl) return;
+
+    if (!allExpenses || allExpenses.length === 0) {
+        streakCountEl.textContent = '0d';
+        return;
+    }
+
+    const datesSet = new Set(allExpenses.filter(e => e.date).map(e => e.date));
+    const sortedDates = Array.from(datesSet).sort().reverse();
+    if (sortedDates.length === 0) {
+        streakCountEl.textContent = '0d';
+        return;
+    }
+
+    let streak = 0;
+    const today = new Date();
+    let checkDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+    for (let i = 0; i < 60; i++) {
+        const y = checkDate.getFullYear();
+        const m = String(checkDate.getMonth() + 1).padStart(2, '0');
+        const d = String(checkDate.getDate()).padStart(2, '0');
+        const dateStr = `${y}-${m}-${d}`;
+
+        if (datesSet.has(dateStr)) {
+            streak++;
+            checkDate.setDate(checkDate.getDate() - 1);
+        } else {
+            if (i === 0) {
+                checkDate.setDate(checkDate.getDate() - 1);
+                continue;
+            }
+            break;
+        }
+    }
+
+    streakCountEl.textContent = `${streak}d`;
+}
+window.updateStreakBadge = updateStreakBadge;

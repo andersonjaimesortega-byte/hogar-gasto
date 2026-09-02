@@ -70,6 +70,37 @@
     --glass-blur: blur(20px) saturate(180%);
 }
 
+/* 🌙 OLED Dark Mode Overrides */
+body.dark-mode {
+    --bg-base: #060a12;
+    --bg-surface: rgba(13, 22, 39, 0.94);
+    --bg-surface-hover: rgba(18, 30, 52, 1);
+    --bg-card: rgba(13, 22, 39, 0.90);
+    --border-color: rgba(255, 255, 255, 0.12);
+    --text-primary: #f3f4f6;
+    --text-secondary: #9ca3af;
+    --text-muted: #6b7280;
+    --primary: #3b82f6;
+    --primary-light: #60a5fa;
+    --primary-glow: rgba(59, 130, 246, 0.2);
+    --primary-grad: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+}
+
+body.dark-mode .glass-panel {
+    background: rgba(13, 22, 39, 0.88) !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+body.dark-mode .day-group-header {
+    background: rgba(255, 255, 255, 0.06) !important;
+}
+
+body.dark-mode .input-control {
+    background: rgba(18, 30, 52, 0.9) !important;
+    color: #f3f4f6 !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
 * {
     margin: 0;
     padding: 0;
