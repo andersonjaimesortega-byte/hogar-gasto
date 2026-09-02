@@ -26,7 +26,7 @@
     </script>
     
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="styles.css?v=14.0.0">
+    <link rel="stylesheet" href="styles.css?v=16.0.0">
     
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -78,7 +78,7 @@
         </nav>
 
         <section id="tab-dashboard" class="tab-panel">
-            <!-- Summary Statistics Grid -->
+            <!-- 1. Summary Statistics Grid -->
             <div class="summary-grid">
                 <!-- Spent Card -->
                 <div class="glass-panel summary-card spent">
@@ -105,9 +105,48 @@
                 </div>
             </div>
 
-            <!-- Main Dashboard Layout -->
-            <main class="main-layout">
-                <!-- Left Side: Expense list & Filters -->
+            <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1.25rem;">
+                <!-- 2. Quick Action Panel (Ingresar Nuevo Movimiento) -->
+                <section class="glass-panel" style="padding: 1.25rem 1.5rem; border-left: 4px solid var(--primary);">
+                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 0.85rem;">
+                            <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(11, 29, 58, 0.08); display: flex; align-items: center; justify-content: center; color: var(--primary); flex-shrink: 0;">
+                                <i data-lucide="plus-circle" style="width: 24px; height: 24px;"></i>
+                            </div>
+                            <div>
+                                <h3 style="font-size: 1.05rem; font-weight: 800; margin: 0; color: var(--text-primary);">¿Nuevo Movimiento?</h3>
+                                <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0.15rem 0 0 0;">Registra tus gastos o ingresos de forma rápida y mantén tu saldo actualizado.</p>
+                            </div>
+                        </div>
+                        <button type="button" id="btn-open-add-modal" class="btn btn-primary" style="padding: 0.65rem 1.5rem; border-radius: 12px; font-weight: 700;">
+                            <i data-lucide="plus"></i> Registrar Movimiento
+                        </button>
+                    </div>
+                </section>
+
+                <!-- 3. Chart Panel (Distribución de Gastos e Ingresos) -->
+                <section class="glass-panel">
+                    <div class="panel-header" style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap;">
+                        <h2 class="panel-title">
+                            <i data-lucide="pie-chart" style="color: var(--secondary);"></i>
+                            Distribución por Categoría
+                        </h2>
+                        <div class="chart-type-toggle" style="display: flex; gap: 0.25rem; background: rgba(36, 99, 143, 0.08); padding: 0.25rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                            <button id="btn-chart-gastos" type="button" class="btn-toggle-chart active">Gastos 📉</button>
+                            <button id="btn-chart-ingresos" type="button" class="btn-toggle-chart">Ingresos 📈</button>
+                        </div>
+                    </div>
+                    <div class="panel-content" style="display: flex; flex-direction: column; align-items: center;">
+                        <div class="chart-container">
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                        <div id="chart-legend" class="category-legend-list">
+                            <!-- Custom legends rendered via JS -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. Historial de Gastos (Última Sección) -->
                 <section class="glass-panel">
                     <div class="panel-header">
                         <h2 class="panel-title">
@@ -155,49 +194,7 @@
                         </div>
                     </div>
                 </section>
-
-            <!-- Right Side: Charts & Add Form -->
-            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-                
-                <!-- Chart Panel -->
-                <section class="glass-panel">
-                    <div class="panel-header" style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap;">
-                        <h2 class="panel-title">
-                            <i data-lucide="pie-chart" style="color: var(--secondary);"></i>
-                            Distribución
-                        </h2>
-                        <div class="chart-type-toggle" style="display: flex; gap: 0.25rem; background: rgba(36, 99, 143, 0.08); padding: 0.25rem; border-radius: 8px; border: 1px solid var(--border-color);">
-                            <button id="btn-chart-gastos" type="button" class="btn-toggle-chart active">Gastos 📉</button>
-                            <button id="btn-chart-ingresos" type="button" class="btn-toggle-chart">Ingresos 📈</button>
-                        </div>
-                    </div>
-                    <div class="panel-content" style="display: flex; flex-direction: column; align-items: center;">
-                        <div class="chart-container">
-                            <canvas id="categoryChart"></canvas>
-                        </div>
-                        <div id="chart-legend" class="category-legend-list">
-                            <!-- Custom legends rendered via JS -->
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Quick Action Panel -->
-                <section class="glass-panel text-center" style="padding: 1.5rem; text-align: center;">
-                    <div style="margin-bottom: 1rem;">
-                        <i data-lucide="plus-circle" style="width: 44px; height: 44px; color: var(--primary);"></i>
-                    </div>
-                    <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-primary);">¿Nuevo Movimiento?</h3>
-                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.25rem; line-height: 1.4;">
-                        Registra tus gastos o ingresos de forma rápida y mantén tu saldo actualizado en todos tus dispositivos.
-                    </p>
-                    <button type="button" id="btn-open-add-modal" class="btn btn-primary" style="width: 100%; justify-content: center;">
-                        <i data-lucide="plus"></i> Registrar Movimiento
-                    </button>
-                </section>
-
             </div>
-        </main>
-
         </section>
 
         <!-- Budgets Tab Panel -->
@@ -283,8 +280,10 @@
                         <select id="summary-year" class="input-control" style="width: auto; min-width: 110px;"></select>
                     </label>
                 </div>
-            </div>
             <div class="panel-content" style="margin-top: 1rem;">
+                <!-- Tarjeta de Contexto de Media Histórica Mensual Global -->
+                <div id="summary-meta-card"></div>
+
                 <div class="table-section">
                     <p class="table-scroll-hint" aria-hidden="true">Desliza lateralmente para ver todas las columnas <span>↔</span></p>
                     <div class="table-responsive" tabindex="0" role="region" aria-label="Tabla de resumen mensual">
@@ -434,12 +433,12 @@
     <!-- Supabase Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- App Logic Scripts -->
-    <script src="utils.js?v=14.0.0"></script>
-    <script src="db.js?v=14.0.0"></script>
-    <script src="sync.js?v=14.0.0"></script>
-    <script src="chart.js?v=14.0.0"></script>
-    <script src="ui.js?v=14.0.0"></script>
-    <script src="pwa.js?v=14.0.0"></script>
-    <script src="app.js?v=14.0.0"></script>
+    <script src="utils.js?v=16.0.0"></script>
+    <script src="db.js?v=16.0.0"></script>
+    <script src="sync.js?v=16.0.0"></script>
+    <script src="chart.js?v=16.0.0"></script>
+    <script src="ui.js?v=16.0.0"></script>
+    <script src="pwa.js?v=16.0.0"></script>
+    <script src="app.js?v=16.0.0"></script>
 </body>
 </html>

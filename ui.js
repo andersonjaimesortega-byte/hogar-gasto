@@ -982,6 +982,37 @@ function populatePeriodFilters(sortedMonths, currentFilterMonth) {
 function renderMonthlySummary(allExpenses, monthlyBudget, selectedYear, selectedCategory = 'all', viewMode = 'monthly') {
     if (!dom.monthlySummaryBody) return;
 
+    // 🏛️ Contextualización con Media Histórica Mensual Global
+    const globalPastMonthsSet = new Set(
+        allExpenses.filter(e => e.date && (e.type === 'gasto' || (!e.type && !['Juni', 'Isa'].includes(e.category)))).map(e => e.date.substring(0, 7))
+    );
+    const globalPastMonthsCount = globalPastMonthsSet.size;
+    const globalTotalSpentSum = allExpenses.filter(e => e.date && (e.type === 'gasto' || (!e.type && !['Juni', 'Isa'].includes(e.category)))).reduce((sum, e) => sum + Number(e.amount), 0);
+    const globalMonthlyAvgSpent = globalPastMonthsCount > 0 ? Math.round(globalTotalSpentSum / globalPastMonthsCount) : 0;
+
+    const summaryMetaCardEl = document.getElementById('summary-meta-card');
+    if (summaryMetaCardEl) {
+        summaryMetaCardEl.innerHTML = `
+            <div class="glass-panel" style="margin-bottom: 1.25rem; padding: 0.9rem 1.25rem; border-left: 4px solid var(--primary); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="width: 38px; height: 38px; border-radius: 10px; background: rgba(11, 29, 58, 0.08); display: flex; align-items: center; justify-content: center; color: var(--primary); flex-shrink: 0;">
+                        <i data-lucide="history" style="width: 20px; height: 20px;"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.76rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Media Histórica Mensual Global</div>
+                        <div style="font-size: 1.08rem; font-weight: 800; color: var(--text-primary); margin-top: 0.1rem;">
+                            ${globalPastMonthsCount > 0 ? formatCOP.format(globalMonthlyAvgSpent) : '—'} <small style="font-size: 0.75rem; font-weight: 600; color: var(--text-secondary);">/ mes</small>
+                        </div>
+                    </div>
+                </div>
+                <span class="badge-pill badge-fixed" style="font-size: 0.76rem;">
+                    ${globalPastMonthsCount > 0 ? `Promedio de gasto basado en ${globalPastMonthsCount} mes(es) registrados` : 'Sin meses registrados'}
+                </span>
+            </div>
+        `;
+        if (window.lucide) window.lucide.createIcons();
+    }
+
     const tableHeader = document.getElementById('summary-table-header');
 
     if (viewMode === 'quarterly') {
@@ -1338,6 +1369,7 @@ function renderMonthlyChart(allExpenses, selectedYear, selectedCategory = 'all',
 
         const incomeData = quarters.map(q => qMap[q.id].income);
         const expenseData = quarters.map(q => qMap[q.id].expenses);
+        const balanceData = quarters.map(q => qMap[q.id].income - qMap[q.id].expenses);
         const ctx = canvas.getContext('2d');
 
         if (chartTitleEl) chartTitleEl.textContent = `Consolidado por Trimestres ${selectedYear || ''}`;
@@ -1348,6 +1380,21 @@ function renderMonthlyChart(allExpenses, selectedYear, selectedCategory = 'all',
                 labels,
                 datasets: [
                     {
+                        type: 'line',
+                        label: 'Balance Neto 📈',
+                        data: balanceData,
+                        borderColor: '#0b1d3a',
+                        backgroundColor: 'rgba(11, 29, 58, 0.08)',
+                        borderWidth: 3,
+                        pointBackgroundColor: balanceData.map(v => v >= 0 ? '#0a7c5c' : '#dc2626'),
+                        pointBorderColor: '#ffffff',
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        tension: 0.35,
+                        order: 1
+                    },
+                    {
+                        type: 'bar',
                         label: 'Ingresos',
                         data: incomeData,
                         backgroundColor: 'rgba(5, 150, 105, 0.75)',
@@ -1355,8 +1402,10 @@ function renderMonthlyChart(allExpenses, selectedYear, selectedCategory = 'all',
                         borderWidth: 2,
                         borderRadius: 8,
                         borderSkipped: false,
+                        order: 2
                     },
                     {
+                        type: 'bar',
                         label: 'Gastos',
                         data: expenseData,
                         backgroundColor: 'rgba(207, 102, 90, 0.72)',
@@ -1364,6 +1413,7 @@ function renderMonthlyChart(allExpenses, selectedYear, selectedCategory = 'all',
                         borderWidth: 2,
                         borderRadius: 8,
                         borderSkipped: false,
+                        order: 2
                     }
                 ]
             },
@@ -1443,6 +1493,7 @@ function renderMonthlyChart(allExpenses, selectedYear, selectedCategory = 'all',
 
         const incomeData  = sortedMonths.map(m => monthMap[m].income);
         const expenseData = sortedMonths.map(m => monthMap[m].expenses);
+        const balanceData = sortedMonths.map(m => monthMap[m].income - monthMap[m].expenses);
         const ctx = canvas.getContext('2d');
 
         monthlyChartInstance = new Chart(ctx, {
@@ -1451,6 +1502,21 @@ function renderMonthlyChart(allExpenses, selectedYear, selectedCategory = 'all',
                 labels,
                 datasets: [
                     {
+                        type: 'line',
+                        label: 'Balance Neto 📈',
+                        data: balanceData,
+                        borderColor: '#0b1d3a',
+                        backgroundColor: 'rgba(11, 29, 58, 0.08)',
+                        borderWidth: 3,
+                        pointBackgroundColor: balanceData.map(v => v >= 0 ? '#0a7c5c' : '#dc2626'),
+                        pointBorderColor: '#ffffff',
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        tension: 0.35,
+                        order: 1
+                    },
+                    {
+                        type: 'bar',
                         label: 'Ingresos',
                         data: incomeData,
                         backgroundColor: 'rgba(5, 150, 105, 0.75)',
@@ -1458,8 +1524,10 @@ function renderMonthlyChart(allExpenses, selectedYear, selectedCategory = 'all',
                         borderWidth: 2,
                         borderRadius: 8,
                         borderSkipped: false,
+                        order: 2
                     },
                     {
+                        type: 'bar',
                         label: 'Gastos',
                         data: expenseData,
                         backgroundColor: 'rgba(207, 102, 90, 0.72)',
@@ -1467,6 +1535,7 @@ function renderMonthlyChart(allExpenses, selectedYear, selectedCategory = 'all',
                         borderWidth: 2,
                         borderRadius: 8,
                         borderSkipped: false,
+                        order: 2
                     }
                 ]
             },
