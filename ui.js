@@ -325,7 +325,59 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
     const historicalTotalSpentSum = Object.values(historicalCatSpentSum).reduce((a, b) => a + b, 0);
     const historicalTotalMonthlyAvg = pastMonthCount > 0 ? Math.round(historicalTotalSpentSum / pastMonthCount) : 0;
 
-    // Proyección por categoría distinguiendo fijos vs variables con ajuste adaptativo histórico
+    // 🛡️ Detección y Capping de Outliers (Winsorización de picos diarios > 2.5x histórico)
+    const catWinsorizedDailyPace = {};
+    categoriesList.forEach(cat => {
+        if (currentDay <= 0) {
+            catWinsorizedDailyPace[cat] = 0;
+            return;
+        }
+        const catExpenses = monthExpenses.filter(e => (e.category || 'Otros') === cat);
+        const histDailyAvg = historicalCatAvg[cat] > 0 ? (historicalCatAvg[cat] / daysInMonth) : 0;
+        const capLimit = histDailyAvg > 0 ? (histDailyAvg * 2.5) : Infinity;
+
+        const dailyMap = {};
+        catExpenses.forEach(e => {
+            const d = parseInt((e.date || '').substring(8, 10), 10);
+            if (d) dailyMap[d] = (dailyMap[d] || 0) + Number(e.amount);
+        });
+
+        let cappedSum = 0;
+        for (let d = 1; d <= currentDay; d++) {
+            const spentD = dailyMap[d] || 0;
+            const cappedD = (histDailyAvg > 0 && spentD > capLimit) ? capLimit : spentD;
+            cappedSum += cappedD;
+        }
+        catWinsorizedDailyPace[cat] = cappedSum / currentDay;
+    });
+
+    // 🎚️ Shrinkage Adaptativo por Varianza de Categoría (Empirical Bayes)
+    const catShrinkageWeights = {};
+    categoriesList.forEach(cat => {
+        if (pastMonthCount < 2 || currentDay <= 0) {
+            catShrinkageWeights[cat] = Math.min(1, currentDay / 10);
+            return;
+        }
+        const monthTotals = {};
+        pastExpenses.forEach(e => {
+            if ((e.category || 'Otros') === cat) {
+                const m = e.date.substring(0, 7);
+                monthTotals[m] = (monthTotals[m] || 0) + Number(e.amount);
+            }
+        });
+        const vals = Object.values(monthTotals);
+        if (vals.length < 2) {
+            catShrinkageWeights[cat] = Math.min(1, currentDay / 10);
+            return;
+        }
+        const mean = vals.reduce((a, b) => a + b, 0) / vals.length;
+        const variance = vals.reduce((sum, v) => sum + Math.pow(v - mean, 2), 0) / (vals.length - 1);
+        const cv = mean > 0 ? Math.sqrt(variance) / mean : 1;
+        const k_cat = Math.max(2, Math.min(12, Math.round(8 / (cv + 0.1))));
+        catShrinkageWeights[cat] = currentDay / (currentDay + k_cat);
+    });
+
+    // Proyección por categoría distinguiendo fijos vs variables con ajuste adaptativo estocástico
     let projectedTotal = 0;
     const catProjections = {};
 
@@ -334,23 +386,17 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
         const catLimit = Number(categoryBudgets[cat]) || 0;
 
         if (fixedCategories.includes(cat)) {
-            // Gasto fijo: Si ya se pagó en el mes, la proyección es el pago real realizado.
-            // Si no se ha pagado aún en el mes, estimamos el límite o el promedio histórico.
+            // Gasto fijo/recurrente: evento discreto. Si ya se pagó en el mes, proyecta el pago real.
+            // Si aún no se paga, toma el límite o la media histórica esperada.
             catProjections[cat] = catSpent > 0 ? catSpent : (catLimit > 0 ? catLimit : (historicalCatAvg[cat] || 0));
         } else {
-            // Gasto variable: Se proyecta usando la velocidad diaria de consumo
+            // Gasto variable: Shrinkage empírico sobre velocidad winsorizada
             if (isCurrentMonth && currentDay > 0) {
-                const catDailyPace = catSpent / currentDay;
-                let effectiveDailyPace = catDailyPace;
-
-                // Si estamos en los primeros 5 días del mes y tenemos histórico,
-                // combinamos el ritmo inicial con el promedio histórico diario para prevenir distorsiones.
-                if (currentDay <= 5 && historicalCatAvg[cat] > 0) {
-                    const historicalDailyPace = historicalCatAvg[cat] / daysInMonth;
-                    const weightCurrent = currentDay / 10; // ej. Día 2: 20% mes actual + 80% histórico
-                    effectiveDailyPace = (catDailyPace * weightCurrent) + (historicalDailyPace * (1 - weightCurrent));
-                }
-
+                const winsorizedPace = catWinsorizedDailyPace[cat] || 0;
+                const historicalDailyPace = historicalCatAvg[cat] > 0 ? (historicalCatAvg[cat] / daysInMonth) : 0;
+                const weightCurrent = catShrinkageWeights[cat] !== undefined ? catShrinkageWeights[cat] : Math.min(1, currentDay / 10);
+                
+                const effectiveDailyPace = (winsorizedPace * weightCurrent) + (historicalDailyPace * (1 - weightCurrent));
                 catProjections[cat] = Math.round(catSpent + (effectiveDailyPace * remainingDays));
             } else {
                 catProjections[cat] = catSpent;
@@ -359,7 +405,53 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
         projectedTotal += catProjections[cat];
     });
 
-    // Ritmo promedio diario para gastos VARIABLES (Mercado, D1, Carne, Casa, Servicios, Otros)
+    // 🚨 Ordenar categorías dinámicamente por urgencia/riesgo de desborde
+    categoriesList.sort((a, b) => {
+        const limitA = Number(categoryBudgets[a]) || 0;
+        const limitB = Number(categoryBudgets[b]) || 0;
+        const projA = catProjections[a] || 0;
+        const projB = catProjections[b] || 0;
+
+        const isOverA = limitA > 0 && projA > limitA;
+        const isOverB = limitB > 0 && projB > limitB;
+
+        const overAmountA = isOverA ? (projA - limitA) : 0;
+        const overAmountB = isOverB ? (projB - limitB) : 0;
+
+        if (isOverA && isOverB) return overAmountB - overAmountA;
+        if (isOverA) return -1;
+        if (isOverB) return 1;
+
+        const pctA = limitA > 0 ? (projA / limitA) : 0;
+        const pctB = limitB > 0 ? (projB / limitB) : 0;
+
+        if (pctA !== pctB) return pctB - pctA;
+
+        return projB - projA;
+    });
+
+    // 📊 Intervalo de Confianza (Rango de Incertidumbre Honest - 90% IC)
+    let historicalStdDev = 0;
+    if (pastMonthCount >= 2) {
+        const monthTotalsMap = {};
+        pastExpenses.forEach(e => {
+            const m = e.date.substring(0, 7);
+            monthTotalsMap[m] = (monthTotalsMap[m] || 0) + Number(e.amount);
+        });
+        const vals = Object.values(monthTotalsMap);
+        const mean = vals.reduce((a, b) => a + b, 0) / vals.length;
+        const varSum = vals.reduce((sum, v) => sum + Math.pow(v - mean, 2), 0) / (vals.length - 1);
+        historicalStdDev = Math.sqrt(varSum);
+    } else {
+        historicalStdDev = projectedTotal * 0.12; // 12% por defecto si no hay histórico
+    }
+
+    const uncertaintyFactor = isCurrentMonth ? Math.sqrt(remainingDays / daysInMonth) : 0;
+    const marginOfError = Math.round(historicalStdDev * 1.645 * uncertaintyFactor);
+    const projectedMin = Math.max(spentSoFar, projectedTotal - marginOfError);
+    const projectedMax = projectedTotal + marginOfError;
+
+    // Ritmo promedio diario para gastos VARIABLES
     const variableDailyPace = currentDay > 0 ? Math.round(variableSpentSoFar / currentDay) : variableSpentSoFar;
 
     // Presupuesto restante reservado para gastos VARIABLES
@@ -371,43 +463,6 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
     const recommendedDailyVariableMax = isCurrentMonth && remainingDays > 0 
         ? Math.round(remainingVariableBudget / remainingDays) 
         : 0;
-
-    // 🔮 CÁLCULO DE PROYECCIÓN ANUAL A CIERRE DE AÑO (31 DIC)
-    const currentYearStr = currentFilterMonth ? currentFilterMonth.substring(0, 4) : new Date().getFullYear().toString();
-    const currentMonthNum = currentFilterMonth ? parseInt(currentFilterMonth.substring(5, 7), 10) : (new Date().getMonth() + 1);
-
-    const monthIncomes = (allExpenses || []).filter(exp => 
-        exp.date && 
-        exp.date.startsWith(currentFilterMonth) && 
-        (exp.type === 'ingreso' || (!exp.type && ['Juni', 'Isa'].includes(exp.category)))
-    );
-    const totalIncomeSoFar = monthIncomes.reduce((sum, exp) => sum + (Number(exp.amount) || 0), 0);
-
-    let yearClosedIncome = 0;
-    let yearClosedExpenses = 0;
-    let yearClosedMonthCount = 0;
-
-    for (let m = 1; m < currentMonthNum; m++) {
-        const mStr = `${currentYearStr}-${String(m).padStart(2, '0')}`;
-        const mExpenses = (allExpenses || []).filter(exp => exp.date && exp.date.startsWith(mStr));
-        if (mExpenses.length > 0) {
-            yearClosedMonthCount++;
-            mExpenses.forEach(exp => {
-                const amt = Number(exp.amount) || 0;
-                const isIncome = exp.type === 'ingreso' || (!exp.type && ['Juni', 'Isa'].includes(exp.category));
-                if (isIncome) yearClosedIncome += amt;
-                else yearClosedExpenses += amt;
-            });
-        }
-    }
-
-    const avgMonthlyIncome = yearClosedMonthCount > 0 ? (yearClosedIncome / yearClosedMonthCount) : totalIncomeSoFar;
-    const avgMonthlyExpenses = yearClosedMonthCount > 0 ? (yearClosedExpenses / yearClosedMonthCount) : projectedTotal;
-    const remainingMonthsInYear = Math.max(0, 12 - currentMonthNum);
-
-    const projectedAnnualIncome = yearClosedIncome + totalIncomeSoFar + (remainingMonthsInYear * avgMonthlyIncome);
-    const projectedAnnualExpenses = yearClosedExpenses + projectedTotal + (remainingMonthsInYear * avgMonthlyExpenses);
-    const projectedAnnualSavings = projectedAnnualIncome - projectedAnnualExpenses;
 
     // Diagnóstico inteligente
     let alertType = 'info';
@@ -461,7 +516,7 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
                     <i data-lucide="flag" style="color: ${projectedTotal > totalLimits && totalLimits > 0 ? 'var(--danger)' : 'var(--success)'};"></i> Proyección Cierre de Mes
                 </span>
                 <span class="projection-metric-value" style="color: ${projectedTotal > totalLimits && totalLimits > 0 ? 'var(--danger)' : 'var(--success)'};">${formatCOP.format(projectedTotal)}</span>
-                <span class="projection-metric-subtext">${totalLimits > 0 ? `Límite asignado: ${formatCOP.format(totalLimits)}` : 'Sin límite global'}</span>
+                <span class="projection-metric-subtext" style="font-weight: 600;">${marginOfError > 0 ? `Rango IC 90%: <strong>${formatCOP.format(projectedMin)} – ${formatCOP.format(projectedMax)}</strong>` : (totalLimits > 0 ? `Límite asignado: ${formatCOP.format(totalLimits)}` : 'Sin límite global')}</span>
             </div>
 
             <div class="projection-metric-card animate-entrance stagger-4">
@@ -792,50 +847,84 @@ function renderExpensesList(expenses, currentFilterMonth, categoryVal, searchVal
         return;
     }
     
-    items.forEach((exp, idx) => {
-        const itemEl = document.createElement('div');
-        const staggerClass = `stagger-${(idx % 5) + 1}`;
-        itemEl.className = `expense-item animate-entrance ${staggerClass}`;
-        itemEl.dataset.transactionId = String(exp.id);
-        
-        const catClass = getCategoryIconClass(exp.category);
-        const emoji = categoryEmojis[exp.category] || '⚙️';
-        const formattedDate = formatDateString(exp.date);
+    // Agrupar movimientos por fecha (YYYY-MM-DD)
+    const groupedByDate = {};
+    const dateKeysOrder = [];
+
+    items.forEach(exp => {
+        const d = exp.date;
+        if (!groupedByDate[d]) {
+            groupedByDate[d] = {
+                expenses: [],
+                dayNet: 0
+            };
+            dateKeysOrder.push(d);
+        }
+        groupedByDate[d].expenses.push(exp);
+        const amt = Number(exp.amount) || 0;
         const isIncome = exp.type === 'ingreso' || ['Juni', 'Isa'].includes(exp.category);
-        const amountSign = isIncome ? '+' : '-';
-        const amountClass = isIncome ? 'expense-amount income-color' : 'expense-amount';
-        
-        itemEl.innerHTML = `
-            <div class="expense-left">
-                <div class="category-badge-icon ${catClass}">
-                    <span style="font-size: 1.3rem;">${emoji}</span>
-                </div>
-                <div class="expense-details">
-                    <span class="expense-desc">${escapeHTML(exp.desc)}</span>
-                    <div class="expense-meta">
-                        <span>${formattedDate}</span>
-                        <span class="expense-tag">${escapeHTML(exp.category)}</span>
+        groupedByDate[d].dayNet += isIncome ? amt : -amt;
+    });
+
+    let globalItemIdx = 0;
+    dateKeysOrder.forEach(dateStr => {
+        const group = groupedByDate[dateStr];
+        const formattedDateHeader = formatDateString(dateStr);
+
+        const dayHeader = document.createElement('div');
+        dayHeader.className = 'day-group-header';
+        dayHeader.innerHTML = `
+            <span>📅 ${formattedDateHeader}</span>
+            <span class="day-group-total" style="color: ${group.dayNet >= 0 ? 'var(--success)' : 'var(--text-muted)'};">
+                ${group.dayNet >= 0 ? '+' : ''}${formatCOP.format(group.dayNet)}
+            </span>
+        `;
+        dom.expensesList.appendChild(dayHeader);
+
+        group.expenses.forEach(exp => {
+            globalItemIdx++;
+            const itemEl = document.createElement('div');
+            const staggerClass = `stagger-${(globalItemIdx % 5) + 1}`;
+            itemEl.className = `expense-item animate-entrance ${staggerClass}`;
+            itemEl.setAttribute('data-transaction-id', String(exp.id));
+            
+            const catClass = getCategoryIconClass(exp.category);
+            const emoji = categoryEmojis[exp.category] || '⚙️';
+            const isIncome = exp.type === 'ingreso' || ['Juni', 'Isa'].includes(exp.category);
+            const amountSign = isIncome ? '+' : '-';
+            const amountClass = isIncome ? 'expense-amount income-color' : 'expense-amount';
+            
+            itemEl.innerHTML = `
+                <div class="expense-left">
+                    <div class="category-badge-icon ${catClass}">
+                        <span style="font-size: 1.3rem;">${emoji}</span>
+                    </div>
+                    <div class="expense-details">
+                        <span class="expense-desc">${escapeHTML(exp.desc)}</span>
+                        <div class="expense-meta">
+                            <span class="expense-tag">${escapeHTML(exp.category)}</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="expense-right">
-                <span class="${amountClass}">${amountSign} ${formatCOP.format(exp.amount)}</span>
-                <div class="expense-actions">
-                    <button class="btn btn-secondary btn-icon" type="button" title="Editar">
-                        <i data-lucide="edit" style="width: 14px; height: 14px; color: var(--text-secondary);"></i>
-                    </button>
-                    <button class="btn btn-danger btn-icon" type="button" title="Eliminar">
-                        <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
-                    </button>
+                <div class="expense-right">
+                    <span class="${amountClass}">${amountSign} ${formatCOP.format(exp.amount)}</span>
+                    <div class="expense-actions">
+                        <button class="btn btn-secondary btn-icon" type="button" title="Editar">
+                            <i data-lucide="edit" style="width: 14px; height: 14px; color: var(--text-secondary);"></i>
+                        </button>
+                        <button class="btn btn-danger btn-icon" type="button" title="Eliminar">
+                            <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+                        </button>
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
 
-        const [editButton, deleteButton] = itemEl.querySelectorAll('.expense-actions button');
-        editButton.addEventListener('click', () => transactionActionHandlers.onEdit?.(exp.id));
-        deleteButton.addEventListener('click', () => transactionActionHandlers.onDelete?.(exp.id));
-        
-        dom.expensesList.appendChild(itemEl);
+            const [editButton, deleteButton] = itemEl.querySelectorAll('.expense-actions button');
+            if (editButton) editButton.addEventListener('click', () => transactionActionHandlers.onEdit?.(exp.id));
+            if (deleteButton) deleteButton.addEventListener('click', () => transactionActionHandlers.onDelete?.(exp.id));
+            
+            dom.expensesList.appendChild(itemEl);
+        });
     });
     
     if (window.lucide) {

@@ -1850,6 +1850,31 @@ body::before {
     flex-shrink: 0;
 }
 
+/* 📅 Encabezados de Agrupación por Fecha (Estilo App Bancaria) */
+.day-group-container {
+    margin-bottom: 1rem;
+}
+
+.day-group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.55rem 0.85rem;
+    margin: 1rem 0 0.5rem;
+    background: rgba(11, 29, 58, 0.04);
+    border-left: 3px solid var(--primary);
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+.day-group-header .day-group-total {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+}
+
 /* ─────────────────────────────────────────────────────────────────────────── */
 /* 📱 MOBILE RESPONSIVE FIXES — Pestañas, Tablas, Paneles                     */
 /* ─────────────────────────────────────────────────────────────────────────── */
