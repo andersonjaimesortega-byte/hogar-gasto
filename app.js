@@ -33,6 +33,9 @@ class AppController {
     async initialize() {
         try {
             await initDB();
+            if (typeof migrateDB === 'function') {
+                await migrateDB();
+            }
             this.monthlyBudget = await getSetting('monthly_budget', 1000000);
             this.categoryBudgets = await getSetting('category_budgets', this.categoryBudgets);
             
@@ -42,6 +45,12 @@ class AppController {
             await this.refresh();
 
             if (await initSupabase()) {
+                if (typeof setupRealtimeSubscription === 'function') {
+                    setupRealtimeSubscription(async () => {
+                        await this.loadPeriodFilters();
+                        await this.refresh();
+                    });
+                }
                 await this.syncAndRefresh();
             }
 
@@ -117,6 +126,9 @@ class AppController {
             onDelete: id => this.requestDeleteTransaction(id)
         });
         updateCategoryOptions();
+        if (typeof setupCurrencyInputMask === 'function') {
+            setupCurrencyInputMask();
+        }
 
         this.bindFilterEvents();
         this.bindModalEvents();
@@ -434,7 +446,8 @@ class AppController {
      */
     async saveTransaction(event) {
         event.preventDefault();
-        const amount = Number(dom.expenseAmount.value);
+        const rawAmount = String(dom.expenseAmount?.value || '').replace(/\D/g, '');
+        const amount = Number(rawAmount);
         const transaction = {
             amount,
             desc: dom.expenseDesc.value.trim(),
@@ -451,8 +464,9 @@ class AppController {
         const editedId = dom.expenseIdInput.value;
         const existingTransaction = this.expenses.find(item => String(item.id) === String(editedId));
         transaction.id = existingTransaction
-            ? existingTransaction.id
+            ? String(existingTransaction.id)
             : `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+        transaction.updated_at = new Date().toISOString();
 
         try {
             if (editedId) await updateExpense(transaction);
@@ -501,8 +515,8 @@ class AppController {
     editTransaction(id) {
         const transaction = this.expenses.find(item => String(item.id) === String(id));
         if (!transaction) return;
-        dom.expenseIdInput.value = transaction.id;
-        dom.expenseAmount.value = transaction.amount;
+        dom.expenseIdInput.value = String(transaction.id);
+        dom.expenseAmount.value = transaction.amount ? formatCOP.format(transaction.amount) : '';
         dom.expenseDesc.value = transaction.desc;
         dom.expenseDate.value = transaction.date;
         dom.expenseType.value = transaction.type || (['Juni', 'Isa'].includes(transaction.category) ? 'ingreso' : 'gasto');

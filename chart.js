@@ -4,7 +4,9 @@ function updateCategoryChart(ctx, filteredExpenses, currentChartInstance, legend
     
     // Filtrar estrictamente por tipo (gasto vs ingreso)
     const targetExpenses = filteredExpenses.filter(exp => {
-        const isIncome = exp.type === 'ingreso' || ['Juni', 'Isa'].includes(exp.category);
+        const isIncome = typeof isTransactionIncome === 'function' 
+            ? isTransactionIncome(exp) 
+            : (exp.type ? exp.type === 'ingreso' : ['Juni', 'Isa'].includes(exp.category));
         return chartType === 'ingreso' ? isIncome : !isIncome;
     });
 

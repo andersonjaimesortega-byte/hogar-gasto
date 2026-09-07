@@ -38,13 +38,41 @@ function setTransactionActionHandlers(handlers) {
     transactionActionHandlers = { ...transactionActionHandlers, ...handlers };
 }
 
+// Determinar si una transacción es un ingreso (respetando prioridad explícita del campo 'type')
+function isTransactionIncome(exp) {
+    if (!exp) return false;
+    if (exp.type === 'ingreso') return true;
+    if (exp.type === 'gasto') return false;
+    return ['Juni', 'Isa'].includes(exp.category);
+}
+
+// Configurar máscara de entrada de moneda en tiempo real para el campo de valor
+function setupCurrencyInputMask() {
+    const input = dom.expenseAmount;
+    if (!input) return;
+
+    input.setAttribute('type', 'text');
+    input.setAttribute('inputmode', 'numeric');
+    input.setAttribute('placeholder', '$ 0');
+
+    input.addEventListener('input', (e) => {
+        const rawDigits = e.target.value.replace(/\D/g, '');
+        if (!rawDigits) {
+            e.target.value = '';
+            return;
+        }
+        const num = Number(rawDigits);
+        e.target.value = formatCOP.format(num);
+    });
+}
+
 // Actualizar estadísticas del Dashboard
 function updateDashboardStats(allExpenses, currentFilterMonth) {
     if (!allExpenses) return;
 
     // Transacciones del mes filtrado
     const currentMonthExpenses = allExpenses.filter(exp => exp.date && exp.date.startsWith(currentFilterMonth));
-    const currentMonthSpentOnly = currentMonthExpenses.filter(exp => exp.type === 'gasto' || (!exp.type && !['Juni', 'Isa'].includes(exp.category)));
+    const currentMonthSpentOnly = currentMonthExpenses.filter(exp => !isTransactionIncome(exp));
 
     // Gastos Totales (este mes)
     const totalSpent = currentMonthSpentOnly.reduce((sum, item) => sum + Number(item.amount), 0);
@@ -56,10 +84,10 @@ function updateDashboardStats(allExpenses, currentFilterMonth) {
     // Saldo Disponible Acumulado (histórico hasta el mes seleccionado inclusive)
     const historyExpenses = allExpenses.filter(exp => exp.date && exp.date.substring(0, 7) <= currentFilterMonth);
     const totalCumulativeIncome = historyExpenses
-        .filter(exp => exp.type === 'ingreso' || ['Juni', 'Isa'].includes(exp.category))
+        .filter(exp => isTransactionIncome(exp))
         .reduce((sum, item) => sum + Number(item.amount), 0);
     const totalCumulativeExpense = historyExpenses
-        .filter(exp => exp.type === 'gasto' || (!exp.type && !['Juni', 'Isa'].includes(exp.category)))
+        .filter(exp => !isTransactionIncome(exp))
         .reduce((sum, item) => sum + Number(item.amount), 0);
 
     const balance = totalCumulativeIncome - totalCumulativeExpense;
@@ -68,7 +96,7 @@ function updateDashboardStats(allExpenses, currentFilterMonth) {
     }
 
     if (dom.valIncome) {
-        const currentMonthIncomes = currentMonthExpenses.filter(exp => exp.type === 'ingreso' || ['Juni', 'Isa'].includes(exp.category));
+        const currentMonthIncomes = currentMonthExpenses.filter(exp => isTransactionIncome(exp));
         const totalIncome = currentMonthIncomes.reduce((sum, item) => sum + Number(item.amount), 0);
         animateCurrencyCounter(dom.valIncome, totalIncome);
         if (dom.valIncomeSubtext) dom.valIncomeSubtext.textContent = `${currentMonthIncomes.length} aportes registrados`;
@@ -105,7 +133,7 @@ function renderCategoryBudgets(allExpenses, currentFilterMonth, categoryBudgets 
     const currentMonthExpenses = (allExpenses || []).filter(exp => 
         exp.date && 
         exp.date.startsWith(currentFilterMonth) && 
-        (exp.type === 'gasto' || (!exp.type && !['Juni', 'Isa'].includes(exp.category)))
+        !isTransactionIncome(exp)
     );
 
     const spentMap = {};
@@ -270,7 +298,7 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
     const monthExpenses = (allExpenses || []).filter(exp => 
         exp.date && 
         exp.date.startsWith(currentFilterMonth) && 
-        (exp.type === 'gasto' || (!exp.type && !['Juni', 'Isa'].includes(exp.category)))
+        !isTransactionIncome(exp)
     );
 
     const spentMap = {};
@@ -305,7 +333,7 @@ function renderProjectionTab(allExpenses, currentFilterMonth, categoryBudgets = 
     const pastExpenses = (allExpenses || []).filter(exp => 
         exp.date && 
         exp.date.substring(0, 7) < currentFilterMonth && 
-        (exp.type === 'gasto' || (!exp.type && !['Juni', 'Isa'].includes(exp.category)))
+        !isTransactionIncome(exp)
     );
 
     const pastMonthsSet = new Set(pastExpenses.map(exp => exp.date.substring(0, 7)));
@@ -862,7 +890,7 @@ function renderExpensesList(expenses, currentFilterMonth, categoryVal, searchVal
         }
         groupedByDate[d].expenses.push(exp);
         const amt = Number(exp.amount) || 0;
-        const isIncome = exp.type === 'ingreso' || ['Juni', 'Isa'].includes(exp.category);
+        const isIncome = isTransactionIncome(exp);
         groupedByDate[d].dayNet += isIncome ? amt : -amt;
     });
 
@@ -890,7 +918,7 @@ function renderExpensesList(expenses, currentFilterMonth, categoryVal, searchVal
             
             const catClass = getCategoryIconClass(exp.category);
             const emoji = categoryEmojis[exp.category] || '⚙️';
-            const isIncome = exp.type === 'ingreso' || ['Juni', 'Isa'].includes(exp.category);
+            const isIncome = isTransactionIncome(exp);
             const amountSign = isIncome ? '+' : '-';
             const amountClass = isIncome ? 'expense-amount income-color' : 'expense-amount';
             
@@ -1013,7 +1041,7 @@ function renderMonthlySummary(allExpenses, monthlyBudget, selectedYear, selected
                 const qObj = quarters.find(q => q.months.includes(monthStr));
                 if (!qObj) return;
 
-                const isIncome = exp.type === 'ingreso' || (!exp.type && ['Juni', 'Isa'].includes(exp.category));
+                const isIncome = isTransactionIncome(exp);
                 const amt = Number(exp.amount);
                 if (isIncome) {
                     qMap[qObj.id].income += amt;
@@ -1078,7 +1106,7 @@ function renderMonthlySummary(allExpenses, monthlyBudget, selectedYear, selected
                 const qObj = quarters.find(q => q.months.includes(monthStr));
                 if (!qObj) return;
 
-                const isIncome = exp.type === 'ingreso' || (!exp.type && ['Juni', 'Isa'].includes(exp.category));
+                const isIncome = isTransactionIncome(exp);
                 const belongsToGroup = isIncomeCat ? isIncome : !isIncome;
 
                 if (belongsToGroup) {
@@ -1156,7 +1184,7 @@ function renderMonthlySummary(allExpenses, monthlyBudget, selectedYear, selected
             if (!exp.date || (selectedYear && !exp.date.startsWith(`${selectedYear}-`))) return;
             const monthKey = exp.date.substring(0, 7);
             if (!monthMap[monthKey]) monthMap[monthKey] = { income: 0, expenses: 0 };
-            const isIncome = exp.type === 'ingreso' || (!exp.type && ['Juni', 'Isa'].includes(exp.category));
+            const isIncome = isTransactionIncome(exp);
             if (isIncome) monthMap[monthKey].income += Number(exp.amount);
             else monthMap[monthKey].expenses += Number(exp.amount);
         });
@@ -1214,7 +1242,7 @@ function renderMonthlySummary(allExpenses, monthlyBudget, selectedYear, selected
             const monthKey = exp.date.substring(0, 7);
             if (!monthMap[monthKey]) monthMap[monthKey] = { catAmount: 0, totalGroupAmount: 0 };
 
-            const isIncome = exp.type === 'ingreso' || (!exp.type && ['Juni', 'Isa'].includes(exp.category));
+            const isIncome = isTransactionIncome(exp);
             const belongsToGroup = isIncomeCat ? isIncome : !isIncome;
 
             if (belongsToGroup) {
@@ -1328,7 +1356,7 @@ function renderMonthlyChart(allExpenses, selectedYear, selectedCategory = 'all',
             const qObj = quarters.find(q => q.months.includes(monthStr));
             if (!qObj) return;
 
-            const isIncome = exp.type === 'ingreso' || (!exp.type && ['Juni', 'Isa'].includes(exp.category));
+            const isIncome = isTransactionIncome(exp);
             const amt = Number(exp.amount);
             if (selectedCategory === 'all' || exp.category === selectedCategory) {
                 if (isIncome) qMap[qObj.id].income += amt;
@@ -1447,7 +1475,7 @@ function renderMonthlyChart(allExpenses, selectedYear, selectedCategory = 'all',
             if (!exp.date || (selectedYear && !exp.date.startsWith(`${selectedYear}-`))) return;
             const key = exp.date.substring(0, 7);
             if (!monthMap[key]) monthMap[key] = { income: 0, expenses: 0 };
-            const isIncome = exp.type === 'ingreso' || (!exp.type && ['Juni', 'Isa'].includes(exp.category));
+            const isIncome = isTransactionIncome(exp);
             if (isIncome) monthMap[key].income += Number(exp.amount);
             else monthMap[key].expenses += Number(exp.amount);
         });

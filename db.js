@@ -93,26 +93,38 @@ async function getAllExpenses() {
     });
 }
 
-// Agregar gasto/ingreso a IndexedDB
+// Agregar gasto/ingreso a IndexedDB (normalizando id a String)
 async function addExpense(expense) {
     const database = await getDB();
+    const normalizedExpense = {
+        ...expense,
+        id: String(expense.id),
+        type: expense.type || (['Juni', 'Isa'].includes(expense.category) ? 'ingreso' : 'gasto'),
+        updated_at: expense.updated_at || new Date().toISOString()
+    };
     return new Promise((resolve, reject) => {
         const transaction = database.transaction(['expenses'], 'readwrite');
         const store = transaction.objectStore('expenses');
-        const request = store.add(expense);
+        const request = store.add(normalizedExpense);
 
         request.onsuccess = () => resolve();
         request.onerror = (event) => reject(event.target.error);
     });
 }
 
-// Actualizar gasto/ingreso en IndexedDB
+// Actualizar gasto/ingreso en IndexedDB (normalizando id a String)
 async function updateExpense(expense) {
     const database = await getDB();
+    const normalizedExpense = {
+        ...expense,
+        id: String(expense.id),
+        type: expense.type || (['Juni', 'Isa'].includes(expense.category) ? 'ingreso' : 'gasto'),
+        updated_at: expense.updated_at || new Date().toISOString()
+    };
     return new Promise((resolve, reject) => {
         const transaction = database.transaction(['expenses'], 'readwrite');
         const store = transaction.objectStore('expenses');
-        const request = store.put(expense);
+        const request = store.put(normalizedExpense);
 
         request.onsuccess = () => resolve();
         request.onerror = (event) => reject(event.target.error);
@@ -126,17 +138,65 @@ async function deleteExpense(id) {
         const transaction = database.transaction(['expenses'], 'readwrite');
         const store = transaction.objectStore('expenses');
         
-        // Intentar borrar con el ID original y sus variantes tipo string/number
-        store.delete(id);
-        if (typeof id === 'string' && !isNaN(Number(id))) {
+        const stringId = String(id);
+        store.delete(stringId);
+        if (!isNaN(Number(id))) {
             store.delete(Number(id));
-        } else if (typeof id === 'number') {
-            store.delete(String(id));
         }
 
         transaction.oncomplete = () => resolve();
         transaction.onerror = (event) => reject(event.target.error);
     });
+}
+
+// Migración y sanitización automática del esquema de la BD local al iniciar
+async function migrateDB() {
+    try {
+        const database = await getDB();
+        const allItems = await getAllExpenses();
+        if (!allItems || allItems.length === 0) return;
+
+        const seenIds = new Set();
+        const itemsToSave = [];
+        const keysToDelete = [];
+
+        for (const item of allItems) {
+            const rawId = item.id;
+            const strId = String(rawId);
+
+            if (typeof rawId === 'number') {
+                keysToDelete.push(rawId);
+            }
+
+            if (!seenIds.has(strId)) {
+                seenIds.add(strId);
+                const normalized = {
+                    ...item,
+                    id: strId,
+                    type: item.type || (['Juni', 'Isa'].includes(item.category) ? 'ingreso' : 'gasto'),
+                    updated_at: item.updated_at || new Date().toISOString(),
+                    desc: item.desc || item.description || ''
+                };
+                itemsToSave.push(normalized);
+            }
+        }
+
+        return new Promise((resolve, reject) => {
+            const tx = database.transaction(['expenses'], 'readwrite');
+            const store = tx.objectStore('expenses');
+
+            keysToDelete.forEach(k => store.delete(k));
+            itemsToSave.forEach(item => store.put(item));
+
+            tx.oncomplete = () => {
+                console.log('✅ Migración de base de datos local completada con éxito.');
+                resolve();
+            };
+            tx.onerror = (e) => reject(e.target.error);
+        });
+    } catch (err) {
+        console.warn('Advertencia durante la migración de IndexedDB:', err);
+    }
 }
 
 // Limpiar base de datos
@@ -154,3 +214,4 @@ async function clearDatabase() {
         transaction.onerror = (e) => reject(e.target.error);
     });
 }
+

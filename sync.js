@@ -1,5 +1,6 @@
 // Sincronización con Supabase (Cloud Sync)
 let supabaseClient = null;
+let realtimeChannel = null;
 let isSyncing = false;
 
 // ─── Inicializar / Configurar ──────────────────────────────────────────────
@@ -24,12 +25,16 @@ async function initSupabase() {
     return false;
 }
 
-function updateSyncBadge(connected) {
+function updateSyncBadge(connected, pendingCount = 0) {
     const btn = document.getElementById('btn-sync-settings');
     const dot = document.getElementById('sync-active-dot');
     if (!btn) return;
     btn.classList.toggle('connected', connected);
-    if (dot) dot.style.display = connected ? 'block' : 'none';
+    if (dot) {
+        dot.style.display = connected ? 'block' : 'none';
+        dot.style.backgroundColor = pendingCount > 0 ? 'var(--gold)' : 'var(--success)';
+        dot.title = pendingCount > 0 ? `${pendingCount} cambios pendientes por sincronizar` : 'Sincronizado';
+    }
 }
 
 async function saveSupabaseConfig(url, key) {
@@ -44,6 +49,10 @@ async function saveSupabaseConfig(url, key) {
 }
 
 async function disconnectSupabase() {
+    if (realtimeChannel && supabaseClient) {
+        supabaseClient.removeChannel(realtimeChannel);
+        realtimeChannel = null;
+    }
     await saveSetting('supabase_url', '');
     await saveSetting('supabase_key', '');
     await saveSetting('synced_cloud_ids', []);
@@ -61,7 +70,8 @@ async function uploadToSupabase(expense) {
         description: expense.desc || '',
         category:    expense.category,
         date:        expense.date,
-        type:        expense.type || (['Juni', 'Isa'].includes(expense.category) ? 'ingreso' : 'gasto')
+        type:        expense.type || (['Juni', 'Isa'].includes(expense.category) ? 'ingreso' : 'gasto'),
+        updated_at:  expense.updated_at || new Date().toISOString()
     };
     const { error } = await supabaseClient.from('transactions').upsert(itemToUpload);
     if (error) throw error;
@@ -121,7 +131,43 @@ async function syncSettingsWithSupabase() {
     return null;
 }
 
-// ─── Sincronización bidireccional ──────────────────────────────────────────
+// ─── Configurar suscripción Supabase Realtime (WebSockets) ──────────────────
+
+function setupRealtimeSubscription(onRealtimeChange) {
+    if (!supabaseClient || realtimeChannel) return;
+    try {
+        realtimeChannel = supabaseClient
+            .channel('public:transactions')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'transactions' }, async (payload) => {
+                console.log('⚡ Evento en tiempo real de Supabase recibido:', payload.eventType);
+                if (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE') {
+                    const cloudItem = payload.new;
+                    const mappedItem = {
+                        id:         String(cloudItem.id),
+                        amount:     Number(cloudItem.amount),
+                        desc:       cloudItem.description || cloudItem.desc || '',
+                        category:   cloudItem.category || 'Otros',
+                        date:       cloudItem.date,
+                        type:       cloudItem.type || (['Juni', 'Isa'].includes(cloudItem.category) ? 'ingreso' : 'gasto'),
+                        updated_at: cloudItem.updated_at || new Date().toISOString()
+                    };
+                    await updateExpense(mappedItem);
+                } else if (payload.eventType === 'DELETE' && payload.old && payload.old.id) {
+                    await deleteExpense(payload.old.id);
+                }
+                if (typeof onRealtimeChange === 'function') {
+                    onRealtimeChange();
+                }
+            })
+            .subscribe((status) => {
+                console.log(`Estado de suscripción en tiempo real: ${status}`);
+            });
+    } catch (err) {
+        console.warn('No se pudo establecer la suscripción Realtime:', err);
+    }
+}
+
+// ─── Sincronización bidireccional con resolución Last-Write-Wins ─────────────
 
 async function syncWithSupabase() {
     if (!supabaseClient || isSyncing) return false;
@@ -165,7 +211,7 @@ async function syncWithSupabase() {
 
         const stillPendingDelete = new Set((await getSetting('deleted_ids', [])).map(id => String(id)));
 
-        // ── PASO 4: Nube → Local ───────────────────────────────────────────
+        // ── PASO 4: Nube → Local (Last-Write-Wins) ──────────────────────────
         for (const cloudItem of (cloudItems || [])) {
             const cloudIdStr = String(cloudItem.id);
 
@@ -175,33 +221,40 @@ async function syncWithSupabase() {
             }
 
             const localItem = localMap.get(cloudIdStr);
+            const cloudUpdatedAt = cloudItem.updated_at ? new Date(cloudItem.updated_at).getTime() : 0;
+            const localUpdatedAt = localItem && localItem.updated_at ? new Date(localItem.updated_at).getTime() : 0;
+
             const mappedItem = {
-                id:       localItem ? localItem.id : cloudIdStr,
-                amount:   Number(cloudItem.amount),
-                desc:     cloudItem.description || cloudItem.desc || '',
-                category: cloudItem.category || 'Otros',
-                date:     cloudItem.date,
-                type:     cloudItem.type || (['Juni', 'Isa'].includes(cloudItem.category) ? 'ingreso' : 'gasto')
+                id:         cloudIdStr,
+                amount:     Number(cloudItem.amount),
+                desc:       cloudItem.description || cloudItem.desc || '',
+                category:   cloudItem.category || 'Otros',
+                date:       cloudItem.date,
+                type:       cloudItem.type || (['Juni', 'Isa'].includes(cloudItem.category) ? 'ingreso' : 'gasto'),
+                updated_at: cloudItem.updated_at || new Date().toISOString()
             };
 
             if (!localItem) {
                 await addExpense(mappedItem);
                 console.log(`Descargado de la nube (nuevo): ${mappedItem.id}`);
             } else {
+                // Last-Write-Wins: Solo actualizar localmente si la versión de la nube es más reciente o si difieren los valores básicos
+                const cloudIsNewer = cloudUpdatedAt > localUpdatedAt;
                 const isDifferent =
                     Number(localItem.amount) !== mappedItem.amount ||
-                    (localItem.desc || '')   !== mappedItem.desc     ||
-                    localItem.category       !== mappedItem.category ||
-                    localItem.date           !== mappedItem.date     ||
-                    localItem.type           !== mappedItem.type;
-                if (isDifferent) {
+                    String(localItem.desc || '').trim() !== String(mappedItem.desc || '').trim() ||
+                    localItem.category !== mappedItem.category ||
+                    localItem.date !== mappedItem.date ||
+                    (localItem.type || '') !== mappedItem.type;
+
+                if (cloudIsNewer || (isDifferent && cloudUpdatedAt >= localUpdatedAt)) {
                     await updateExpense(mappedItem);
-                    console.log(`Actualizado localmente desde la nube: ${mappedItem.id}`);
+                    console.log(`Actualizado localmente desde la nube (Last-Write-Wins): ${mappedItem.id}`);
                 }
             }
         }
 
-        // ── PASO 5: Local → Resolver ───────────────────────────────────────
+        // ── PASO 5: Local → Nube (Registros nuevos locales) ────────────────
         for (const localItem of localItems) {
             const localIdStr = String(localItem.id);
             if (cloudMap.has(localIdStr)) continue;
@@ -220,8 +273,9 @@ async function syncWithSupabase() {
             }
         }
 
-        // ── PASO 6: Persistir IDs conocidos ───────────────────────────────
+        // ── PASO 6: Persistir IDs conocidos y actualizar insignia ──────────
         await saveSetting('synced_cloud_ids', [...nextKnownIds]);
+        updateSyncBadge(true, 0);
 
         console.log('✅ Sincronización completada.');
         isSyncing = false;
@@ -232,3 +286,4 @@ async function syncWithSupabase() {
         throw err;
     }
 }
+
