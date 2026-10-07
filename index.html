@@ -26,7 +26,7 @@
     </script>
     
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="styles.css?v=17.0.0">
+    <link rel="stylesheet" href="styles.css?v=22.0.0">
     
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -47,9 +47,6 @@
             </div>
             
             <div class="header-actions" style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
-                <div id="streak-badge" class="badge-pill badge-fixed" style="display: flex; align-items: center; gap: 0.3rem; font-weight: 800; background: rgba(217, 119, 6, 0.12); color: #d97706; border: 1px solid rgba(217, 119, 6, 0.25);" title="Racha de control financiero">
-                    🔥 <span id="streak-count">0d</span>
-                </div>
                 <div id="connection-status" class="status-badge online">
                     <div class="status-dot"></div>
                     <span id="status-text">En línea</span>
@@ -76,6 +73,10 @@
             <button class="tab-button" type="button" data-tab="projection" aria-selected="false">
                 <i data-lucide="sparkles"></i>
                 Proyección
+            </button>
+            <button class="tab-button" type="button" data-tab="savings" aria-selected="false">
+                <i data-lucide="piggy-bank"></i>
+                Ahorro
             </button>
             <button class="tab-button" type="button" data-tab="summary" aria-selected="false">
                 <i data-lucide="chart-column"></i>
@@ -243,6 +244,79 @@
             <i data-lucide="plus"></i>
         </button>
 
+        <!-- Savings / Reserve Fund Panel -->
+        <section id="tab-savings" class="tab-panel glass-panel savings-panel" hidden style="padding: 1.5rem;">
+            <div class="panel-header" style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+                <div>
+                    <h2 class="panel-title" style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.25rem;">
+                        <i data-lucide="piggy-bank" style="color: var(--secondary);"></i>
+                        Bolsa de Ahorro & Reserva
+                    </h2>
+                    <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                        Control acumulado de saldos a favor y gastos menores de la bolsa.
+                    </p>
+                </div>
+                <button type="button" id="btn-open-savings-expense-modal" class="btn btn-primary" style="padding: 0.6rem 1.25rem; border-radius: 10px; font-weight: 700; font-size: 0.85rem;">
+                    <i data-lucide="minus-circle"></i> Registrar Gasto de la Bolsa
+                </button>
+            </div>
+
+            <div class="panel-content">
+                <!-- Savings Metrics Grid -->
+                <div class="savings-metrics-grid" id="savings-metrics-container">
+                    <!-- Dinámico: Saldo Total en Bolsa, Total Excedentes, Total Gastos Retirados -->
+                </div>
+
+                <!-- Savings Evolution Chart -->
+                <div class="glass-panel" style="margin-top: 1.5rem; padding: 1.25rem; border-radius: 14px;">
+                    <p style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 1rem;">
+                        📈 Evolución del Fondo de Ahorro Acumulado
+                    </p>
+                    <div style="position: relative; height: 260px;">
+                        <canvas id="savingsChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Split Container: Aportes vs Gastos de Bolsa -->
+                <div class="savings-split-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+                    <!-- Panel 1: Balance Neto Aportado por Mes -->
+                    <div class="glass-panel" style="padding: 1.25rem; border-radius: 14px;">
+                        <h3 style="font-size: 0.95rem; font-weight: 800; color: var(--text-primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <i data-lucide="trending-up" style="color: var(--success); width: 18px; height: 18px;"></i>
+                            Balance Neto por Mes
+                        </h3>
+                        <div class="table-responsive" tabindex="0">
+                            <table class="summary-table">
+                                <thead>
+                                    <tr>
+                                        <th>Mes</th>
+                                        <th class="text-right">Balance Neto</th>
+                                        <th class="text-right">Fondo Acumulado</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="savings-surplus-tbody">
+                                    <!-- Dinámico -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Panel 2: Gastos Pagados de la Bolsa -->
+                    <div class="glass-panel" style="padding: 1.25rem; border-radius: 14px;">
+                        <h3 style="font-size: 0.95rem; font-weight: 800; color: var(--text-primary); margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between;">
+                            <span style="display: flex; align-items: center; gap: 0.5rem;">
+                                <i data-lucide="arrow-up-right" style="color: var(--danger); width: 18px; height: 18px;"></i>
+                                Gastos Pagados de la Bolsa
+                            </span>
+                        </h3>
+                        <div id="savings-expenses-list" style="display: flex; flex-direction: column; gap: 0.75rem; max-height: 380px; overflow-y: auto;">
+                            <!-- Dinámico -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Monthly Summary Panel -->
         <section id="tab-summary" class="tab-panel glass-panel monthly-summary-panel" hidden>
             <div class="panel-header" style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
@@ -393,8 +467,9 @@
             <div class="form-group">
               <label for="expense-type">Tipo</label>
               <select id="expense-type" class="input-control">
-                <option value="gasto">Gasto</option>
-                <option value="ingreso">Ingreso</option>
+                <option value="gasto">Gasto Operativo Mensual 📉</option>
+                <option value="ingreso">Ingreso (Aporte) 📈</option>
+                <option value="gasto_bolsa">Gasto de Bolsa de Ahorro 🏦</option>
               </select>
             </div>
             <div class="form-group">
@@ -436,12 +511,12 @@
     <!-- Supabase Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- App Logic Scripts -->
-    <script src="utils.js?v=17.0.0"></script>
-    <script src="db.js?v=17.0.0"></script>
-    <script src="sync.js?v=17.0.0"></script>
-    <script src="chart.js?v=17.0.0"></script>
-    <script src="ui.js?v=17.0.0"></script>
-    <script src="pwa.js?v=17.0.0"></script>
-    <script src="app.js?v=17.0.0"></script>
+    <script src="utils.js?v=22.0.0"></script>
+    <script src="db.js?v=22.0.0"></script>
+    <script src="sync.js?v=22.0.0"></script>
+    <script src="chart.js?v=22.0.0"></script>
+    <script src="ui.js?v=22.0.0"></script>
+    <script src="pwa.js?v=22.0.0"></script>
+    <script src="app.js?v=22.0.0"></script>
 </body>
 </html>

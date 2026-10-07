@@ -41,6 +41,7 @@ class AppController {
             
             this.setupDefaultDates();
             this.bindEvents();
+            if (typeof initTheme === 'function') initTheme();
             await this.loadPeriodFilters();
             await this.refresh();
 
@@ -115,6 +116,10 @@ class AppController {
         }
         this.updateSummaryYearOptions();
         this.renderSummary();
+
+        if (typeof renderSavingsTab === 'function') {
+            renderSavingsTab(this.expenses, this.categoryBudgets, this.monthlyBudget);
+        }
     }
 
     /**
@@ -231,6 +236,13 @@ class AppController {
 
         document.getElementById('fab-add')?.addEventListener('click', openAddModalHandler);
         document.getElementById('btn-open-add-modal')?.addEventListener('click', openAddModalHandler);
+        document.getElementById('btn-open-savings-expense-modal')?.addEventListener('click', () => {
+            this.resetForm();
+            if (dom.expenseType) dom.expenseType.value = 'gasto_bolsa';
+            this.updateTransactionTypeUI();
+            this.openModal('modal-add');
+            setTimeout(() => dom.expenseAmount?.focus(), 300);
+        });
         document.getElementById('btn-close-modal')?.addEventListener('click', () => {
             this.closeModal('modal-add');
             this.resetForm();
@@ -341,6 +353,11 @@ class AppController {
         if (fab) fab.style.display = isDashboard ? '' : 'none';
 
         if (tabName === 'summary') this.renderSummary();
+        if (tabName === 'savings') {
+            if (typeof renderSavingsTab === 'function') {
+                renderSavingsTab(this.expenses, this.categoryBudgets, this.monthlyBudget);
+            }
+        }
         if (tabName === 'budgets') {
             renderCategoryBudgets(this.expenses, this.currentFilterMonth, this.categoryBudgets);
             if (typeof window.triggerBudgetBarsAnimation === 'function') {
@@ -372,9 +389,20 @@ class AppController {
 
     updateTransactionTypeUI() {
         updateCategoryOptions();
-        const isIncome = dom.expenseType.value === 'ingreso';
-        dom.btnSaveExpense.textContent = isIncome ? 'Guardar Ingreso' : 'Guardar Gasto';
-        dom.formTitle.innerHTML = `<i data-lucide="plus-circle" style="color: ${isIncome ? 'var(--primary)' : 'var(--success)'};"></i> Registrar Nuevo ${isIncome ? 'Ingreso' : 'Gasto'}`;
+        const type = dom.expenseType ? dom.expenseType.value : 'gasto';
+        const isIncome = type === 'ingreso';
+        const isVault = type === 'gasto_bolsa';
+
+        if (isIncome) {
+            dom.btnSaveExpense.textContent = 'Guardar Ingreso';
+            dom.formTitle.innerHTML = `<i data-lucide="plus-circle" style="color: var(--success);"></i> Registrar Nuevo Ingreso`;
+        } else if (isVault) {
+            dom.btnSaveExpense.textContent = 'Guardar Gasto de Bolsa';
+            dom.formTitle.innerHTML = `<i data-lucide="minus-circle" style="color: var(--danger);"></i> Registrar Gasto de la Bolsa`;
+        } else {
+            dom.btnSaveExpense.textContent = 'Guardar Gasto';
+            dom.formTitle.innerHTML = `<i data-lucide="plus-circle" style="color: var(--primary);"></i> Registrar Nuevo Gasto`;
+        }
         window.lucide?.createIcons();
     }
 
