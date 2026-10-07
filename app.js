@@ -116,10 +116,6 @@ class AppController {
         }
         this.updateSummaryYearOptions();
         this.renderSummary();
-
-        if (typeof renderSavingsTab === 'function') {
-            renderSavingsTab(this.expenses, this.categoryBudgets, this.monthlyBudget);
-        }
     }
 
     /**
@@ -140,6 +136,7 @@ class AppController {
         this.bindTabEvents();
         this.bindChartEvents();
         this.bindSyncEvents();
+        this.bindCollapsibleEvents();
     }
 
     /**
@@ -236,13 +233,6 @@ class AppController {
 
         document.getElementById('fab-add')?.addEventListener('click', openAddModalHandler);
         document.getElementById('btn-open-add-modal')?.addEventListener('click', openAddModalHandler);
-        document.getElementById('btn-open-savings-expense-modal')?.addEventListener('click', () => {
-            this.resetForm();
-            if (dom.expenseType) dom.expenseType.value = 'gasto_bolsa';
-            this.updateTransactionTypeUI();
-            this.openModal('modal-add');
-            setTimeout(() => dom.expenseAmount?.focus(), 300);
-        });
         document.getElementById('btn-close-modal')?.addEventListener('click', () => {
             this.closeModal('modal-add');
             this.resetForm();
@@ -284,6 +274,34 @@ class AppController {
 
         btnGastos?.addEventListener('click', () => toggleChartType('gasto'));
         btnIngresos?.addEventListener('click', () => toggleChartType('ingreso'));
+    }
+
+    /**
+     * Eventos para secciones desplegables (Acordeón)
+     */
+    bindCollapsibleEvents() {
+        const btnToggleHistory = document.getElementById('btn-toggle-history');
+        const historyContent = document.getElementById('history-content');
+        const iconHistoryToggle = document.getElementById('icon-history-toggle');
+
+        if (btnToggleHistory && historyContent) {
+            btnToggleHistory.addEventListener('click', () => {
+                const isCollapsed = historyContent.classList.toggle('is-collapsed');
+                if (iconHistoryToggle) {
+                    iconHistoryToggle.classList.toggle('icon-collapsed', isCollapsed);
+                }
+                localStorage.setItem('hogargasto_history_collapsed', isCollapsed ? 'true' : 'false');
+            });
+
+            // Cargar preferencia guardada
+            const savedState = localStorage.getItem('hogargasto_history_collapsed');
+            if (savedState === 'true') {
+                historyContent.classList.add('is-collapsed');
+                if (iconHistoryToggle) {
+                    iconHistoryToggle.classList.add('icon-collapsed');
+                }
+            }
+        }
     }
 
     /**
@@ -353,11 +371,6 @@ class AppController {
         if (fab) fab.style.display = isDashboard ? '' : 'none';
 
         if (tabName === 'summary') this.renderSummary();
-        if (tabName === 'savings') {
-            if (typeof renderSavingsTab === 'function') {
-                renderSavingsTab(this.expenses, this.categoryBudgets, this.monthlyBudget);
-            }
-        }
         if (tabName === 'budgets') {
             renderCategoryBudgets(this.expenses, this.currentFilterMonth, this.categoryBudgets);
             if (typeof window.triggerBudgetBarsAnimation === 'function') {
@@ -391,14 +404,10 @@ class AppController {
         updateCategoryOptions();
         const type = dom.expenseType ? dom.expenseType.value : 'gasto';
         const isIncome = type === 'ingreso';
-        const isVault = type === 'gasto_bolsa';
 
         if (isIncome) {
             dom.btnSaveExpense.textContent = 'Guardar Ingreso';
             dom.formTitle.innerHTML = `<i data-lucide="plus-circle" style="color: var(--success);"></i> Registrar Nuevo Ingreso`;
-        } else if (isVault) {
-            dom.btnSaveExpense.textContent = 'Guardar Gasto de Bolsa';
-            dom.formTitle.innerHTML = `<i data-lucide="minus-circle" style="color: var(--danger);"></i> Registrar Gasto de la Bolsa`;
         } else {
             dom.btnSaveExpense.textContent = 'Guardar Gasto';
             dom.formTitle.innerHTML = `<i data-lucide="plus-circle" style="color: var(--primary);"></i> Registrar Nuevo Gasto`;
