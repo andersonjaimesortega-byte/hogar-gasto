@@ -20,6 +20,7 @@ var categoryColors = {
     'Internet': '#2563eb',          // Azul Marino
     'Gas': '#f59e0b',               // Dorado Ámbar
     'Otros': '#64748b',              // Gris Pizarra
+    'Salidas de Casa': '#7c3aed',   // Violeta Vibrante
     'Juni': '#0f2a4a',              // Navy Blue
     'Isa': '#059669'                // Verde Esmeralda
 };
@@ -35,6 +36,7 @@ var categoryEmojis = {
     'Internet': '🌐',
     'Gas': '🔥',
     'Otros': '⚙️',
+    'Salidas de Casa': '🚪',
     'Juni': '🙋‍♂️',
     'Isa': '🙋‍♀️'
 };
@@ -55,6 +57,7 @@ function getCategoryIconClass(cat) {
         case 'Carne': return 'cat-icon-carne';
         case 'Internet': return 'cat-icon-internet';
         case 'Gas': return 'cat-icon-gas';
+        case 'Salidas de Casa': return 'cat-icon-otros';
         case 'Juni': return 'cat-icon-juni';
         case 'Isa': return 'cat-icon-isa';
         default: return 'cat-icon-otros';
