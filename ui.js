@@ -976,6 +976,7 @@ function updateCategoryOptions() {
             <option value="Internet">Internet 🌐</option>
             <option value="Gas">Gas 🔥</option>
             <option value="Otros">Otros ⚙️</option>
+            <option value="Salidas de Casa">Salidas de Casa 🚪</option>
         `;
     } else if (type === 'ingreso') {
         dom.expenseCategory.innerHTML += `
