@@ -1,0 +1,5375 @@
+[
+  {
+    "id": "port-1",
+    "name": "Sol / Ayurá",
+    "code": "PORT-01",
+    "atc": "Ander",
+    "description": "",
+    "projects": [
+      {
+        "id": "proj-1",
+        "xm": "",
+        "xmUrl": "https://example.com/reports/Estado_ElPaseo_Oct26.pdf",
+        "name": "El Paseo",
+        "fpo": "2026-10-28",
+        "cod": "2026-11-11",
+        "creg": "2026-10-31",
+        "connectionState": "Montaje",
+        "gridConnected": false,
+        "gridConnectionDate": "",
+        "capexCop": 2166161582,
+        "capexUsd": 533154,
+        "trmProyecto": 3650,
+        "bacCOP": 2166161581,
+        "bacUSD": 533154,
+        "acCOP": 1588815261,
+        "acUSD": 494810,
+        "cpiAnterior": 0,
+        "realProgress": 82.05,
+        "scheduledProgress": 83.92,
+        "gap": -1.87,
+        "previousGap": -4.47,
+        "status": "Rezago Leve",
+        "notes": "Retraso en entrega de transformador principal. Plan de aceleración en curso.",
+        "manager": "Elian",
+        "residenteCivil": "",
+        "residenteElectrico": "",
+        "operadorRed": "",
+        "equipment": {
+          "paneles": {
+            "status": "En sitio",
+            "progress": 100,
+            "edt": "",
+            "eta": "2026-08-10",
+            "brand": "Trina Vertex 665W",
+            "notes": "100% en bodega"
+          },
+          "trackers": {
+            "status": "Instalado",
+            "progress": 95,
+            "edt": "",
+            "eta": "2026-07-20",
+            "brand": "Nextracker Horizon",
+            "notes": "Montaje finalizado"
+          },
+          "shelter": {
+            "status": "En sitio",
+            "progress": 70,
+            "edt": "",
+            "eta": "2026-09-15",
+            "brand": "Schneider Electric",
+            "notes": "En puerto Buenaventura"
+          },
+          "inversores": {
+            "status": "En sitio",
+            "progress": 100,
+            "edt": "",
+            "eta": "2026-08-22",
+            "brand": "Huawei SUN2000-330KTL",
+            "notes": "En sitio"
+          },
+          "reconectador": {
+            "status": "En sitio",
+            "progress": 40,
+            "edt": "2026-08-11",
+            "eta": "2026-10-15",
+            "brand": "Noja Power OSM38",
+            "notes": "Retraso de fábrica 2 semanas"
+          }
+        },
+        "paymentMilestones": [
+          {
+            "id": "hm-1",
+            "name": "Anticipo equipos",
+            "valueCop": 0,
+            "valueUsd": 24000,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-2",
+            "name": "Hito Anticipo",
+            "valueCop": 0,
+            "valueUsd": 82631,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-3",
+            "name": "Ingeniería de detalle",
+            "valueCop": 422332090,
+            "valueUsd": 53315,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-4",
+            "name": "Hito salida de equipos y restante COP",
+            "valueCop": 211166045,
+            "valueUsd": 106631,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-5",
+            "name": "Hito llegada de equipos",
+            "valueCop": 316749067,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-6",
+            "name": "Hito instalación",
+            "valueCop": 79187267,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          }
+        ],
+        "comments": [
+          {
+            "id": "cmt-1",
+            "proyectoId": "proj-1",
+            "restriccion": "Suministro",
+            "comentario": "Retrasos en la llegada de insumos y transformador principal",
+            "texto": "Retrasos en la llegada de insumos y transformador principal",
+            "responsable": "Ana Gómez",
+            "autor": "Ana Gómez",
+            "estado": "En curso",
+            "notas": "¿Hay alguna novedad con los insumos faltantes en puerto?",
+            "respuesta": "Monitorear contrataciones y despacho terrestre desde Buenaventura.",
+            "fecha": "2026-09-12T14:30:00.000Z",
+            "fechaUltimaEdicion": null
+          },
+          {
+            "id": "cmt-2",
+            "proyectoId": "proj-1",
+            "restriccion": "OR/CREG",
+            "comentario": "Pendiente definir con el operador de red el punto de conexión y pruebas.",
+            "texto": "Pendiente definir con el operador de red el punto de conexión y pruebas.",
+            "responsable": "Juan Calle",
+            "autor": "Juan Calle",
+            "estado": "En revisión",
+            "notas": "¿Ya se entregó el borrador revisado al OR?",
+            "respuesta": "En revisión con el equipo técnico para radicación esta semana.",
+            "fecha": "2026-09-08T09:15:00.000Z",
+            "fechaUltimaEdicion": null
+          }
+        ]
+      },
+      {
+        "id": "proj-2",
+        "xm": "",
+        "xmUrl": "https://example.com/reports/Estado_GironOcc_Nov26.pdf",
+        "name": "Giron Occidente",
+        "fpo": "2026-11-12",
+        "cod": "2026-11-20",
+        "creg": "2026-08-12",
+        "connectionState": "Montaje",
+        "gridConnected": false,
+        "gridConnectionDate": "",
+        "capexCop": 2082409043,
+        "capexUsd": 519889,
+        "trmProyecto": 3800,
+        "bacCOP": 2082409043,
+        "bacUSD": 519889,
+        "acCOP": 823041477,
+        "acUSD": 409748,
+        "cpiAnterior": 0,
+        "realProgress": 53.76,
+        "scheduledProgress": 90.68,
+        "gap": -36.92,
+        "previousGap": -35.96,
+        "status": "Atrasado Crítico",
+        "notes": "Trámite de servidumbre en predio norte en negociación.",
+        "manager": "Andres B",
+        "residenteCivil": "",
+        "residenteElectrico": "",
+        "operadorRed": "",
+        "equipment": {
+          "paneles": {
+            "status": "En sitio",
+            "progress": 80,
+            "edt": "",
+            "eta": "2026-09-25",
+            "brand": "",
+            "notes": "Lote 2 navegando"
+          },
+          "trackers": {
+            "status": "En sitio",
+            "progress": 100,
+            "edt": "",
+            "eta": "2026-08-12",
+            "brand": "Soltec SF7",
+            "notes": "Estructura entregada"
+          },
+          "shelter": {
+            "status": "Instalado",
+            "progress": 50,
+            "edt": "",
+            "eta": "2026-10-10",
+            "brand": "Ingeteam Power Station",
+            "notes": "En fábrica España"
+          },
+          "inversores": {
+            "status": "En sitio",
+            "progress": 60,
+            "edt": "",
+            "eta": "2026-10-01",
+            "brand": "Sungrow SG350HX",
+            "notes": "Embarcado"
+          },
+          "reconectador": {
+            "status": "En sitio",
+            "progress": 45,
+            "edt": "",
+            "eta": "2026-10-20",
+            "brand": "ABB OVR-3",
+            "notes": "Pruebas FAT en fábrica"
+          }
+        },
+        "paymentMilestones": [
+          {
+            "id": "hm-1",
+            "name": "Anticipo equipos",
+            "valueCop": 0,
+            "valueUsd": 24000,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-2",
+            "name": "Hito Anticipo",
+            "valueCop": 0,
+            "valueUsd": 79978,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-3",
+            "name": "Ingeniería de detalle",
+            "valueCop": 419281809,
+            "valueUsd": 51989,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-4",
+            "name": "Hito salida de equipos y restante COP",
+            "valueCop": 209640904,
+            "valueUsd": 103978,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-5",
+            "name": "Hito llegada de equipos",
+            "valueCop": 314461356,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-6",
+            "name": "Hito instalación",
+            "valueCop": 52320452,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          }
+        ],
+        "comments": [
+          {
+            "id": "cmt-1790284765490-hgs3",
+            "proyectoId": "proj-2",
+            "restriccion": "Financiera",
+            "comentario": "Pago a contratistas",
+            "texto": "Pago a contratistas",
+            "responsable": "Andres julian y juliana",
+            "autor": "Andres julian y juliana",
+            "estado": "Pendiente",
+            "notas": "Existen retrasos en abonos al contratista SM, quien se encuentra presionando para el pago y se estima que paren los trabajos si no hay pago",
+            "respuesta": "",
+            "fecha": "2026-09-24T21:19:25.490Z",
+            "fechaUltimaEdicion": "2026-09-24T21:19:46.498Z"
+          },
+          {
+            "id": "cmt-1790284699745-zylh",
+            "proyectoId": "proj-2",
+            "restriccion": "Montaje",
+            "comentario": "Trabajos eléctricos",
+            "texto": "Trabajos eléctricos",
+            "responsable": "Andres julian y juliana",
+            "autor": "Andres julian y juliana",
+            "estado": "En revisión",
+            "notas": "Los contratos no han sido revisado por la parte legal y falta de anticipo",
+            "respuesta": "",
+            "fecha": "2026-09-24T21:18:19.745Z",
+            "fechaUltimaEdicion": "2026-09-24T21:18:42.848Z"
+          },
+          {
+            "id": "cmt-1790284654625-li1u",
+            "proyectoId": "proj-2",
+            "restriccion": "Suministro",
+            "comentario": "Insumos pendientes por cartera",
+            "texto": "Insumos pendientes por cartera",
+            "responsable": "Andres julian y juliana",
+            "autor": "Andres julian y juliana",
+            "estado": "Pendiente",
+            "notas": "endiente la entrega de cable de cobre para el Sistema de Puesta a Tierra (SPT), así como cableado AC y DC, debido a cartera vencida con el proveedor,  retrasando las actividades y moviend la FPO del proyecto",
+            "respuesta": "",
+            "fecha": "2026-09-24T21:17:34.625Z",
+            "fechaUltimaEdicion": "2026-09-24T21:20:56.488Z"
+          },
+          {
+            "id": "cmt-1790284607600-z113",
+            "proyectoId": "proj-2",
+            "restriccion": "Suministro",
+            "comentario": "Tracker",
+            "texto": "Tracker",
+            "responsable": "Todo el mundo",
+            "autor": "Todo el mundo",
+            "estado": "En revisión",
+            "notas": "Retraso de mes y medio en la llegada del tracker, aún no se tiene UPME y el tracker que se iba a usar de Curumani 2 ya no llegaria al proyecto",
+            "respuesta": "",
+            "fecha": "2026-09-24T21:16:47.600Z",
+            "fechaUltimaEdicion": null
+          }
+        ]
+      },
+      {
+        "id": "proj-3",
+        "xm": "",
+        "xmUrl": "",
+        "name": "Giron sur 1",
+        "fpo": "2027-01-02",
+        "cod": "2027-01-02",
+        "creg": "2026-12-02",
+        "connectionState": "Montaje",
+        "gridConnected": false,
+        "gridConnectionDate": "",
+        "capexCop": 2130363409,
+        "capexUsd": 514414,
+        "trmProyecto": 3750,
+        "bacCOP": 3148520599,
+        "bacUSD": 0,
+        "acCOP": 0,
+        "acUSD": 0,
+        "cpiAnterior": 0,
+        "realProgress": 50.47,
+        "scheduledProgress": 67.35,
+        "gap": -16.88,
+        "previousGap": -15.07,
+        "status": "Atrasado Crítico",
+        "notes": "Mejora de 18.7% en GAP respecto al corte anterior.",
+        "manager": "Vanessa",
+        "residenteCivil": "",
+        "residenteElectrico": "",
+        "operadorRed": "",
+        "equipment": {
+          "paneles": {
+            "status": "Buscando booking",
+            "progress": 50,
+            "edt": "2026-10-15",
+            "eta": "2026-11-15",
+            "brand": "",
+            "notes": "Bodega de Fábrica"
+          },
+          "trackers": {
+            "status": "En sitio",
+            "progress": 85,
+            "edt": "",
+            "eta": "2026-09-10",
+            "brand": "Nextracker",
+            "notes": "Hincado en curso"
+          },
+          "shelter": {
+            "status": "En tránsito",
+            "progress": 30,
+            "edt": "",
+            "eta": "2026-11-05",
+            "brand": "Schneider",
+            "notes": "A la espera de salida de ZF"
+          },
+          "inversores": {
+            "status": "En sitio",
+            "progress": 40,
+            "edt": "",
+            "eta": "2026-10-30",
+            "brand": "Huawei",
+            "notes": "Programado para embarque"
+          },
+          "reconectador": {
+            "status": "En sitio",
+            "progress": 10,
+            "edt": "",
+            "eta": "2026-11-20",
+            "brand": "Noja Power",
+            "notes": "OC en emisión"
+          }
+        },
+        "paymentMilestones": [
+          {
+            "id": "hm-1",
+            "name": "Hito Anticipo",
+            "valueCop": 0,
+            "valueUsd": 101640,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1790191052242-9xx",
+            "name": "Anticipo",
+            "valueCop": 97127748,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1790191067952-lhz",
+            "name": "Anticipo / Ing. detalle / Salida tracker",
+            "valueCop": 541981275,
+            "valueUsd": 101640,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1790191098534-l1c",
+            "name": "Hito salida de paneles",
+            "valueCop": 0,
+            "valueUsd": 51441,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1790191133911-qm3",
+            "name": "Hito llegada de equipos",
+            "valueCop": 319554511,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1790191148592-5n9",
+            "name": "Hito instalación",
+            "valueCop": 54018170,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          }
+        ],
+        "comments": [
+          {
+            "id": "cmt-1790288963526-r6t6",
+            "proyectoId": "proj-3",
+            "restriccion": "Suministro",
+            "comentario": "Contratista electrico",
+            "texto": "Contratista electrico",
+            "responsable": "@karen / @julian",
+            "autor": "@karen / @julian",
+            "estado": "En revisión",
+            "notas": "Aun no se ha definido quien es el contratista",
+            "respuesta": "",
+            "fecha": "2026-09-24T22:29:23.526Z",
+            "fechaUltimaEdicion": null
+          },
+          {
+            "id": "cmt-1790288709486-br2r",
+            "proyectoId": "proj-3",
+            "restriccion": "Logística",
+            "comentario": "Contratación de personal",
+            "texto": "Contratación de personal",
+            "responsable": "@vane / @karol",
+            "autor": "@vane / @karol",
+            "estado": "En revisión",
+            "notas": "La vacante para Auxiliar de SST se mantiene abierta por falta de lpostulantes",
+            "respuesta": "",
+            "fecha": "2026-09-24T22:25:09.486Z",
+            "fechaUltimaEdicion": null
+          },
+          {
+            "id": "cmt-1790288459852-twdb",
+            "proyectoId": "proj-3",
+            "restriccion": "Logística",
+            "comentario": "Obras civiles",
+            "texto": "Obras civiles",
+            "responsable": "@vane y @juliana",
+            "autor": "@vane y @juliana",
+            "estado": "Pendiente",
+            "notas": "para iniciar obras civiles alta revisar polizas y hacer pago",
+            "respuesta": "",
+            "fecha": "2026-09-24T22:20:59.852Z",
+            "fechaUltimaEdicion": "2026-09-24T22:28:53.193Z"
+          }
+        ]
+      },
+      {
+        "id": "proj-4",
+        "xm": "",
+        "xmUrl": "",
+        "name": "Giron sur 2",
+        "fpo": "2026-12-30",
+        "cod": "2027-01-31",
+        "creg": "2027-01-10",
+        "connectionState": "Montaje",
+        "gridConnected": false,
+        "gridConnectionDate": "",
+        "capexCop": 2154680615,
+        "capexUsd": 51414,
+        "trmProyecto": 3750,
+        "bacCOP": 0,
+        "bacUSD": 0,
+        "acCOP": 0,
+        "acUSD": 0,
+        "cpiAnterior": 0,
+        "realProgress": 46.66,
+        "scheduledProgress": 69.82,
+        "gap": -23.16,
+        "previousGap": -22.23,
+        "status": "Atrasado Crítico",
+        "notes": "Se incrementó la desviación por lluvias en terreno.",
+        "manager": "Vanessa",
+        "residenteCivil": "",
+        "residenteElectrico": "",
+        "operadorRed": "",
+        "equipment": {
+          "paneles": {
+            "status": "Buscando booking",
+            "progress": 40,
+            "edt": "2026-11-01",
+            "eta": "2026-12-01",
+            "brand": "",
+            "notes": "Bodega de Fábrica"
+          },
+          "trackers": {
+            "status": "Fabricación",
+            "progress": 70,
+            "edt": "2026-10-20",
+            "eta": "2026-11-20",
+            "brand": "Soltec",
+            "notes": "En sitio"
+          },
+          "shelter": {
+            "status": "En tránsito",
+            "progress": 20,
+            "edt": "",
+            "eta": "2026-11-30",
+            "brand": "Ingeteam",
+            "notes": "A la espera de salida de ZF"
+          },
+          "inversores": {
+            "status": "Fabricación",
+            "progress": 50,
+            "edt": "2026-11-15",
+            "eta": "2026-12-15",
+            "brand": "Sungrow",
+            "notes": "En tránsito"
+          },
+          "reconectador": {
+            "status": "Fabricación",
+            "progress": 0,
+            "edt": "2026-12-10",
+            "eta": "2027-01-07",
+            "brand": "ABB",
+            "notes": ""
+          }
+        },
+        "paymentMilestones": [
+          {
+            "id": "hm-1",
+            "name": "Anticipo equipos",
+            "valueCop": 0,
+            "valueUsd": 101640,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-2",
+            "name": "Anticipo / Ing. detalle / Salida tracker",
+            "valueCop": 646404185,
+            "valueUsd": 102883,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-3",
+            "name": "Hito salida de paneles",
+            "valueCop": 0,
+            "valueUsd": 51441,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-4",
+            "name": "Hito llegada de equipos",
+            "valueCop": 323202092,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-6",
+            "name": "Hito instalación",
+            "valueCop": 55234031,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          }
+        ],
+        "comments": []
+      },
+      {
+        "id": "proj-5",
+        "xm": "",
+        "xmUrl": "",
+        "name": "Confines 1",
+        "fpo": "2027-01-06",
+        "cod": "2027-01-12",
+        "creg": "2026-11-20",
+        "connectionState": "Montaje",
+        "gridConnected": false,
+        "gridConnectionDate": "",
+        "capexCop": 2316963336,
+        "capexUsd": 508202,
+        "trmProyecto": 3700,
+        "bacCOP": 0,
+        "bacUSD": 0,
+        "acCOP": 0,
+        "acUSD": 0,
+        "cpiAnterior": 0,
+        "realProgress": 40.38,
+        "scheduledProgress": 88.72,
+        "gap": -48.34,
+        "previousGap": -47.86,
+        "status": "Atrasado Crítico",
+        "notes": "Montaje electromecánico pendiente de cuadrilla extra.",
+        "manager": "Yacob",
+        "residenteCivil": "",
+        "residenteElectrico": "",
+        "operadorRed": "",
+        "equipment": {
+          "paneles": {
+            "status": "En tránsito",
+            "progress": 60,
+            "edt": "",
+            "eta": "2026-10-25",
+            "brand": "Trina Solar",
+            "notes": "A la espera de salida de ZF"
+          },
+          "trackers": {
+            "status": "En sitio",
+            "progress": 90,
+            "edt": "",
+            "eta": "2026-09-05",
+            "brand": "Nextracker",
+            "notes": "90% montado"
+          },
+          "shelter": {
+            "status": "En tránsito",
+            "progress": 35,
+            "edt": "",
+            "eta": "2026-11-15",
+            "brand": "Schneider",
+            "notes": "A la espera de salida de ZF"
+          },
+          "inversores": {
+            "status": "En tránsito",
+            "progress": 50,
+            "edt": "",
+            "eta": "2026-11-05",
+            "brand": "Huawei",
+            "notes": "A la espera de salida de ZF"
+          },
+          "reconectador": {
+            "status": "En sitio",
+            "progress": 20,
+            "edt": "",
+            "eta": "2026-12-01",
+            "brand": "Noja Power",
+            "notes": "Fabricación"
+          }
+        },
+        "paymentMilestones": [
+          {
+            "id": "hm-1",
+            "name": "Hito Anticipo",
+            "valueCop": 0,
+            "valueUsd": 101640,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-2",
+            "name": "Anticipo / Ing. detalle / Salida tracker y shelter",
+            "valueCop": 695089001,
+            "valueUsd": 101640,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-3",
+            "name": "Hito salida de paneles",
+            "valueCop": 0,
+            "valueUsd": 50820,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-4",
+            "name": "Hito llegada de equipos",
+            "valueCop": 347544500,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-6",
+            "name": "Hito instalación",
+            "valueCop": 63348167,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          }
+        ],
+        "comments": [
+          {
+            "id": "cmt-1790287265084-z5k5",
+            "proyectoId": "proj-5",
+            "restriccion": "Logística",
+            "comentario": "Contratación civil confines 2",
+            "texto": "Contratación civil confines 2",
+            "responsable": "@yacob",
+            "autor": "@yacob",
+            "estado": "En revisión",
+            "notas": "Pendiente la revision de contrato de obra civil para confines 2",
+            "respuesta": "",
+            "fecha": "2026-09-24T22:01:05.084Z",
+            "fechaUltimaEdicion": null
+          },
+          {
+            "id": "cmt-1790287142404-5pfc",
+            "proyectoId": "proj-5",
+            "restriccion": "Logística",
+            "comentario": "Seguridad en campo",
+            "texto": "Seguridad en campo",
+            "responsable": "@karen",
+            "autor": "@karen",
+            "estado": "Pendiente",
+            "notas": "se considera insuficiente la cámara provisional y se recomienda contratar vigilancia privada mientras se termina el cerramiento",
+            "respuesta": "",
+            "fecha": "2026-09-24T21:59:02.404Z",
+            "fechaUltimaEdicion": null
+          },
+          {
+            "id": "cmt-1790286949076-incl",
+            "proyectoId": "proj-5",
+            "restriccion": "Suministro",
+            "comentario": "Personal auxiliar",
+            "texto": "Personal auxiliar",
+            "responsable": "Yacob / Karol",
+            "autor": "Yacob / Karol",
+            "estado": "Pendiente",
+            "notas": "Se necesita almacenista en el proyecto",
+            "respuesta": "",
+            "fecha": "2026-09-24T21:55:49.076Z",
+            "fechaUltimaEdicion": "2026-09-24T21:56:10.829Z"
+          }
+        ]
+      },
+      {
+        "id": "proj-6",
+        "xm": "",
+        "xmUrl": "",
+        "name": "Confines 2",
+        "fpo": "2027-01-04",
+        "cod": "2027-01-26",
+        "creg": "2026-11-20",
+        "connectionState": "Montaje",
+        "gridConnected": false,
+        "gridConnectionDate": "",
+        "capexCop": 2159062140,
+        "capexUsd": 508202,
+        "trmProyecto": 3700,
+        "bacCOP": 0,
+        "bacUSD": 0,
+        "acCOP": 0,
+        "acUSD": 0,
+        "cpiAnterior": 0,
+        "realProgress": 33.58,
+        "scheduledProgress": 89.7,
+        "gap": -56.12,
+        "previousGap": -55.2,
+        "status": "Atrasado Crítico",
+        "notes": "Revisión técnica de obras civiles en progreso.",
+        "manager": "Yacob",
+        "residenteCivil": "",
+        "residenteElectrico": "",
+        "operadorRed": "",
+        "equipment": {
+          "paneles": {
+            "status": "Buscando booking",
+            "progress": 30,
+            "edt": "",
+            "eta": "2026-11-01",
+            "brand": "Trina Solar",
+            "notes": "Bodega de Fábrica"
+          },
+          "trackers": {
+            "status": "En sitio",
+            "progress": 50,
+            "edt": "",
+            "eta": "2026-10-15",
+            "brand": "Nextracker",
+            "notes": "En puerto"
+          },
+          "shelter": {
+            "status": "En tránsito",
+            "progress": 20,
+            "edt": "",
+            "eta": "2026-11-20",
+            "brand": "Schneider",
+            "notes": "A la espera de salida de ZF"
+          },
+          "inversores": {
+            "status": "En sitio",
+            "progress": 25,
+            "edt": "",
+            "eta": "2026-11-20",
+            "brand": "Huawei",
+            "notes": "En producción"
+          },
+          "reconectador": {
+            "status": "En sitio",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-12-15",
+            "brand": "Noja Power",
+            "notes": "Por emitir"
+          }
+        },
+        "paymentMilestones": [
+          {
+            "id": "hm-1",
+            "name": "Hito Anticipo",
+            "valueCop": 0,
+            "valueUsd": 101640,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-2",
+            "name": "Anticipo",
+            "valueCop": 215906214,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-3",
+            "name": "Ing. detalle / Salida tracker y shelter",
+            "valueCop": 431812428,
+            "valueUsd": 101640,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-4",
+            "name": "Hito salida de paneles",
+            "valueCop": 0,
+            "valueUsd": 50820,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-5",
+            "name": "Hito llegada de equipos",
+            "valueCop": 323859321,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-6",
+            "name": "Hito instalación",
+            "valueCop": 55453107,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          }
+        ],
+        "comments": []
+      },
+      {
+        "id": "proj-7",
+        "xm": "",
+        "xmUrl": "",
+        "name": "Tunja",
+        "fpo": "2027-02-02",
+        "cod": "2027-01-23",
+        "creg": "2026-12-25",
+        "connectionState": "Montaje",
+        "gridConnected": false,
+        "gridConnectionDate": "",
+        "capexCop": 2262435468,
+        "capexUsd": 529173,
+        "trmProyecto": 3600,
+        "bacCOP": 0,
+        "bacUSD": 0,
+        "acCOP": 0,
+        "acUSD": 0,
+        "cpiAnterior": 0,
+        "realProgress": 23.5,
+        "scheduledProgress": 94.98,
+        "gap": -71.48,
+        "previousGap": -71.2,
+        "status": "Atrasado Crítico",
+        "notes": "En revisión con el regulador y contratista EPC.",
+        "manager": "Andres B",
+        "residenteCivil": "Cristian David Gomez",
+        "residenteElectrico": "Freyman",
+        "operadorRed": "",
+        "equipment": {
+          "paneles": {
+            "status": "Buscando booking",
+            "progress": 20,
+            "edt": "2026-11-29",
+            "eta": "2026-12-30",
+            "brand": "Jinko Solar",
+            "notes": "Bodega de Fábrica"
+          },
+          "trackers": {
+            "status": "Buscando booking",
+            "progress": 20,
+            "edt": "2026-12-04",
+            "eta": "2027-01-04",
+            "brand": "Soltec",
+            "notes": "Bodega de Fábrica"
+          },
+          "shelter": {
+            "status": "Fabricación",
+            "progress": 10,
+            "edt": "2026-12-10",
+            "eta": "2027-01-06",
+            "brand": "Ingeteam",
+            "notes": ""
+          },
+          "inversores": {
+            "status": "Fabricación",
+            "progress": 20,
+            "edt": "2026-12-04",
+            "eta": "2027-01-02",
+            "brand": "Sungrow",
+            "notes": ""
+          },
+          "reconectador": {
+            "status": "Fabricación",
+            "progress": 0,
+            "edt": "2026-12-20",
+            "eta": "2027-01-20",
+            "brand": "ABB",
+            "notes": ""
+          }
+        },
+        "paymentMilestones": [
+          {
+            "id": "hm-1",
+            "name": "Anticipo equipos",
+            "valueCop": 0,
+            "valueUsd": 101640,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-2",
+            "name": "Hito Anticipo 1",
+            "valueCop": 88724089,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-3",
+            "name": "Hito Anticipo 2",
+            "valueCop": 127191019,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-4",
+            "name": "Ingeniería de detalle / Salida tracker y shelter",
+            "valueCop": 452487094,
+            "valueUsd": 105835,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-5",
+            "name": "Salida de paneles",
+            "valueCop": 0,
+            "valueUsd": 52917,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-6",
+            "name": "Hito llegada de equipos",
+            "valueCop": 339365320,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1790192459765-954",
+            "name": "Hito instalación",
+            "valueCop": 60621773,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          }
+        ],
+        "comments": [
+          {
+            "id": "cmt-1790283468301-hxrg",
+            "proyectoId": "proj-7",
+            "restriccion": "Montaje",
+            "comentario": "Aprobación legal y SST",
+            "texto": "Aprobación legal y SST",
+            "responsable": "@sst pendiente",
+            "autor": "@sst pendiente",
+            "estado": "En revisión",
+            "notas": "Esta pendiente la validación de la documentación SST",
+            "respuesta": "",
+            "fecha": "2026-09-24T20:57:48.301Z",
+            "fechaUltimaEdicion": null
+          },
+          {
+            "id": "cmt-1790283329901-55jo",
+            "proyectoId": "proj-7",
+            "restriccion": "Contratista",
+            "comentario": "Contratista electrico",
+            "texto": "Contratista electrico",
+            "responsable": "@karen",
+            "autor": "@karen",
+            "estado": "Pendiente",
+            "notas": "Se encuentra pendiente la entregal de la oferta económica por parte del contratista para validar el presupuesto",
+            "respuesta": "",
+            "fecha": "2026-09-24T20:55:29.901Z",
+            "fechaUltimaEdicion": null
+          },
+          {
+            "id": "cmt-1790283272504-y1vc",
+            "proyectoId": "proj-7",
+            "restriccion": "Diseño",
+            "comentario": "Pausa en diseño civil",
+            "texto": "Pausa en diseño civil",
+            "responsable": "@david",
+            "autor": "@david",
+            "estado": "En revisión",
+            "notas": "Está pendiente la revisión por parte del área estructural y la aplicación de cambios en las cajas de CCTV y Media Tensión",
+            "respuesta": "",
+            "fecha": "2026-09-24T20:54:32.504Z",
+            "fechaUltimaEdicion": null
+          },
+          {
+            "id": "cmt-1790283078136-cowz",
+            "proyectoId": "proj-7",
+            "restriccion": "Montaje",
+            "comentario": "Obras civiles",
+            "texto": "Obras civiles",
+            "responsable": "@Andresj",
+            "autor": "@Andresj",
+            "estado": "Pendiente",
+            "notas": "No se a confirmado el inicio de movimiento de tierras",
+            "respuesta": "- registro de nuevo proveedor @karen\n- Revisar polizas @andres\n- confirmar el pago del anticipo @andrej @juliana",
+            "fecha": "2026-09-24T20:51:18.136Z",
+            "fechaUltimaEdicion": "2026-09-24T20:53:32.769Z"
+          }
+        ]
+      },
+      {
+        "id": "proj-8",
+        "xm": "",
+        "xmUrl": "",
+        "name": "Sotaquirá",
+        "fpo": "",
+        "cod": "",
+        "creg": "",
+        "connectionState": "Ingeniería",
+        "gridConnected": false,
+        "gridConnectionDate": "",
+        "capexCop": 0,
+        "capexUsd": 0,
+        "trmProyecto": 0,
+        "bacCOP": 0,
+        "bacUSD": 0,
+        "acCOP": 0,
+        "acUSD": 0,
+        "cpiAnterior": 0,
+        "realProgress": 0,
+        "scheduledProgress": 0,
+        "gap": 0,
+        "previousGap": 0,
+        "status": "En tiempo",
+        "notes": "Fase preliminar de permisos ambientales.",
+        "manager": "Andres B",
+        "residenteCivil": "",
+        "residenteElectrico": "",
+        "operadorRed": "",
+        "equipment": {
+          "paneles": {
+            "status": "Pendiente OC",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "Por definir",
+            "notes": ""
+          },
+          "trackers": {
+            "status": "Pendiente OC",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "Por definir",
+            "notes": ""
+          },
+          "shelter": {
+            "status": "Pendiente OC",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "Por definir",
+            "notes": ""
+          },
+          "inversores": {
+            "status": "Pendiente OC",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "Por definir",
+            "notes": ""
+          },
+          "reconectador": {
+            "status": "Pendiente OC",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "Por definir",
+            "notes": ""
+          }
+        },
+        "paymentMilestones": [
+          {
+            "id": "hm-1",
+            "name": "Anticipo equipos",
+            "valueCop": 0,
+            "valueUsd": 101640,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-2",
+            "name": "Hito Anticipo",
+            "valueCop": 211166045,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-3",
+            "name": "Ingeniería de detalle",
+            "valueCop": 422332090,
+            "valueUsd": 53315,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-4",
+            "name": "Hito salida de equipos y restante COP",
+            "valueCop": 0,
+            "valueUsd": 106631,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-5",
+            "name": "Hito llegada de equipos",
+            "valueCop": 316749067,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-6",
+            "name": "Hito instalación",
+            "valueCop": 53083022,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          }
+        ],
+        "comments": []
+      }
+    ]
+  },
+  {
+    "id": "port-1789093775899",
+    "name": "COX Energy",
+    "code": "COX",
+    "atc": "Ander",
+    "description": "",
+    "projects": [
+      {
+        "id": "proj-1789154775872-hsl3",
+        "xm": "",
+        "xmUrl": "",
+        "name": "Chiriguana",
+        "fpo": "2026-05-08",
+        "cod": "2026-05-25",
+        "creg": "2026-10-27",
+        "connectionState": "Energizado",
+        "gridConnected": true,
+        "gridConnectionDate": "2026-07-11",
+        "capexCop": 2761529938,
+        "capexUsd": 309832,
+        "trmProyecto": 4150,
+        "bacCOP": 3211901282,
+        "bacUSD": 0,
+        "acCOP": 0,
+        "acUSD": 0,
+        "cpiAnterior": 0,
+        "realProgress": 95.6,
+        "scheduledProgress": 100,
+        "gap": -4.4,
+        "previousGap": -5,
+        "status": "Rezago Leve",
+        "notes": "",
+        "manager": "Julian",
+        "residenteCivil": "",
+        "residenteElectrico": "",
+        "operadorRed": "",
+        "equipment": {
+          "paneles": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "trackers": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "shelter": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "inversores": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "reconectador": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          }
+        },
+        "paymentMilestones": [
+          {
+            "id": "hm-1",
+            "name": "Anticipo",
+            "valueCop": 0,
+            "valueUsd": 61966.4,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-2",
+            "name": "Ingenieria",
+            "valueCop": 966535478.3,
+            "valueUsd": 108441.2,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-3",
+            "name": "Equipos en sitio",
+            "valueCop": 828458981.4,
+            "valueUsd": 92949.6,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-4",
+            "name": "Finalizacion de instalacion",
+            "valueCop": 276152993.8,
+            "valueUsd": 30983.2,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "saldoPendienteCop": 8,
+            "saldoPendienteUsd": 9,
+            "status": "Cobrado",
+            "submittedAt": "2026-09-23"
+          },
+          {
+            "id": "hm-1789154952231-eno",
+            "name": "Legalizacion",
+            "valueCop": 138076496.9,
+            "valueUsd": 15491.6,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          }
+        ],
+        "comments": [
+          {
+            "id": "cmt-1790607849410-ejy4",
+            "proyectoId": "proj-1789154775872-hsl3",
+            "restriccion": "Montaje",
+            "comentario": "Cierre de Dossier",
+            "texto": "Cierre de Dossier",
+            "responsable": "@julian",
+            "autor": "@julian",
+            "estado": "Pendiente",
+            "notas": "",
+            "respuesta": "",
+            "fecha": "2026-09-28T15:04:09.410Z",
+            "fechaUltimaEdicion": null
+          },
+          {
+            "id": "cmt-1790607827126-vwqh",
+            "proyectoId": "proj-1789154775872-hsl3",
+            "restriccion": "Montaje",
+            "comentario": "Instalacion CCTV",
+            "texto": "Instalacion CCTV",
+            "responsable": "@julian",
+            "autor": "@julian",
+            "estado": "Pendiente",
+            "notas": "",
+            "respuesta": "",
+            "fecha": "2026-09-28T15:03:47.126Z",
+            "fechaUltimaEdicion": "2026-09-28T15:04:12.251Z"
+          },
+          {
+            "id": "cmt-1789398618311-8m09",
+            "proyectoId": "proj-1789154775872-hsl3",
+            "restriccion": "Suministro",
+            "comentario": "Suministro CCTV",
+            "texto": "Suministro CCTV",
+            "responsable": "Jackeline",
+            "autor": "Jackeline",
+            "estado": "En revisión",
+            "notas": "Quedaba pendiente que se enviara el suministro de CCTV",
+            "respuesta": "Llegó suministro de CCTV, está pendiente la llegada de los tubos para las cámaras, se proyecta para el jueves 24",
+            "fecha": "2026-09-14T15:10:18.311Z",
+            "fechaUltimaEdicion": "2026-09-28T15:04:16.764Z"
+          },
+          {
+            "id": "cmt-1789398471231-169b",
+            "proyectoId": "proj-1789154775872-hsl3",
+            "restriccion": "Logística",
+            "comentario": "Contratación del sistema de CCTV",
+            "texto": "Contratación del sistema de CCTV",
+            "responsable": "Julian",
+            "autor": "Julian",
+            "estado": "Completada",
+            "notas": "Ya se tiene el contrato, está en revisión de las partes para ya enviar a firma",
+            "respuesta": "Se estan sacando cantidades civiles para agregar el contrato y que revise esta semana",
+            "fecha": "2026-09-14T15:07:51.231Z",
+            "fechaUltimaEdicion": "2026-09-28T15:03:04.780Z"
+          },
+          {
+            "id": "cmt-1789398430120-jahs",
+            "proyectoId": "proj-1789154775872-hsl3",
+            "restriccion": "Montaje",
+            "comentario": "Ponchado de conectores MC4",
+            "texto": "Ponchado de conectores MC4",
+            "responsable": "Julian",
+            "autor": "Julian",
+            "estado": "Completada",
+            "notas": "Como avanzan en el cambio de cables solares defectuosos en strings 10 y 11 del inversor 2?",
+            "respuesta": "Terminan el viernes",
+            "fecha": "2026-09-14T15:07:10.120Z",
+            "fechaUltimaEdicion": "2026-09-17T15:13:49.330Z"
+          }
+        ]
+      },
+      {
+        "id": "proj-1789154776760-71yr",
+        "xm": "",
+        "xmUrl": "",
+        "name": "El Paso Norte",
+        "fpo": "2026-05-11",
+        "cod": "2026-08-21",
+        "creg": "2026-07-31",
+        "connectionState": "Energizado",
+        "gridConnected": true,
+        "gridConnectionDate": "2026-09-11",
+        "capexCop": 2623960200,
+        "capexUsd": 326201,
+        "trmProyecto": 4200,
+        "bacCOP": 2996208139,
+        "bacUSD": 0,
+        "acCOP": 0,
+        "acUSD": 0,
+        "cpiAnterior": 0,
+        "realProgress": 93.9,
+        "scheduledProgress": 100,
+        "gap": -6.1,
+        "previousGap": -3,
+        "status": "Rezago Leve",
+        "notes": "",
+        "manager": "Julian",
+        "residenteCivil": "",
+        "residenteElectrico": "",
+        "operadorRed": "",
+        "equipment": {
+          "paneles": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "trackers": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "shelter": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "inversores": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "reconectador": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          }
+        },
+        "paymentMilestones": [
+          {
+            "id": "hm-1",
+            "name": "Anticipo",
+            "valueCop": 524792040,
+            "valueUsd": 65240.2,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-2",
+            "name": "Hito 1 - ingeniería y transporte suministro internacional.",
+            "valueCop": 787188060,
+            "valueUsd": 97860.3,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-3",
+            "name": "Hito 2 – Ingeniería y equipos en sitio.",
+            "valueCop": 918386070,
+            "valueUsd": 114170.35,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-4",
+            "name": "Hito 3 – Finalización instalación del proyecto.",
+            "valueCop": 262396020,
+            "valueUsd": 32620.1,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-5",
+            "name": "Hito 4 - RETIE y legalización.",
+            "valueCop": 131198010,
+            "valueUsd": 16310.05,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          }
+        ],
+        "comments": [
+          {
+            "id": "cmt-1790608199063-0llz",
+            "proyectoId": "proj-1789154776760-71yr",
+            "restriccion": "Montaje",
+            "comentario": "Instalacion CCTV",
+            "texto": "Instalacion CCTV",
+            "responsable": "@julian",
+            "autor": "@julian",
+            "estado": "Pendiente",
+            "notas": "",
+            "respuesta": "",
+            "fecha": "2026-09-28T15:09:59.063Z",
+            "fechaUltimaEdicion": "2026-09-28T15:10:02.598Z"
+          },
+          {
+            "id": "cmt-1789399811742-cm7c",
+            "proyectoId": "proj-1789154776760-71yr",
+            "restriccion": "Suministro",
+            "comentario": "Sustitución de breaker",
+            "texto": "Sustitución de breaker",
+            "responsable": "Andres Julian",
+            "autor": "Andres Julian",
+            "estado": "Completada",
+            "notas": "Proceder con el cambio e instalación del breaker (interruptor) de 80A recibido en sitio para reemplaz",
+            "respuesta": "",
+            "fecha": "2026-09-14T15:30:11.743Z",
+            "fechaUltimaEdicion": "2026-09-14T21:17:02.383Z"
+          },
+          {
+            "id": "cmt-1789399788478-qfkr",
+            "proyectoId": "proj-1789154776760-71yr",
+            "restriccion": "Montaje",
+            "comentario": "Anclajes del shelter",
+            "texto": "Anclajes del shelter",
+            "responsable": "Maryam",
+            "autor": "Maryam",
+            "estado": "En revisión",
+            "notas": "Haria falta el acompañamiento de un residente para hacer la actividad junto al contratista esta semana",
+            "respuesta": "",
+            "fecha": "2026-09-14T15:29:48.478Z",
+            "fechaUltimaEdicion": "2026-09-22T19:31:10.848Z"
+          },
+          {
+            "id": "cmt-1789399757358-6bi4",
+            "proyectoId": "proj-1789154776760-71yr",
+            "restriccion": "Montaje",
+            "comentario": "Subsanación de cableado DC",
+            "texto": "Subsanación de cableado DC",
+            "responsable": "Andres Julian",
+            "autor": "Andres Julian",
+            "estado": "Completada",
+            "notas": "Ejecutar las labores de subsanación y reemplazo del cableado DC defectuoso en los strings del inversor 3",
+            "respuesta": "Se está gestionado la ponchadora para los MC4, el cable ya fue cambiado terminan el 18 de sept",
+            "fecha": "2026-09-14T15:29:17.358Z",
+            "fechaUltimaEdicion": "2026-09-17T15:14:13.250Z"
+          },
+          {
+            "id": "cmt-1789399731670-7hda",
+            "proyectoId": "proj-1789154776760-71yr",
+            "restriccion": "Suministro",
+            "comentario": "Suministro CCTV",
+            "texto": "Suministro CCTV",
+            "responsable": "Andres Julian",
+            "autor": "Andres Julian",
+            "estado": "En curso",
+            "notas": "No han llegado a la obra los tubos de 4” necesarios para la instalación de las cámaras",
+            "respuesta": "",
+            "fecha": "2026-09-14T15:28:51.670Z",
+            "fechaUltimaEdicion": "2026-09-22T15:26:25.149Z"
+          },
+          {
+            "id": "cmt-1789399583750-357v",
+            "proyectoId": "proj-1789154776760-71yr",
+            "restriccion": "Logística",
+            "comentario": "Contratación del sistema de CCTV",
+            "texto": "Contratación del sistema de CCTV",
+            "responsable": "Julian",
+            "autor": "Julian",
+            "estado": "En curso",
+            "notas": "Esta pendiente de firma en zapzing",
+            "respuesta": "",
+            "fecha": "2026-09-14T15:26:23.750Z",
+            "fechaUltimaEdicion": "2026-09-22T19:32:28.373Z"
+          }
+        ]
+      },
+      {
+        "id": "proj-1789154777968-gyk3",
+        "xm": "",
+        "xmUrl": "",
+        "name": "Monterrubio",
+        "fpo": "2026-09-21",
+        "cod": "2026-10-05",
+        "creg": "2026-11-20",
+        "connectionState": "Montaje",
+        "gridConnected": false,
+        "gridConnectionDate": "",
+        "capexCop": 2663669717,
+        "capexUsd": 335409,
+        "trmProyecto": 4300,
+        "bacCOP": 3044839669,
+        "bacUSD": 0,
+        "acCOP": 0,
+        "acUSD": 0,
+        "cpiAnterior": 0,
+        "realProgress": 61.57,
+        "scheduledProgress": 56.25,
+        "gap": 5.32,
+        "previousGap": 0,
+        "status": "Adelantado",
+        "notes": "",
+        "manager": "Laura Echeverry",
+        "residenteCivil": "",
+        "residenteElectrico": "",
+        "operadorRed": "",
+        "equipment": {
+          "paneles": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "trackers": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "shelter": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "inversores": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "reconectador": {
+            "status": "En sitio",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          }
+        },
+        "paymentMilestones": [
+          {
+            "id": "hm-1",
+            "name": "Anticipo 1 Firma acta de inicio",
+            "valueCop": 532733943.4,
+            "valueUsd": 67081.8,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-2",
+            "name": "Hito 1 - Entrega del Diseño Técnico",
+            "valueCop": 932284400.95,
+            "valueUsd": 117393.15,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-3",
+            "name": "Hito 2 - Equipos en puerto de salida hacia Colombia (BL)",
+            "valueCop": 799100915.1,
+            "valueUsd": 100622.7,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-4",
+            "name": "Hito 4 - Inicio instalación del proyecto",
+            "valueCop": 266366971.7,
+            "valueUsd": 33540.9,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-5",
+            "name": "Hito 5 - RETIE y legalización",
+            "valueCop": 133183485.85,
+            "valueUsd": 16770.45,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          }
+        ],
+        "comments": [
+          {
+            "id": "cmt-1790634444699-kom8",
+            "proyectoId": "proj-1789154777968-gyk3",
+            "restriccion": "Contratista",
+            "comentario": "Cambio de contratista para la linea de MT",
+            "texto": "Cambio de contratista para la linea de MT",
+            "responsable": "Laura",
+            "autor": "Laura",
+            "estado": "Pendiente",
+            "notas": "Aun esta pendiente continuar con las actividades de MT con el contratista aprobado para esta labor y finalizar el trabajo de conexion",
+            "respuesta": "",
+            "fecha": "2026-09-28T22:27:24.699Z",
+            "fechaUltimaEdicion": null
+          },
+          {
+            "id": "cmt-1789400423501-i881",
+            "proyectoId": "proj-1789154777968-gyk3",
+            "restriccion": "Suministro",
+            "comentario": "Cierre del sistema CCTV",
+            "texto": "Cierre del sistema CCTV",
+            "responsable": "Laura",
+            "autor": "Laura",
+            "estado": "En revisión",
+            "notas": "Finalizar las excavaciones y el montaje del circuito cerrado de televisión una vez se reactiven los frentes de trabajo",
+            "respuesta": "Esta pausado por orden publico",
+            "fecha": "2026-09-14T15:40:23.501Z",
+            "fechaUltimaEdicion": "2026-09-14T21:01:51.615Z"
+          },
+          {
+            "id": "cmt-1789400353462-1j9h",
+            "proyectoId": "proj-1789154777968-gyk3",
+            "restriccion": "OR/CREG",
+            "comentario": "Construcción física de la Línea de Media Tensión (MT)",
+            "texto": "Construcción física de la Línea de Media Tensión (MT)",
+            "responsable": "Laura",
+            "autor": "Laura",
+            "estado": "Completada",
+            "notas": "Recibir la aprobación del descargo de obras previas por parte del OR para dar inicio a la construcción física de la red de Media Tensión",
+            "respuesta": "No se tiene fecha todavia por parte del OR",
+            "fecha": "2026-09-14T15:39:13.462Z",
+            "fechaUltimaEdicion": "2026-09-21T22:20:52.774Z"
+          },
+          {
+            "id": "cmt-1789400318909-zmr7",
+            "proyectoId": "proj-1789154777968-gyk3",
+            "restriccion": "Montaje",
+            "comentario": "Soportes para descargo de obras previas ante el OR",
+            "texto": "Soportes para descargo de obras previas ante el OR",
+            "responsable": "Laura",
+            "autor": "Laura",
+            "estado": "Completada",
+            "notas": "Completar e integrar la información requerida de G30, SM, TCT y el listado interno para que el Operador de Red (OR) procese la solicitud de descargo de obras previas",
+            "respuesta": "No se ha confirmado si se subio la documentación",
+            "fecha": "2026-09-14T15:38:38.909Z",
+            "fechaUltimaEdicion": "2026-09-21T15:05:22.652Z"
+          },
+          {
+            "id": "cmt-1789400252126-4gs9",
+            "proyectoId": "proj-1789154777968-gyk3",
+            "restriccion": "SST",
+            "comentario": "Cargue documental del contratista y facturación",
+            "texto": "Cargue documental del contratista y facturación",
+            "responsable": "Leidy",
+            "autor": "Leidy",
+            "estado": "En revisión",
+            "notas": "Queda pendiente por subsanar los certificados de los equipos",
+            "respuesta": "",
+            "fecha": "2026-09-14T15:37:32.126Z",
+            "fechaUltimaEdicion": "2026-09-22T15:31:03.085Z"
+          }
+        ]
+      },
+      {
+        "id": "proj-1789154778944-729c",
+        "xm": "",
+        "xmUrl": "",
+        "name": "Chima 1",
+        "fpo": "2026-09-28",
+        "cod": "2026-10-20",
+        "creg": "2026-09-30",
+        "connectionState": "Montaje",
+        "gridConnected": false,
+        "gridConnectionDate": "",
+        "capexCop": 2665370265,
+        "capexUsd": 328503,
+        "trmProyecto": 4300,
+        "bacCOP": 3017506480,
+        "bacUSD": 0,
+        "acCOP": 0,
+        "acUSD": 0,
+        "cpiAnterior": 0,
+        "realProgress": 96.51,
+        "scheduledProgress": 98.22,
+        "gap": -1.71,
+        "previousGap": -2.2,
+        "status": "Rezago Leve",
+        "notes": "",
+        "manager": "",
+        "residenteCivil": "",
+        "residenteElectrico": "",
+        "operadorRed": "",
+        "equipment": {
+          "paneles": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "trackers": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "shelter": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "inversores": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "reconectador": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          }
+        },
+        "paymentMilestones": [
+          {
+            "id": "hm-1",
+            "name": "Anticipo 1 - Firma acta de inicio",
+            "valueCop": 533074053,
+            "valueUsd": 99696,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-2",
+            "name": "Hito 1 - ingeniería y transporte suministro internacional.",
+            "valueCop": 559727756,
+            "valueUsd": 130257,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-3",
+            "name": "Hito 2 – Ingeniería y equipos en sitio.",
+            "valueCop": 959533295,
+            "valueUsd": 98549,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-4",
+            "name": "Hito 3 – Finalización instalación del proyecto.",
+            "valueCop": 399805539.69,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "En trámite",
+            "submittedAt": "2026-09-18"
+          },
+          {
+            "id": "hm-5",
+            "name": "Hito 4 - RETIE y legalización.",
+            "valueCop": 213229621,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          }
+        ],
+        "comments": [
+          {
+            "id": "cmt-1790092592291-g9n5",
+            "proyectoId": "proj-1789154778944-729c",
+            "restriccion": "Logística",
+            "comentario": "Estacion meteorologica Chima 2",
+            "texto": "Estacion meteorologica Chima 2",
+            "responsable": "Ivan",
+            "autor": "Ivan",
+            "estado": "Completada",
+            "notas": "Esta pendiente la llegada de la estación meteorológica para Chimá 2, enviada a reparación en Valledupar",
+            "respuesta": "",
+            "fecha": "2026-09-22T15:56:32.291Z",
+            "fechaUltimaEdicion": "2026-09-22T19:01:31.767Z"
+          },
+          {
+            "id": "cmt-1790092319952-kok0",
+            "proyectoId": "proj-1789154778944-729c",
+            "restriccion": "Montaje",
+            "comentario": "Suministros del shelter",
+            "texto": "Suministros del shelter",
+            "responsable": "Ivan",
+            "autor": "Ivan",
+            "estado": "En curso",
+            "notas": "Estan terminando la construcción las escaleras para los Chimás",
+            "respuesta": "",
+            "fecha": "2026-09-22T15:51:59.952Z",
+            "fechaUltimaEdicion": "2026-09-22T17:33:24.348Z"
+          },
+          {
+            "id": "cmt-1790092239537-1t1w",
+            "proyectoId": "proj-1789154778944-729c",
+            "restriccion": "OR/CREG",
+            "comentario": "Requerimiento del Operador de Red",
+            "texto": "Requerimiento del Operador de Red",
+            "responsable": "Ivan / simon",
+            "autor": "Ivan / simon",
+            "estado": "En curso",
+            "notas": "AFINIA solicitó actualizar el proyecto al nuevo acuerdo CNO",
+            "respuesta": "Simón está apelando para que no se hagan en el 1 para chima  2 si se tendrían que hacer pruebas adicionales, aunque está en revisión igualmente.",
+            "fecha": "2026-09-22T15:50:39.537Z",
+            "fechaUltimaEdicion": "2026-09-22T17:34:12.306Z"
+          },
+          {
+            "id": "cmt-1790091842908-qaml",
+            "proyectoId": "proj-1789154778944-729c",
+            "restriccion": "OR/CREG",
+            "comentario": "Interventoria",
+            "texto": "Interventoria",
+            "responsable": "Ivan",
+            "autor": "Ivan",
+            "estado": "En revisión",
+            "notas": "Pendientes de recibir los comentarios luego de la interventoría.",
+            "respuesta": "",
+            "fecha": "2026-09-22T15:44:02.908Z",
+            "fechaUltimaEdicion": "2026-09-22T17:34:36.243Z"
+          },
+          {
+            "id": "cmt-1789401651636-ouvu",
+            "proyectoId": "proj-1789154778944-729c",
+            "restriccion": "Montaje",
+            "comentario": "Estación meteorológica",
+            "texto": "Estación meteorológica",
+            "responsable": "Ivan",
+            "autor": "Ivan",
+            "estado": "Completada",
+            "notas": "Se realizó el armado e instalación de la estación meteorológica Zentrack",
+            "respuesta": "",
+            "fecha": "2026-09-14T16:00:51.636Z",
+            "fechaUltimaEdicion": "2026-09-22T19:01:47.911Z"
+          },
+          {
+            "id": "cmt-1789401598532-ee63",
+            "proyectoId": "proj-1789154778944-729c",
+            "restriccion": "Montaje",
+            "comentario": "Cierre de PPI de vías",
+            "texto": "Cierre de PPI de vías",
+            "responsable": "Ivan / Andres J",
+            "autor": "Ivan / Andres J",
+            "estado": "En curso",
+            "notas": "El contratista aún indica no contar con la maquinaria apta (documentación) para las vías internas y no se ha hecho el pago para adecuar la vía externa pública que es con máquinaria pero de la comunidad.",
+            "respuesta": "Aún no se tiene fecha para finalizar las vias internas",
+            "fecha": "2026-09-14T15:59:58.532Z",
+            "fechaUltimaEdicion": "2026-09-22T17:41:39.206Z"
+          },
+          {
+            "id": "cmt-1789401498487-b3p2",
+            "proyectoId": "proj-1789154778944-729c",
+            "restriccion": "Montaje",
+            "comentario": "Certificación RETIE",
+            "texto": "Certificación RETIE",
+            "responsable": "Ivan",
+            "autor": "Ivan",
+            "estado": "Completada",
+            "notas": "Se tiene fecha para la inspeccion?",
+            "respuesta": "",
+            "fecha": "2026-09-14T15:58:18.487Z",
+            "fechaUltimaEdicion": "2026-09-22T15:49:57.353Z"
+          },
+          {
+            "id": "cmt-1789401380873-5jg2",
+            "proyectoId": "proj-1789154778944-729c",
+            "restriccion": "DD",
+            "comentario": "Conciliación con la alcaldía",
+            "texto": "Conciliación con la alcaldía",
+            "responsable": "Ivan",
+            "autor": "Ivan",
+            "estado": "En revisión",
+            "notas": "La Alcaldía de Chimá negó la licencia que buscaba solventar la ubicación de las cajas de Media Tensión en vía pública, lo que genera riesgo de demolició",
+            "respuesta": "Se necesita llegar a un acuerdo con la Alcaldía de Chimá para evitar la demolición de las cajas de MT",
+            "fecha": "2026-09-14T15:56:20.873Z",
+            "fechaUltimaEdicion": "2026-09-22T19:07:15.761Z"
+          },
+          {
+            "id": "cmt-1789401293685-7kmr",
+            "proyectoId": "proj-1789154778944-729c",
+            "restriccion": "Montaje",
+            "comentario": "Sistema de CCTV y cámaras",
+            "texto": "Sistema de CCTV y cámaras",
+            "responsable": "Ivan",
+            "autor": "Ivan",
+            "estado": "En curso",
+            "notas": "Se avanzó en la instalación de cable UTP y fibra óptica para el sistema de CCTV, e inició la instalación y adecuación del rack en el shelter de Chimá 1, aun no se proyecta fehc ade finalizacion de la instalacion",
+            "respuesta": "Se espera finalizar Chimá 1 el 30 de septiembre y Chimá 2 el 7 de octubre",
+            "fecha": "2026-09-14T15:54:53.685Z",
+            "fechaUltimaEdicion": "2026-09-22T17:37:20.689Z"
+          },
+          {
+            "id": "cmt-1789401194453-br3s",
+            "proyectoId": "proj-1789154778944-729c",
+            "restriccion": "OR/CREG",
+            "comentario": "Obras previas",
+            "texto": "Obras previas",
+            "responsable": "Simon",
+            "autor": "Simon",
+            "estado": "Completada",
+            "notas": "Confirmar fecha de descargo de obras previas",
+            "respuesta": "",
+            "fecha": "2026-09-14T15:53:14.453Z",
+            "fechaUltimaEdicion": "2026-09-22T17:37:31.609Z"
+          }
+        ]
+      },
+      {
+        "id": "proj-1789154779896-ijc5",
+        "xm": "",
+        "xmUrl": "",
+        "name": "Chima 2",
+        "fpo": "2026-09-28",
+        "cod": "2026-11-20",
+        "creg": "2026-11-20",
+        "connectionState": "Montaje",
+        "gridConnected": false,
+        "gridConnectionDate": "",
+        "capexCop": 2665370265,
+        "capexUsd": 328503,
+        "trmProyecto": 4300,
+        "bacCOP": 3017506480,
+        "bacUSD": 0,
+        "acCOP": 0,
+        "acUSD": 0,
+        "cpiAnterior": 0,
+        "realProgress": 96.69,
+        "scheduledProgress": 98.36,
+        "gap": -1.67,
+        "previousGap": -3,
+        "status": "Rezago Leve",
+        "notes": "",
+        "manager": "Elian",
+        "residenteCivil": "",
+        "residenteElectrico": "",
+        "operadorRed": "",
+        "equipment": {
+          "paneles": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "trackers": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "shelter": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "inversores": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "reconectador": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          }
+        },
+        "paymentMilestones": [
+          {
+            "id": "hm-1",
+            "name": "Anticipo equipos",
+            "valueCop": 533074053,
+            "valueUsd": 99696,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-2",
+            "name": "Ingeniería de detalle",
+            "valueCop": 559727756,
+            "valueUsd": 130257,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-3",
+            "name": "Hito salida de equipos y restante COP",
+            "valueCop": 959533295,
+            "valueUsd": 98549,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-4",
+            "name": "Instalacion de prpyecto",
+            "valueCop": 399805540,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "En trámite",
+            "submittedAt": "2026-09-18"
+          },
+          {
+            "id": "hm-5",
+            "name": "Hito llegada de equipos",
+            "valueCop": 213229621,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          }
+        ],
+        "comments": []
+      },
+      {
+        "id": "proj-1789154780880-ppa0",
+        "xm": "",
+        "xmUrl": "",
+        "name": "Galeras",
+        "fpo": "2026-09-09",
+        "cod": "2026-09-23",
+        "creg": "2026-07-31",
+        "connectionState": "Energizado",
+        "gridConnected": true,
+        "gridConnectionDate": "2026-09-11",
+        "capexCop": 2800588091,
+        "capexUsd": 319134,
+        "trmProyecto": 4100,
+        "bacCOP": 3058314834,
+        "bacUSD": 0,
+        "acCOP": 0,
+        "acUSD": 0,
+        "cpiAnterior": 0,
+        "realProgress": 85,
+        "scheduledProgress": 100,
+        "gap": -15,
+        "previousGap": -15,
+        "status": "Atrasado Crítico",
+        "notes": "",
+        "manager": "Julian",
+        "residenteCivil": "",
+        "residenteElectrico": "",
+        "operadorRed": "",
+        "equipment": {
+          "paneles": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "trackers": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "shelter": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "inversores": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "reconectador": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          }
+        },
+        "paymentMilestones": [
+          {
+            "id": "hm-6",
+            "name": "Anticipo",
+            "valueCop": 560117618.2,
+            "valueUsd": 63826.8,
+            "percentageCop": 20,
+            "percentageUsd": 20,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1789174979714-j0v",
+            "name": "Ingenieria",
+            "valueCop": 560117618.2,
+            "valueUsd": 127653.6,
+            "percentageCop": 20,
+            "percentageUsd": 40,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1789174980906-gqa",
+            "name": "Salida de equipos",
+            "valueCop": 0,
+            "valueUsd": 63826.8,
+            "percentageCop": 0,
+            "percentageUsd": 20,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1789174981713-1k2",
+            "name": "Equipos en sitiio",
+            "valueCop": 560117618.2,
+            "valueUsd": 63826.8,
+            "percentageCop": 20,
+            "percentageUsd": 20,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1789174982633-drj",
+            "name": "instalacion del proyecto",
+            "valueCop": 840176427.3,
+            "valueUsd": 0,
+            "percentageCop": 30,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1789175072442-wzo",
+            "name": "Retie y legalizaciion",
+            "valueCop": 280058809.1,
+            "valueUsd": 0,
+            "percentageCop": 10,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          }
+        ],
+        "comments": [
+          {
+            "id": "cmt-1789402312531-dspx",
+            "proyectoId": "proj-1789154780880-ppa0",
+            "restriccion": "Montaje",
+            "comentario": "Estación meteorológica",
+            "texto": "Estación meteorológica",
+            "responsable": "Julian",
+            "autor": "Julian",
+            "estado": "Completada",
+            "notas": "terminado",
+            "respuesta": "",
+            "fecha": "2026-09-14T16:11:52.531Z",
+            "fechaUltimaEdicion": "2026-09-22T19:34:50.086Z"
+          },
+          {
+            "id": "cmt-1789402266443-iwyj",
+            "proyectoId": "proj-1789154780880-ppa0",
+            "restriccion": "Suministro",
+            "comentario": "Falta de suministros en sitio",
+            "texto": "Falta de suministros en sitio",
+            "responsable": "@Julian",
+            "autor": "@Julian",
+            "estado": "En curso",
+            "notas": "Esta pendiente que Codinco de fecha de entrega",
+            "respuesta": "",
+            "fecha": "2026-09-14T16:11:06.443Z",
+            "fechaUltimaEdicion": "2026-09-22T19:35:59.922Z"
+          },
+          {
+            "id": "cmt-1789402218131-ppth",
+            "proyectoId": "proj-1789154780880-ppa0",
+            "restriccion": "Suministro",
+            "comentario": "Lavado de paneles",
+            "texto": "Lavado de paneles",
+            "responsable": "Leidy",
+            "autor": "Leidy",
+            "estado": "En revisión",
+            "notas": "Pendiente de que temrinen de subir y revisar la documentacion para el ingreso",
+            "respuesta": "",
+            "fecha": "2026-09-14T16:10:18.131Z",
+            "fechaUltimaEdicion": "2026-09-22T19:37:08.374Z"
+          },
+          {
+            "id": "cmt-1789402175923-vjx1",
+            "proyectoId": "proj-1789154780880-ppa0",
+            "restriccion": "Logística",
+            "comentario": "Contratación del sistema de CCTV",
+            "texto": "Contratación del sistema de CCTV",
+            "responsable": "@Andresj @jacke",
+            "autor": "@Andresj @jacke",
+            "estado": "Pendiente",
+            "notas": "Existe un retraso en la formalización de CCTV para Galeras y Falta el suministro de cajas para el sistema de CCTV",
+            "respuesta": "",
+            "fecha": "2026-09-14T16:09:35.923Z",
+            "fechaUltimaEdicion": "2026-09-22T19:37:46.187Z"
+          }
+        ]
+      },
+      {
+        "id": "proj-1789154783216-acdz",
+        "xm": "",
+        "xmUrl": "",
+        "name": "Chinu 2",
+        "fpo": "2027-01-06",
+        "cod": "2027-02-11",
+        "creg": "2026-12-10",
+        "connectionState": "Montaje",
+        "gridConnected": false,
+        "gridConnectionDate": "",
+        "capexCop": 2744663738,
+        "capexUsd": 311460,
+        "trmProyecto": 4080,
+        "bacCOP": 3214202260,
+        "bacUSD": 0,
+        "acCOP": 0,
+        "acUSD": 0,
+        "cpiAnterior": 0,
+        "realProgress": 45.75,
+        "scheduledProgress": 73.44,
+        "gap": -27.69,
+        "previousGap": -27.69,
+        "status": "Atrasado Crítico",
+        "notes": "",
+        "manager": "",
+        "residenteCivil": "",
+        "residenteElectrico": "Rafa garcia",
+        "operadorRed": "",
+        "equipment": {
+          "paneles": {
+            "status": "Tránsito marítimo",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-10-22",
+            "brand": "",
+            "notes": ""
+          },
+          "trackers": {
+            "status": "Nacionalización",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-10-05",
+            "brand": "",
+            "notes": ""
+          },
+          "shelter": {
+            "status": "Nacionalización",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-10-09",
+            "brand": "",
+            "notes": ""
+          },
+          "inversores": {
+            "status": "En sitio",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-09-04",
+            "brand": "",
+            "notes": ""
+          },
+          "reconectador": {
+            "status": "En sitio",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-09-15",
+            "brand": "",
+            "notes": ""
+          }
+        },
+        "paymentMilestones": [
+          {
+            "id": "hm-5",
+            "name": "Anticipo 1 - Firma acta de inicio",
+            "valueCop": 548932747.6,
+            "valueUsd": 62292,
+            "percentageCop": 20,
+            "percentageUsd": 20,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1789178515822-9b6",
+            "name": "Hito 1 - Entrega del Diseño Técnico",
+            "valueCop": 548932747.6,
+            "valueUsd": 124584,
+            "percentageCop": 20,
+            "percentageUsd": 40,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1789178523047-mxt",
+            "name": "Hito 2 - Equipos en puerto de salida hacia Colombia (BL)",
+            "valueCop": 548932747.6,
+            "valueUsd": 124584,
+            "percentageCop": 20,
+            "percentageUsd": 40,
+            "status": "Cobrado",
+            "submittedAt": "2026-09-09"
+          },
+          {
+            "id": "hm-1789178536078-fzb",
+            "name": "Hito 3 - 50% instalación del proyecto",
+            "valueCop": 823399121.4,
+            "valueUsd": 0,
+            "percentageCop": 30,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": "2026-09-11"
+          },
+          {
+            "id": "hm-1789178537238-gyv",
+            "name": "Hito 4 - RETIE y legalización",
+            "valueCop": 274466373.8,
+            "valueUsd": 0,
+            "percentageCop": 10,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          }
+        ],
+        "comments": [
+          {
+            "id": "cmt-1790008733063-yqq7",
+            "proyectoId": "proj-1789154783216-acdz",
+            "restriccion": "Logística",
+            "comentario": "Visita del biologo",
+            "texto": "Visita del biologo",
+            "responsable": "Elian",
+            "autor": "Elian",
+            "estado": "Pendiente",
+            "notas": "Se debe programas la visita del biologo para la reubicación de epífitas u orquídeas a una zona protegida",
+            "respuesta": "",
+            "fecha": "2026-09-21T16:38:53.063Z",
+            "fechaUltimaEdicion": null
+          },
+          {
+            "id": "cmt-1790008673174-s1q0",
+            "proyectoId": "proj-1789154783216-acdz",
+            "restriccion": "Suministro",
+            "comentario": "Shelter",
+            "texto": "Shelter",
+            "responsable": "Roberth",
+            "autor": "Roberth",
+            "estado": "En curso",
+            "notas": "Retrasos en la llegada del shelter, por falta de UPME",
+            "respuesta": "Falta que salga el certificado de chinu 5 para sacar todo el contenedor",
+            "fecha": "2026-09-21T16:37:53.174Z",
+            "fechaUltimaEdicion": "2026-09-21T16:59:28.044Z"
+          },
+          {
+            "id": "cmt-1790008572967-u2qv",
+            "proyectoId": "proj-1789154783216-acdz",
+            "restriccion": "Suministro",
+            "comentario": "Contratación y pagos",
+            "texto": "Contratación y pagos",
+            "responsable": "Silvia",
+            "autor": "Silvia",
+            "estado": "En curso",
+            "notas": "Dificultad con los pagos a Codinco (planillas de seguridad social), lo que compromete la habilitación del personal en Nalanda y afecta la continuidad de los movimientos de tierra",
+            "respuesta": "",
+            "fecha": "2026-09-21T16:36:12.967Z",
+            "fechaUltimaEdicion": null
+          },
+          {
+            "id": "cmt-1789403089745-hx64",
+            "proyectoId": "proj-1789154783216-acdz",
+            "restriccion": "DD",
+            "comentario": "Línea, servidumbres y permisos",
+            "texto": "Línea, servidumbres y permisos",
+            "responsable": "Silvia",
+            "autor": "Silvia",
+            "estado": "En curso",
+            "notas": "Avanzar con Unergy en los permisos de las líneas, definir la situación de las servidumbres y la línea con COX, y evaluar con Silvia si se requerirá un descargo de obras previas",
+            "respuesta": "",
+            "fecha": "2026-09-14T16:24:49.745Z",
+            "fechaUltimaEdicion": "2026-09-21T16:49:56.637Z"
+          },
+          {
+            "id": "cmt-1789403008958-zuyw",
+            "proyectoId": "proj-1789154783216-acdz",
+            "restriccion": "Logística",
+            "comentario": "Contratación de la línea",
+            "texto": "Contratación de la línea",
+            "responsable": "Andres ju",
+            "autor": "Andres ju",
+            "estado": "En curso",
+            "notas": "Persiste la dificultad referente al contrato para la línea de Media Tensión (MT) del proyecto",
+            "respuesta": "No se a montado la licitacion",
+            "fecha": "2026-09-14T16:23:28.958Z",
+            "fechaUltimaEdicion": "2026-09-14T21:15:32.386Z"
+          },
+          {
+            "id": "cmt-1789402935298-vlsf",
+            "proyectoId": "proj-1789154783216-acdz",
+            "restriccion": "Suministro",
+            "comentario": "Retraso de insumos y equipos",
+            "texto": "Retraso de insumos y equipos",
+            "responsable": "Jackeline",
+            "autor": "Jackeline",
+            "estado": "En curso",
+            "notas": "Se presentan demoras en la llegada de diversos materiales e insumos, así como en la llegada del shelter al proyecto",
+            "respuesta": "hicieron comentario acerca de la Unidad Funcional de Trina, ya los respondimos y les enviamos la resolución expedida por la DIAN, pero la UPME aún tiene un mes para emitir el certificado",
+            "fecha": "2026-09-14T16:22:15.298Z",
+            "fechaUltimaEdicion": "2026-09-14T21:13:16.465Z"
+          },
+          {
+            "id": "cmt-1789402845728-y1fe",
+            "proyectoId": "proj-1789154783216-acdz",
+            "restriccion": "Suministro",
+            "comentario": "Cambio de TCs de medición",
+            "texto": "Cambio de TCs de medición",
+            "responsable": "Elian",
+            "autor": "Elian",
+            "estado": "En curso",
+            "notas": "Los TCs recibidos llegaron con un *burden* de 10 VA cuando se requerían de 5 VA, por lo que debieron enviarse al proveedor Impel para su cambio[1]",
+            "respuesta": "Se solicitó el cambio de los TC llega el 25 de spetiembre",
+            "fecha": "2026-09-14T16:20:45.728Z",
+            "fechaUltimaEdicion": "2026-09-21T16:58:28.292Z"
+          }
+        ]
+      },
+      {
+        "id": "proj-1789154784088-htrk",
+        "xm": "",
+        "xmUrl": "",
+        "name": "Chinu 3",
+        "fpo": "2027-04-14",
+        "cod": "2027-04-28",
+        "creg": "2027-01-14",
+        "connectionState": "Montaje",
+        "gridConnected": false,
+        "gridConnectionDate": "",
+        "capexCop": 2748059104,
+        "capexUsd": 309925,
+        "trmProyecto": 4080,
+        "bacCOP": 3209013054,
+        "bacUSD": 0,
+        "acCOP": 0,
+        "acUSD": 0,
+        "cpiAnterior": 0,
+        "realProgress": 24.83,
+        "scheduledProgress": 98,
+        "gap": -73.17,
+        "previousGap": 0,
+        "status": "Atrasado Crítico",
+        "notes": "",
+        "manager": "",
+        "residenteCivil": "",
+        "residenteElectrico": "",
+        "operadorRed": "",
+        "equipment": {
+          "paneles": {
+            "status": "Buscando booking",
+            "progress": 0,
+            "edt": "2026-10-27",
+            "eta": "2026-11-27",
+            "brand": "",
+            "notes": ""
+          },
+          "trackers": {
+            "status": "Nacionalización",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-10-18",
+            "brand": "",
+            "notes": ""
+          },
+          "shelter": {
+            "status": "Buscando booking",
+            "progress": 0,
+            "edt": "2026-11-10",
+            "eta": "2026-12-10",
+            "brand": "",
+            "notes": ""
+          },
+          "inversores": {
+            "status": "En tránsito",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-10-05",
+            "brand": "",
+            "notes": ""
+          },
+          "reconectador": {
+            "status": "Fabricación",
+            "progress": 0,
+            "edt": "2026-10-15",
+            "eta": "2026-11-15",
+            "brand": "",
+            "notes": ""
+          }
+        },
+        "paymentMilestones": [
+          {
+            "id": "hm-5",
+            "name": "Anticipo 1 - Firma acta de inicio",
+            "valueCop": 549611820.8,
+            "valueUsd": 61985,
+            "percentageCop": 20,
+            "percentageUsd": 20,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-6",
+            "name": "Hito 1 - Entrega del Diseño Técnico",
+            "valueCop": 549611820.8,
+            "valueUsd": 123970,
+            "percentageCop": 20,
+            "percentageUsd": 40,
+            "status": "En trámite",
+            "submittedAt": "2026-08-26"
+          },
+          {
+            "id": "hm-1789179767325-ntg",
+            "name": "Hito 2 - Equipos en puerto de salida hacia Colombia (BL)",
+            "valueCop": 0,
+            "valueUsd": 61985,
+            "percentageCop": 0,
+            "percentageUsd": 20,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1789179784029-b03",
+            "name": "Hito 3 - Equipos en sitio",
+            "valueCop": 549611820.8,
+            "valueUsd": 61985,
+            "percentageCop": 20,
+            "percentageUsd": 20,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1789179798005-cin",
+            "name": "Hito 4 - Inicio instalación del proyecto",
+            "valueCop": 824417731.2,
+            "valueUsd": 0,
+            "percentageCop": 30,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1789179812149-vg4",
+            "name": "Hito 5 - RETIE y legalización",
+            "valueCop": 274805910.4,
+            "valueUsd": 0,
+            "percentageCop": 10,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          }
+        ],
+        "comments": [
+          {
+            "id": "cmt-1790621045464-97ba",
+            "proyectoId": "proj-1789154784088-htrk",
+            "restriccion": "Logística",
+            "comentario": "Visita de biologo",
+            "texto": "Visita de biologo",
+            "responsable": "@dani ramirez",
+            "autor": "@dani ramirez",
+            "estado": "Pendiente",
+            "notas": "Confirmar visita del biologo para hacer auyentamiento de fauna y reubicacion de epifita",
+            "respuesta": "",
+            "fecha": "2026-09-28T18:44:05.464Z",
+            "fechaUltimaEdicion": null
+          },
+          {
+            "id": "cmt-1789403430761-p5e2",
+            "proyectoId": "proj-1789154784088-htrk",
+            "restriccion": "Logística",
+            "comentario": "Selección del contratista para actividades en campo",
+            "texto": "Selección del contratista para actividades en campo",
+            "responsable": "Andres j",
+            "autor": "Andres j",
+            "estado": "En revisión",
+            "notas": "Se proyecta que va a ser Codinco pero no se ha definido la oferta par hacer el contrato",
+            "respuesta": "",
+            "fecha": "2026-09-14T16:30:30.761Z",
+            "fechaUltimaEdicion": "2026-09-28T18:41:24.636Z"
+          }
+        ]
+      },
+      {
+        "id": "proj-1789154784983-c4no",
+        "xm": "",
+        "xmUrl": "",
+        "name": "Chinu 4",
+        "fpo": "2026-11-20",
+        "cod": "2026-11-30",
+        "creg": "2026-11-30",
+        "connectionState": "Montaje",
+        "gridConnected": false,
+        "gridConnectionDate": "",
+        "capexCop": 2748059104,
+        "capexUsd": 309925,
+        "trmProyecto": 4080,
+        "bacCOP": 3209013054,
+        "bacUSD": 0,
+        "acCOP": 0,
+        "acUSD": 0,
+        "cpiAnterior": 0,
+        "realProgress": 60.93,
+        "scheduledProgress": 86.86,
+        "gap": -25.93,
+        "previousGap": 0,
+        "status": "Atrasado Crítico",
+        "notes": "",
+        "manager": "",
+        "residenteCivil": "",
+        "residenteElectrico": "",
+        "operadorRed": "",
+        "equipment": {
+          "paneles": {
+            "status": "En sitio",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-04-24",
+            "brand": "",
+            "notes": ""
+          },
+          "trackers": {
+            "status": "En tránsito",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-10-05",
+            "brand": "",
+            "notes": ""
+          },
+          "shelter": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "inversores": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-05-28",
+            "brand": "",
+            "notes": ""
+          },
+          "reconectador": {
+            "status": "En sitio",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-08-04",
+            "brand": "",
+            "notes": ""
+          }
+        },
+        "paymentMilestones": [
+          {
+            "id": "hm-1",
+            "name": "Anticipo 1 - Firma acta de inicio",
+            "valueCop": 549611820.8,
+            "valueUsd": 61985,
+            "percentageCop": 20,
+            "percentageUsd": 20,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-2",
+            "name": "Hito 1 - Entrega del Diseño Técnico",
+            "valueCop": 549611820.8,
+            "valueUsd": 123970,
+            "percentageCop": 20,
+            "percentageUsd": 40,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-3",
+            "name": "Hito 2 - Equipos en puerto de salida hacia Colombia (BL)",
+            "valueCop": 0,
+            "valueUsd": 61985,
+            "percentageCop": 0,
+            "percentageUsd": 20,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-4",
+            "name": "Hito 3 - Equipos en sitio",
+            "valueCop": 549611820.8,
+            "valueUsd": 61985,
+            "percentageCop": 20,
+            "percentageUsd": 20,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-5",
+            "name": "Hito 4 - Inicio instalación del proyecto",
+            "valueCop": 824417731.2,
+            "valueUsd": 0,
+            "percentageCop": 30,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-6",
+            "name": "Hito 5 - RETIE y legalización",
+            "valueCop": 274805910.4,
+            "valueUsd": 0,
+            "percentageCop": 10,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          }
+        ],
+        "comments": [
+          {
+            "id": "cmt-1790093430789-wxwr",
+            "proyectoId": "proj-1789154784983-c4no",
+            "restriccion": "Suministro",
+            "comentario": "PAF",
+            "texto": "PAF",
+            "responsable": "Unergy",
+            "autor": "Unergy",
+            "estado": "Completada",
+            "notas": "El PAF no se ha otorgado, no se tienen novedades aún.",
+            "respuesta": "",
+            "fecha": "2026-09-22T16:10:30.789Z",
+            "fechaUltimaEdicion": "2026-09-23T16:24:58.501Z"
+          },
+          {
+            "id": "cmt-1790093355919-j9n9",
+            "proyectoId": "proj-1789154784983-c4no",
+            "restriccion": "Montaje",
+            "comentario": "Postes linea MT",
+            "texto": "Postes linea MT",
+            "responsable": "Juan J",
+            "autor": "Juan J",
+            "estado": "Pendiente",
+            "notas": "Permanece pendiente la entrega de los postes comprados y el comprobante del aporte al FIC por parte del anterior contratista de la línea MT",
+            "respuesta": "No confirma el contratista",
+            "fecha": "2026-09-22T16:09:15.919Z",
+            "fechaUltimaEdicion": "2026-09-28T18:52:37.511Z"
+          },
+          {
+            "id": "cmt-1789403925560-s7kp",
+            "proyectoId": "proj-1789154784983-c4no",
+            "restriccion": "Montaje",
+            "comentario": "Topografía e hincado",
+            "texto": "Topografía e hincado",
+            "responsable": "Calle",
+            "autor": "Calle",
+            "estado": "Completada",
+            "notas": "Falta realizar el chequeo de puntos de hincas y niveles con topografía para iniciar los trabajos de hincado y montaje de paneles solares",
+            "respuesta": "No se ha hecho por falta del PAF",
+            "fecha": "2026-09-14T16:38:45.560Z",
+            "fechaUltimaEdicion": "2026-09-28T18:52:49.250Z"
+          },
+          {
+            "id": "cmt-1789403887816-4utb",
+            "proyectoId": "proj-1789154784983-c4no",
+            "restriccion": "Montaje",
+            "comentario": "Cerramiento e interferencias ambientales",
+            "texto": "Cerramiento e interferencias ambientales",
+            "responsable": "Unergy",
+            "autor": "Unergy",
+            "estado": "En revisión",
+            "notas": "La instalación de la malla de cerramiento no se ha completado por la presencia de individuos forestales en el trazado que no se pueden tala",
+            "respuesta": "No se ha hecho por la tala",
+            "fecha": "2026-09-14T16:38:07.816Z",
+            "fechaUltimaEdicion": "2026-09-28T18:53:03.457Z"
+          },
+          {
+            "id": "cmt-1789403789297-kexh",
+            "proyectoId": "proj-1789154784983-c4no",
+            "restriccion": "Logística",
+            "comentario": "Liberación y recepción de trackers e hincas",
+            "texto": "Liberación y recepción de trackers e hincas",
+            "responsable": "Mariana",
+            "autor": "Mariana",
+            "estado": "En revisión",
+            "notas": "Confirmar llegada del tracker a campo",
+            "respuesta": "",
+            "fecha": "2026-09-14T16:36:29.297Z",
+            "fechaUltimaEdicion": "2026-09-28T18:55:12.622Z"
+          },
+          {
+            "id": "cmt-1789403713098-dr45",
+            "proyectoId": "proj-1789154784983-c4no",
+            "restriccion": "OR/CREG",
+            "comentario": "Línea de Media Tensión (MT) y servidumbre",
+            "texto": "Línea de Media Tensión (MT) y servidumbre",
+            "responsable": "@karol / @jose / eduardo",
+            "autor": "@karol / @jose / eduardo",
+            "estado": "En revisión",
+            "notas": "Esta pendiente que se negocie con el propietario el inicio de obras o que afinia de el aval para intervenir la cervidumbre",
+            "respuesta": "",
+            "fecha": "2026-09-14T16:35:13.098Z",
+            "fechaUltimaEdicion": "2026-09-28T18:56:59.959Z"
+          },
+          {
+            "id": "cmt-1789403581329-0bys",
+            "proyectoId": "proj-1789154784983-c4no",
+            "restriccion": "Logística",
+            "comentario": "Contratación y programación de obras MT",
+            "texto": "Contratación y programación de obras MT",
+            "responsable": "Andres j",
+            "autor": "Andres j",
+            "estado": "Completada",
+            "notas": "Se requiere contratar al nuevo contratista para iniciar la construcción y repotenciación de la línea de MT",
+            "respuesta": "",
+            "fecha": "2026-09-14T16:33:01.329Z",
+            "fechaUltimaEdicion": "2026-09-14T21:16:38.159Z"
+          }
+        ]
+      },
+      {
+        "id": "proj-1789154786192-49rt",
+        "xm": "",
+        "xmUrl": "",
+        "name": "Chinu 5",
+        "fpo": "2026-11-30",
+        "cod": "2026-12-11",
+        "creg": "2026-12-10",
+        "connectionState": "Montaje",
+        "gridConnected": false,
+        "gridConnectionDate": "",
+        "capexCop": 2817925784,
+        "capexUsd": 303787,
+        "trmProyecto": 4000,
+        "bacCOP": 3257997184,
+        "bacUSD": 0,
+        "acCOP": 0,
+        "acUSD": 0,
+        "cpiAnterior": 0,
+        "realProgress": 41.03,
+        "scheduledProgress": 100,
+        "gap": -58.97,
+        "previousGap": 0,
+        "status": "Atrasado Crítico",
+        "notes": "",
+        "manager": "",
+        "residenteCivil": "",
+        "residenteElectrico": "",
+        "operadorRed": "",
+        "equipment": {
+          "paneles": {
+            "status": "Tránsito marítimo",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-10-22",
+            "brand": "",
+            "notes": ""
+          },
+          "trackers": {
+            "status": "Espera de UF",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-10-09",
+            "brand": "",
+            "notes": ""
+          },
+          "shelter": {
+            "status": "Espera de BT",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-10-09",
+            "brand": "",
+            "notes": ""
+          },
+          "inversores": {
+            "status": "En sitio",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-09-04",
+            "brand": "",
+            "notes": ""
+          },
+          "reconectador": {
+            "status": "En sitio",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-09-16",
+            "brand": "",
+            "notes": ""
+          }
+        },
+        "paymentMilestones": [
+          {
+            "id": "hm-1",
+            "name": "Anticipo 1 - Firma acta de inicio",
+            "valueCop": 563585156.8,
+            "valueUsd": 60757.4,
+            "percentageCop": 20,
+            "percentageUsd": 20,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-2",
+            "name": "Hito 1 - Entrega del Diseño Técnico",
+            "valueCop": 563585156.8,
+            "valueUsd": 121514.8,
+            "percentageCop": 20,
+            "percentageUsd": 40,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-3",
+            "name": "Hito 2 - Equipos en puerto de salida hacia Colombia (BL)",
+            "valueCop": 563585156.8,
+            "valueUsd": 121514.8,
+            "percentageCop": 20,
+            "percentageUsd": 40,
+            "status": "En trámite",
+            "submittedAt": "2026-09-09"
+          },
+          {
+            "id": "hm-4",
+            "name": "Hito 3 - 50 % instalación del proyecto",
+            "valueCop": 845377735.2,
+            "valueUsd": 0,
+            "percentageCop": 30,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-5",
+            "name": "Hito 4 - RETIE y legalización",
+            "valueCop": 281792578.4,
+            "valueUsd": 0,
+            "percentageCop": 10,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          }
+        ],
+        "comments": [
+          {
+            "id": "cmt-1790093558401-1xtx",
+            "proyectoId": "proj-1789154786192-49rt",
+            "restriccion": "Suministro",
+            "comentario": "PAF",
+            "texto": "PAF",
+            "responsable": "Unergy",
+            "autor": "Unergy",
+            "estado": "Completada",
+            "notas": "El PAF no se ha otorgado, no se tienen novedades aún.",
+            "respuesta": "",
+            "fecha": "2026-09-22T16:12:38.401Z",
+            "fechaUltimaEdicion": "2026-09-23T16:25:12.973Z"
+          },
+          {
+            "id": "cmt-1789404320273-p9g6",
+            "proyectoId": "proj-1789154786192-49rt",
+            "restriccion": "Suministro",
+            "comentario": "Liberación de equipos y compras macro",
+            "texto": "Liberación de equipos y compras macro",
+            "responsable": "Andres J",
+            "autor": "Andres J",
+            "estado": "En revisión",
+            "notas": "Pendientes de BT y UF",
+            "respuesta": "",
+            "fecha": "2026-09-14T16:45:20.273Z",
+            "fechaUltimaEdicion": "2026-09-28T19:00:03.369Z"
+          }
+        ]
+      },
+      {
+        "id": "proj-1789154787416-rkql",
+        "xm": "",
+        "xmUrl": "",
+        "name": "Pivijay 1",
+        "fpo": "2027-01-26",
+        "cod": "2027-02-11",
+        "creg": "2027-01-24",
+        "connectionState": "Montaje",
+        "gridConnected": false,
+        "gridConnectionDate": "",
+        "capexCop": 2788910777,
+        "capexUsd": 309925,
+        "trmProyecto": 4080,
+        "bacCOP": 3181675264,
+        "bacUSD": 0,
+        "acCOP": 0,
+        "acUSD": 0,
+        "cpiAnterior": 0,
+        "realProgress": 21.92,
+        "scheduledProgress": 41.29,
+        "gap": -19.37,
+        "previousGap": -17.07,
+        "status": "Atrasado Crítico",
+        "notes": "",
+        "manager": "Yacob",
+        "residenteCivil": "",
+        "residenteElectrico": "",
+        "operadorRed": "Air-e",
+        "equipment": {
+          "paneles": {
+            "status": "Tránsito marítimo",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-10-22",
+            "brand": "",
+            "notes": ""
+          },
+          "trackers": {
+            "status": "Nacionalización",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-10-09",
+            "brand": "",
+            "notes": ""
+          },
+          "shelter": {
+            "status": "Espera de BT",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-11-16",
+            "brand": "",
+            "notes": ""
+          },
+          "inversores": {
+            "status": "Fabricación",
+            "progress": 0,
+            "edt": "2026-11-17",
+            "eta": "2026-12-17",
+            "brand": "",
+            "notes": ""
+          },
+          "reconectador": {
+            "status": "No pedido",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          }
+        },
+        "paymentMilestones": [
+          {
+            "id": "hm-1",
+            "name": "Anticipo 1 - Firma acta de inicio",
+            "valueCop": 557782155.4,
+            "valueUsd": 61985,
+            "percentageCop": 20,
+            "percentageUsd": 20,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-2",
+            "name": "Hito 1 - Entrega del Diseño Técnico",
+            "valueCop": 557782155.4,
+            "valueUsd": 123970,
+            "percentageCop": 20,
+            "percentageUsd": 40,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-3",
+            "name": "Hito 2 - Equipos en puerto de salida hacia Colombia (BL)",
+            "valueCop": 557782155.4,
+            "valueUsd": 123970,
+            "percentageCop": 20,
+            "percentageUsd": 40,
+            "status": "Por cobrar",
+            "submittedAt": "2026-09-12"
+          },
+          {
+            "id": "hm-4",
+            "name": "Hito 3 - 50% instalación del proyecto",
+            "valueCop": 836673233.1,
+            "valueUsd": 0,
+            "percentageCop": 30,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-5",
+            "name": "Hito 4 - RETIE y legalización",
+            "valueCop": 278891077.7,
+            "valueUsd": 0,
+            "percentageCop": 10,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          }
+        ],
+        "comments": [
+          {
+            "id": "cmt-1790112781423-v07w",
+            "proyectoId": "proj-1789154787416-rkql",
+            "restriccion": "Logística",
+            "comentario": "PAgo a CVP",
+            "texto": "PAgo a CVP",
+            "responsable": "@Andresj",
+            "autor": "@Andresj",
+            "estado": "En curso",
+            "notas": "Esta pendiente el pago al contratista para iniciar obra en campo",
+            "respuesta": "",
+            "fecha": "2026-09-22T21:33:01.423Z",
+            "fechaUltimaEdicion": "2026-09-22T22:33:16.968Z"
+          },
+          {
+            "id": "cmt-1789404729511-cx5i",
+            "proyectoId": "proj-1789154787416-rkql",
+            "restriccion": "Suministro",
+            "comentario": "Recepción de insumos y facilidades",
+            "texto": "Recepción de insumos y facilidades",
+            "responsable": "Leidy",
+            "autor": "Leidy",
+            "estado": "En curso",
+            "notas": "Pendiente la llegada y recepción de baños, contenedor, kit de emergencias y la coordinación del envío del almacén al sitio de obra",
+            "respuesta": "Penddiente por falta de documentacion del proveedor",
+            "fecha": "2026-09-14T16:52:09.511Z",
+            "fechaUltimaEdicion": "2026-09-17T19:40:54.714Z"
+          },
+          {
+            "id": "cmt-1789404683464-3bcr",
+            "proyectoId": "proj-1789154787416-rkql",
+            "restriccion": "Logística",
+            "comentario": "Transporte personal",
+            "texto": "Transporte personal",
+            "responsable": "Karol y Mariam",
+            "autor": "Karol y Mariam",
+            "estado": "Completada",
+            "notas": "Se presenta dificultad debido a la falta de disponibilidad de un vehículo para el traslado del personal desde Monterrubio hasta Pivijay",
+            "respuesta": "No han dado respuesta",
+            "fecha": "2026-09-14T16:51:23.464Z",
+            "fechaUltimaEdicion": "2026-09-22T22:34:56.055Z"
+          },
+          {
+            "id": "cmt-1789404646720-l97i",
+            "proyectoId": "proj-1789154787416-rkql",
+            "restriccion": "SST",
+            "comentario": "Documentacion SST",
+            "texto": "Documentacion SST",
+            "responsable": "Leidy",
+            "autor": "Leidy",
+            "estado": "En curso",
+            "notas": "Realizar el seguimiento al cargue de la documentación de Seguridad y Salud en el Trabajo (SST) en la plataforma Nalanda",
+            "respuesta": "Han estado lentos en el cargue de documentacion",
+            "fecha": "2026-09-14T16:50:46.720Z",
+            "fechaUltimaEdicion": "2026-09-17T19:43:56.712Z"
+          },
+          {
+            "id": "cmt-1789404582128-vi31",
+            "proyectoId": "proj-1789154787416-rkql",
+            "restriccion": "Logística",
+            "comentario": "Contrato de obra civil",
+            "texto": "Contrato de obra civil",
+            "responsable": "Andres J",
+            "autor": "Andres J",
+            "estado": "Completada",
+            "notas": "Se encuentra pendiente la definición final y la firma del contrato de obra civil con el contratista CVP",
+            "respuesta": "",
+            "fecha": "2026-09-14T16:49:42.128Z",
+            "fechaUltimaEdicion": "2026-09-17T19:39:50.215Z"
+          }
+        ]
+      },
+      {
+        "id": "proj-1789154788624-pay3",
+        "xm": "",
+        "xmUrl": "",
+        "name": "EMMA",
+        "fpo": "2027-02-10",
+        "cod": "2027-03-03",
+        "creg": "2026-12-02",
+        "connectionState": "Ingeniería",
+        "gridConnected": false,
+        "gridConnectionDate": "2026-09-13",
+        "capexCop": 2778644900,
+        "capexUsd": 319134,
+        "trmProyecto": 4080,
+        "bacCOP": 3263189278,
+        "bacUSD": 0,
+        "acCOP": 0,
+        "acUSD": 0,
+        "cpiAnterior": 0,
+        "realProgress": 5,
+        "scheduledProgress": 99,
+        "gap": -94,
+        "previousGap": -94,
+        "status": "Atrasado Crítico",
+        "notes": "",
+        "manager": "Yacob",
+        "residenteCivil": "",
+        "residenteElectrico": "",
+        "operadorRed": "Afinia (Grupo EPM)",
+        "equipment": {
+          "paneles": {
+            "status": "Buscando booking",
+            "progress": 0,
+            "edt": "2026-10-30",
+            "eta": "2026-11-30",
+            "brand": "",
+            "notes": ""
+          },
+          "trackers": {
+            "status": "Espera de BT",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-10-09",
+            "brand": "",
+            "notes": ""
+          },
+          "shelter": {
+            "status": "Espera de BT",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-10-09",
+            "brand": "",
+            "notes": ""
+          },
+          "inversores": {
+            "status": "Fabricación",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "reconectador": {
+            "status": "No pedido",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          }
+        },
+        "paymentMilestones": [
+          {
+            "id": "hm-1",
+            "name": "Anticipo 1 - Firma acta de inicio",
+            "valueCop": 555728980,
+            "valueUsd": 63826.8,
+            "percentageCop": 20,
+            "percentageUsd": 20,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-2",
+            "name": "Hito 1 - Entrega del Diseño Técnico",
+            "valueCop": 555728980,
+            "valueUsd": 127653.6,
+            "percentageCop": 20,
+            "percentageUsd": 40,
+            "status": "En trámite",
+            "submittedAt": "2026-08-26"
+          },
+          {
+            "id": "hm-3",
+            "name": "Hito 2 - Equipos en puerto de salida hacia Colombia (BL)",
+            "valueCop": 0,
+            "valueUsd": 63826.8,
+            "percentageCop": 0,
+            "percentageUsd": 20,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-4",
+            "name": "Hito 3 - Equipos en sitio",
+            "valueCop": 555728980,
+            "valueUsd": 63826.8,
+            "percentageCop": 20,
+            "percentageUsd": 20,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1789699018534-2ym",
+            "name": "Hito 4 - Inicio instalación del proyecto",
+            "valueCop": 833593470,
+            "valueUsd": 0,
+            "percentageCop": 30,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1789699024494-8lh",
+            "name": "5 - RETIE y legalización",
+            "valueCop": 277864490,
+            "valueUsd": 0,
+            "percentageCop": 10,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          }
+        ],
+        "comments": [
+          {
+            "id": "cmt-1789675235604-h6dc",
+            "proyectoId": "proj-1789154788624-pay3",
+            "restriccion": "Logística",
+            "comentario": "Licitacion civil",
+            "texto": "Licitacion civil",
+            "responsable": "Julian / Karen",
+            "autor": "Julian / Karen",
+            "estado": "Completada",
+            "notas": "Aun no ha iniciado la licitacion",
+            "respuesta": "",
+            "fecha": "2026-09-17T20:00:35.604Z",
+            "fechaUltimaEdicion": "2026-09-21T16:52:46.710Z"
+          },
+          {
+            "id": "cmt-1789415359586-6tnv",
+            "proyectoId": "proj-1789154788624-pay3",
+            "restriccion": "Montaje",
+            "comentario": "Organizar la linea base del cronograma",
+            "texto": "Organizar la linea base del cronograma",
+            "responsable": "Yacob",
+            "autor": "Yacob",
+            "estado": "En revisión",
+            "notas": "Aun se tiene la linea base vieja",
+            "respuesta": "Pendiente de actualizacion",
+            "fecha": "2026-09-14T19:49:19.586Z",
+            "fechaUltimaEdicion": "2026-09-17T19:58:51.314Z"
+          },
+          {
+            "id": "cmt-1789405015719-t8ci",
+            "proyectoId": "proj-1789154788624-pay3",
+            "restriccion": "Suministro",
+            "comentario": "Cierre de BOM y licitación civil",
+            "texto": "Cierre de BOM y licitación civil",
+            "responsable": "Yacob",
+            "autor": "Yacob",
+            "estado": "Completada",
+            "notas": "Realizar la reunión de revisión de cantidades de obra para cerrar el BOM y definir las cantidades necesarias para lanzar la licitación de obra civil",
+            "respuesta": "",
+            "fecha": "2026-09-14T16:56:55.719Z",
+            "fechaUltimaEdicion": "2026-09-17T19:59:20.393Z"
+          },
+          {
+            "id": "cmt-1789404887182-a8hp",
+            "proyectoId": "proj-1789154788624-pay3",
+            "restriccion": "Diseño",
+            "comentario": "Confirmación de micropilotes",
+            "texto": "Confirmación de micropilotes",
+            "responsable": "David",
+            "autor": "David",
+            "estado": "En curso",
+            "notas": "Está pendiente la respuesta de TRINA para confirmar si algunas hincas requerirán micropilotes según los resultados de la POT (Prueba de Ocupación de Terreno) y verificar su disponibilidad",
+            "respuesta": "Trina dio respuesta y debe hacer predrilling",
+            "fecha": "2026-09-14T16:54:47.182Z",
+            "fechaUltimaEdicion": "2026-09-17T19:57:34.665Z"
+          }
+        ]
+      },
+      {
+        "id": "proj-1790698928618-kt9o",
+        "xm": "",
+        "xmUrl": "",
+        "name": "Chibolo 1",
+        "fpo": "",
+        "cod": "",
+        "creg": "",
+        "connectionState": "DD",
+        "gridConnected": false,
+        "gridConnectionDate": "2026-09-29",
+        "capexCop": 0,
+        "capexUsd": 0,
+        "trmProyecto": 0,
+        "bacCOP": 0,
+        "bacUSD": 0,
+        "acCOP": 0,
+        "acUSD": 0,
+        "cpiAnterior": 0,
+        "realProgress": 0,
+        "scheduledProgress": 0,
+        "gap": 0,
+        "previousGap": 0,
+        "status": "En tiempo",
+        "notes": "",
+        "manager": "",
+        "residenteCivil": "",
+        "residenteElectrico": "",
+        "operadorRed": "",
+        "equipment": {
+          "paneles": {
+            "status": "Fabricación",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "trackers": {
+            "status": "Fabricación",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "shelter": {
+            "status": "Fabricación",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "inversores": {
+            "status": "Fabricación",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "reconectador": {
+            "status": "Fabricación",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          }
+        },
+        "paymentMilestones": [
+          {
+            "id": "hm-1",
+            "name": "Anticipo equipos",
+            "valueCop": 0,
+            "valueUsd": 24000,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-2",
+            "name": "Hito Anticipo",
+            "valueCop": 0,
+            "valueUsd": 82631,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-3",
+            "name": "Ingeniería de detalle",
+            "valueCop": 422332090,
+            "valueUsd": 53315,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-4",
+            "name": "Hito salida de equipos y restante COP",
+            "valueCop": 211166045,
+            "valueUsd": 106631,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-5",
+            "name": "Hito llegada de equipos",
+            "valueCop": 316749067,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-6",
+            "name": "Hito instalación",
+            "valueCop": 79187267,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          }
+        ],
+        "comments": []
+      },
+      {
+        "id": "proj-1790698959058-p7hg",
+        "xm": "",
+        "xmUrl": "",
+        "name": "Chibolo 2",
+        "fpo": "",
+        "cod": "",
+        "creg": "",
+        "connectionState": "DD",
+        "gridConnected": false,
+        "gridConnectionDate": "2026-09-29",
+        "capexCop": 0,
+        "capexUsd": 0,
+        "trmProyecto": 0,
+        "bacCOP": 0,
+        "bacUSD": 0,
+        "acCOP": 0,
+        "acUSD": 0,
+        "cpiAnterior": 0,
+        "realProgress": 0,
+        "scheduledProgress": 0,
+        "gap": 0,
+        "previousGap": 0,
+        "status": "En tiempo",
+        "notes": "",
+        "manager": "",
+        "residenteCivil": "",
+        "residenteElectrico": "",
+        "operadorRed": "",
+        "equipment": {
+          "paneles": {
+            "status": "Fabricación",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "trackers": {
+            "status": "Fabricación",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "shelter": {
+            "status": "Fabricación",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "inversores": {
+            "status": "Fabricación",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "reconectador": {
+            "status": "Fabricación",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          }
+        },
+        "paymentMilestones": [
+          {
+            "id": "hm-1",
+            "name": "Anticipo equipos",
+            "valueCop": 0,
+            "valueUsd": 24000,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-2",
+            "name": "Hito Anticipo",
+            "valueCop": 0,
+            "valueUsd": 82631,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-3",
+            "name": "Ingeniería de detalle",
+            "valueCop": 422332090,
+            "valueUsd": 53315,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-4",
+            "name": "Hito salida de equipos y restante COP",
+            "valueCop": 211166045,
+            "valueUsd": 106631,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-5",
+            "name": "Hito llegada de equipos",
+            "valueCop": 316749067,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-6",
+            "name": "Hito instalación",
+            "valueCop": 79187267,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          }
+        ],
+        "comments": []
+      },
+      {
+        "id": "proj-1790698968065-amig",
+        "xm": "",
+        "xmUrl": "",
+        "name": "Chibolo 3",
+        "fpo": "",
+        "cod": "",
+        "creg": "",
+        "connectionState": "DD",
+        "gridConnected": false,
+        "gridConnectionDate": "2026-09-29",
+        "capexCop": 0,
+        "capexUsd": 0,
+        "trmProyecto": 0,
+        "bacCOP": 0,
+        "bacUSD": 0,
+        "acCOP": 0,
+        "acUSD": 0,
+        "cpiAnterior": 0,
+        "realProgress": 0,
+        "scheduledProgress": 0,
+        "gap": 0,
+        "previousGap": 0,
+        "status": "En tiempo",
+        "notes": "",
+        "manager": "",
+        "residenteCivil": "",
+        "residenteElectrico": "",
+        "operadorRed": "",
+        "equipment": {
+          "paneles": {
+            "status": "Fabricación",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "trackers": {
+            "status": "Fabricación",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "shelter": {
+            "status": "Fabricación",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "inversores": {
+            "status": "Fabricación",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "reconectador": {
+            "status": "Fabricación",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          }
+        },
+        "paymentMilestones": [
+          {
+            "id": "hm-1",
+            "name": "Anticipo equipos",
+            "valueCop": 0,
+            "valueUsd": 24000,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-2",
+            "name": "Hito Anticipo",
+            "valueCop": 0,
+            "valueUsd": 82631,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-3",
+            "name": "Ingeniería de detalle",
+            "valueCop": 422332090,
+            "valueUsd": 53315,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-4",
+            "name": "Hito salida de equipos y restante COP",
+            "valueCop": 211166045,
+            "valueUsd": 106631,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-5",
+            "name": "Hito llegada de equipos",
+            "valueCop": 316749067,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-6",
+            "name": "Hito instalación",
+            "valueCop": 79187267,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          }
+        ],
+        "comments": []
+      }
+    ]
+  },
+  {
+    "id": "port-1789095891336",
+    "name": "Bancolombia",
+    "code": "Batch 1",
+    "atc": "Ander",
+    "description": "",
+    "projects": [
+      {
+        "id": "proj-1789101374774-wdur",
+        "xm": "https://media.discordapp.net/attachments/1416440931833614486/1549821815860232253/image.png?ex=6aac178b&is=6aaac60b&hm=83c7b2ba9abe6e2888c1cd55bfb14776539f1d0ddd8b4cca84b4242dffa0555d&=&format=webp&quality=lossless&width=1536&height=787",
+        "xmUrl": "",
+        "name": "San Luis del Since",
+        "fpo": "2026-10-26",
+        "cod": "2026-11-18",
+        "creg": "2026-10-31",
+        "connectionState": "Montaje",
+        "gridConnected": false,
+        "gridConnectionDate": "",
+        "capexCop": 4327907500,
+        "capexUsd": 0,
+        "trmProyecto": 3650,
+        "bacCOP": 3239802502,
+        "bacUSD": 0,
+        "acCOP": 0,
+        "acUSD": 0,
+        "cpiAnterior": 0,
+        "realProgress": 75.18,
+        "scheduledProgress": 90.83,
+        "gap": -15.65,
+        "previousGap": -15.25,
+        "status": "Atrasado Crítico",
+        "notes": "",
+        "manager": "Juan josé",
+        "residenteCivil": "",
+        "residenteElectrico": "",
+        "operadorRed": "",
+        "equipment": {
+          "paneles": {
+            "status": "En sitio",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-08-05",
+            "brand": "",
+            "notes": ""
+          },
+          "trackers": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-07-30",
+            "brand": "",
+            "notes": ""
+          },
+          "shelter": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-08-26",
+            "brand": "",
+            "notes": ""
+          },
+          "inversores": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-07-28",
+            "brand": "",
+            "notes": ""
+          },
+          "reconectador": {
+            "status": "Tránsito terrestre",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-09-21",
+            "brand": "",
+            "notes": ""
+          }
+        },
+        "paymentMilestones": [
+          {
+            "id": "hm-1789101392742-vjk",
+            "name": "Hito 1 firma del contrato",
+            "valueCop": 865581500,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1789101394102-iys",
+            "name": "Hito 2 trackers y´nShelter",
+            "valueCop": 432790750,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1789152808193-96g",
+            "name": "Hito 3 Paneles",
+            "valueCop": 649186125,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1789152809624-jsb",
+            "name": "Hito 4 Avance de obra recepción en Sitio de Tracker",
+            "valueCop": 432790750,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1789152810249-97b",
+            "name": "Hito 5 (módulos e inversores)",
+            "valueCop": 432790750,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": "2026-09-02"
+          },
+          {
+            "id": "hm-1789152812833-f5t",
+            "name": "Hito 6 Inicio del montaje mecánico",
+            "valueCop": 432790750,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1789152814001-dmn",
+            "name": "Hito 7 Avance del 60%",
+            "valueCop": 432790750,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1789152815016-720",
+            "name": "Hito 8 intangibles",
+            "valueCop": 432790750,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1789152815784-x3b",
+            "name": "Hito 9 Energización del proyecto (FIPPS)",
+            "valueCop": 216395375,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          }
+        ],
+        "comments": [
+          {
+            "id": "cmt-1789660985322-gf63",
+            "proyectoId": "proj-1789101374774-wdur",
+            "restriccion": "Montaje",
+            "comentario": "Reparación ambiental",
+            "texto": "Reparación ambiental",
+            "responsable": "Residentes",
+            "autor": "Residentes",
+            "estado": "En revisión",
+            "notas": "Reparar el área del punto limpio/residuos que sufrió afectaciones por el paso de un huracán",
+            "respuesta": "Confirmar cuando este organizado el punto",
+            "fecha": "2026-09-17T16:03:05.322Z",
+            "fechaUltimaEdicion": "2026-09-17T16:16:50.876Z"
+          },
+          {
+            "id": "cmt-1789660959314-yud7",
+            "proyectoId": "proj-1789101374774-wdur",
+            "restriccion": "Montaje",
+            "comentario": "Trampa de grasa del shelter",
+            "texto": "Trampa de grasa del shelter",
+            "responsable": "Jose t",
+            "autor": "Jose t",
+            "estado": "En revisión",
+            "notas": "Culminar la construcción de la trampa de grasas en la zona del Shelter",
+            "respuesta": "Se espera terminar ell 21 de septiembre",
+            "fecha": "2026-09-17T16:02:39.314Z",
+            "fechaUltimaEdicion": "2026-09-17T16:16:12.013Z"
+          },
+          {
+            "id": "cmt-1789660929971-mr8a",
+            "proyectoId": "proj-1789101374774-wdur",
+            "restriccion": "Montaje",
+            "comentario": "Trabajos eléctricos y torqueado",
+            "texto": "Trabajos eléctricos y torqueado",
+            "responsable": "Jorge berro",
+            "autor": "Jorge berro",
+            "estado": "En curso",
+            "notas": "Completar la instalación electromecánica, finalizar el torqueado de las estructuras, el tendido de cable DC",
+            "respuesta": "- torqueado en curso\n- peinado DC en cuurso",
+            "fecha": "2026-09-17T16:02:09.971Z",
+            "fechaUltimaEdicion": "2026-09-17T16:15:19.706Z"
+          },
+          {
+            "id": "cmt-1789660898243-03a2",
+            "proyectoId": "proj-1789101374774-wdur",
+            "restriccion": "Suministro",
+            "comentario": "Falta de suministros y materiales",
+            "texto": "Falta de suministros y materiales",
+            "responsable": "Mariana / Mauricio",
+            "autor": "Mariana / Mauricio",
+            "estado": "En curso",
+            "notas": "Permanecen pendientes materiales determinantes para finalizar el armado completo de la estructura, además de insumos faltantes para la instalación del tracker y la estructura de los inversores\n\nFrenos de chumacera para el tracker",
+            "respuesta": "Confirmar llegada de insumos a campo y fecha de llegada del freno",
+            "fecha": "2026-09-17T16:01:38.243Z",
+            "fechaUltimaEdicion": "2026-09-17T16:13:29.435Z"
+          },
+          {
+            "id": "cmt-1789660834315-n8y0",
+            "proyectoId": "proj-1789101374774-wdur",
+            "restriccion": "Montaje",
+            "comentario": "Reunión de protecciones",
+            "texto": "Reunión de protecciones",
+            "responsable": "Leonardo / Simon",
+            "autor": "Leonardo / Simon",
+            "estado": "En curso",
+            "notas": "Obtener los resultados finales de la parametrización del reconectador para programar la reunión virtual de protecciones",
+            "respuesta": "Falta hacer la modificacion de la CNO por parte de Leonardo y agendar fecha para hcer las correcciones para solicitar la reunion",
+            "fecha": "2026-09-17T16:00:34.315Z",
+            "fechaUltimaEdicion": "2026-09-17T16:10:56.929Z"
+          },
+          {
+            "id": "cmt-1789660811833-913w",
+            "proyectoId": "proj-1789101374774-wdur",
+            "restriccion": "Montaje",
+            "comentario": "Interventoría y certificación RETIE",
+            "texto": "Interventoría y certificación RETIE",
+            "responsable": "Juan José / Eduardo",
+            "autor": "Juan José / Eduardo",
+            "estado": "Completada",
+            "notas": "Atender la nueva visita de interventoría (visita de recibo técnico) y subsanar las No Conformidades (NC) para la obtención del dictamen RETIE",
+            "respuesta": "Se subsanaron los comentarios falta que envien el visto bueno de la ainterventoria y envien el certificado RETIE",
+            "fecha": "2026-09-17T16:00:11.833Z",
+            "fechaUltimaEdicion": "2026-09-25T01:03:27.461Z"
+          }
+        ]
+      },
+      {
+        "id": "proj-1789153232871-x0hf",
+        "xm": "",
+        "xmUrl": "",
+        "name": "San Luis del Since 2",
+        "fpo": "2026-10-30",
+        "cod": "2026-12-18",
+        "creg": "",
+        "connectionState": "Montaje",
+        "gridConnected": false,
+        "gridConnectionDate": "",
+        "capexCop": 4327907500,
+        "capexUsd": 0,
+        "trmProyecto": 3650,
+        "bacCOP": 3239802502,
+        "bacUSD": 0,
+        "acCOP": 0,
+        "acUSD": 0,
+        "cpiAnterior": 0,
+        "realProgress": 58.83,
+        "scheduledProgress": 82.59,
+        "gap": -23.76,
+        "previousGap": -31.47,
+        "status": "Atrasado Crítico",
+        "notes": "",
+        "manager": "Juan José",
+        "residenteCivil": "",
+        "residenteElectrico": "",
+        "operadorRed": "",
+        "equipment": {
+          "paneles": {
+            "status": "Retrasado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "trackers": {
+            "status": "Nacionalización",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-10-08",
+            "brand": "",
+            "notes": ""
+          },
+          "shelter": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-08-07",
+            "brand": "",
+            "notes": ""
+          },
+          "inversores": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-07-11",
+            "brand": "",
+            "notes": ""
+          },
+          "reconectador": {
+            "status": "Retrasado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          }
+        },
+        "paymentMilestones": [
+          {
+            "id": "hm-1",
+            "name": "Hito 1 firma del contrato",
+            "valueCop": 865581500,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-2",
+            "name": "Hito 2 trackers y´nShelter",
+            "valueCop": 432790750,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-3",
+            "name": "Hito 3 Paneles",
+            "valueCop": 649186125,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-4",
+            "name": "Hito 4 Avance de obra recepción en Sitio de Tracker",
+            "valueCop": 432790750,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-5",
+            "name": "Hito 5 (módulos e inversores)",
+            "valueCop": 432790750,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1789154367322-vat",
+            "name": "Hito 6 Inicio del montaje mecánico",
+            "valueCop": 432790750,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1789154368641-jwe",
+            "name": "Hito 7 Avance del 60%",
+            "valueCop": 432790750,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1789154379194-x45",
+            "name": "Hito 8 intangibles",
+            "valueCop": 432790750,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1789154386034-ejx",
+            "name": "Hito 9 Energización del proyecto",
+            "valueCop": 216395375,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          }
+        ],
+        "comments": []
+      },
+      {
+        "id": "proj-1789153242094-d39m",
+        "xm": "",
+        "xmUrl": "",
+        "name": "Heliconias 1",
+        "fpo": "",
+        "cod": "",
+        "creg": "2027-01-07",
+        "connectionState": "Ingeniería",
+        "gridConnected": false,
+        "gridConnectionDate": "2026-09-18",
+        "capexCop": 0,
+        "capexUsd": 0,
+        "trmProyecto": 0,
+        "bacCOP": 0,
+        "bacUSD": 0,
+        "acCOP": 0,
+        "acUSD": 0,
+        "cpiAnterior": 0,
+        "realProgress": 0,
+        "scheduledProgress": 36,
+        "gap": -36,
+        "previousGap": 0,
+        "status": "Atrasado Crítico",
+        "notes": "",
+        "manager": "Sodia",
+        "residenteCivil": "",
+        "residenteElectrico": "",
+        "operadorRed": "ESSA (Santander)",
+        "equipment": {
+          "paneles": {
+            "status": "Buscando booking",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-10-30",
+            "brand": "",
+            "notes": ""
+          },
+          "trackers": {
+            "status": "Pendiente OC",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "shelter": {
+            "status": "Fabricación",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-12-04",
+            "brand": "",
+            "notes": ""
+          },
+          "inversores": {
+            "status": "Pendiente OC",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "reconectador": {
+            "status": "Pendiente OC",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          }
+        },
+        "paymentMilestones": [
+          {
+            "id": "hm-5",
+            "name": "Hito llegada de equipos",
+            "valueCop": 0,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          }
+        ],
+        "comments": [
+          {
+            "id": "cmt-1789662805416-kbdb",
+            "proyectoId": "proj-1789153242094-d39m",
+            "restriccion": "Suministro",
+            "comentario": "Pago a proveedores Paneles, estructura mesa fija, inversores y reconectador",
+            "texto": "Pago a proveedores Paneles, estructura mesa fija, inversores y reconectador",
+            "responsable": "Julian",
+            "autor": "Julian",
+            "estado": "En revisión",
+            "notas": "Confirmar la fecha de pago para los proveedores de los equipos",
+            "respuesta": "Confirmar fecha de salida de paneles",
+            "fecha": "2026-09-17T16:33:25.416Z",
+            "fechaUltimaEdicion": "2026-09-17T16:36:07.683Z"
+          },
+          {
+            "id": "cmt-1789662562626-10mq",
+            "proyectoId": "proj-1789153242094-d39m",
+            "restriccion": "Suministro",
+            "comentario": "Entrega de planos y cantidades de obra",
+            "texto": "Entrega de planos y cantidades de obra",
+            "responsable": "Fede / Julian",
+            "autor": "Fede / Julian",
+            "estado": "En curso",
+            "notas": "Continuar ya finalizar en la ingeniería para entregar los planos y la definición de cantidades requeridas para licitar",
+            "respuesta": "",
+            "fecha": "2026-09-17T16:29:22.626Z",
+            "fechaUltimaEdicion": null
+          },
+          {
+            "id": "cmt-1789662458603-u043",
+            "proyectoId": "proj-1789153242094-d39m",
+            "restriccion": "Logística",
+            "comentario": "Baja participación en convocatorias B&S",
+            "texto": "Baja participación en convocatorias B&S",
+            "responsable": "Karen / Julian",
+            "autor": "Karen / Julian",
+            "estado": "En curso",
+            "notas": "xiste una baja postulación de empresas en las convocatorias de B&S, lo cual dificulta la selección y genera fricciones con la comunidad al no poder asignar las actividades ampliamente",
+            "respuesta": "Revisar la presinscripcion",
+            "fecha": "2026-09-17T16:27:38.603Z",
+            "fechaUltimaEdicion": "2026-09-17T16:28:18.377Z"
+          },
+          {
+            "id": "cmt-1789662397686-igtx",
+            "proyectoId": "proj-1789153242094-d39m",
+            "restriccion": "Logística",
+            "comentario": "Presión y reclamos de la comunidad",
+            "texto": "Presión y reclamos de la comunidad",
+            "responsable": "Gabriela /  Ricardo",
+            "autor": "Gabriela /  Ricardo",
+            "estado": "En curso",
+            "notas": "a comunidad de San Martin ha reiterado la exigencia de que las actividades sean contratadas directamente con ellos, bajo la presión de realizar acciones de hecho para frenar el proyecto",
+            "respuesta": "Que nos den una actualizacion de como se esta llevando la situacion",
+            "fecha": "2026-09-17T16:26:37.686Z",
+            "fechaUltimaEdicion": null
+          },
+          {
+            "id": "cmt-1789662324089-p6iz",
+            "proyectoId": "proj-1789153242094-d39m",
+            "restriccion": "DD",
+            "comentario": "Pendientes en aprovechamiento forestal",
+            "texto": "Pendientes en aprovechamiento forestal",
+            "responsable": "Unergy",
+            "autor": "Unergy",
+            "estado": "En curso",
+            "notas": "No se ha obtenido respuesta de la corporación sobre el aprovechamiento forestal debido a la falta de personal para la firma y se mantiene en espera la confirmación por parte de Unergy respecto a las servidumbres (eléctricas y de vía de acceso) en alerta",
+            "respuesta": "",
+            "fecha": "2026-09-17T16:25:24.089Z",
+            "fechaUltimaEdicion": null
+          },
+          {
+            "id": "cmt-1789662261122-0d70",
+            "proyectoId": "proj-1789153242094-d39m",
+            "restriccion": "Diseño",
+            "comentario": "Ajustes de trámites ante la ESSA",
+            "texto": "Ajustes de trámites ante la ESSA",
+            "responsable": "Fede",
+            "autor": "Fede",
+            "estado": "En curso",
+            "notas": "Será necesario realizar modificaciones al PR para posteriormente radicarlo ante la ESSA y obtener la aprobación correspondiente",
+            "respuesta": "Se espera la confirmacion de unergy para enviarlo al OR",
+            "fecha": "2026-09-17T16:24:21.122Z",
+            "fechaUltimaEdicion": null
+          },
+          {
+            "id": "cmt-1789662110945-6wqz",
+            "proyectoId": "proj-1789153242094-d39m",
+            "restriccion": "Diseño",
+            "comentario": "Reinicio del proceso de ingeniería",
+            "texto": "Reinicio del proceso de ingeniería",
+            "responsable": "Fede / David",
+            "autor": "Fede / David",
+            "estado": "En curso",
+            "notas": "Debido a la nueva disposición física de los proyectos, se tuvo que reiniciar la ingeniería, lo que ha generado un atraso en la entrega de diseños y en el inicio del proceso de licitación",
+            "respuesta": "Confirmar la fecha de incioo y entrega de la ingenieria",
+            "fecha": "2026-09-17T16:21:50.945Z",
+            "fechaUltimaEdicion": null
+          }
+        ]
+      },
+      {
+        "id": "proj-1789153248049-6fp0",
+        "xm": "",
+        "xmUrl": "",
+        "name": "Heliconias 2",
+        "fpo": "",
+        "cod": "",
+        "creg": "2027-01-07",
+        "connectionState": "Ingeniería",
+        "gridConnected": false,
+        "gridConnectionDate": "2026-09-16",
+        "capexCop": 0,
+        "capexUsd": 0,
+        "trmProyecto": 0,
+        "bacCOP": 0,
+        "bacUSD": 0,
+        "acCOP": 0,
+        "acUSD": 0,
+        "cpiAnterior": 0,
+        "realProgress": 0,
+        "scheduledProgress": 36,
+        "gap": -36,
+        "previousGap": 0,
+        "status": "Atrasado Crítico",
+        "notes": "",
+        "manager": "Sodia",
+        "residenteCivil": "",
+        "residenteElectrico": "",
+        "operadorRed": "ESSA (Santander)",
+        "equipment": {
+          "paneles": {
+            "status": "No pedido",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "trackers": {
+            "status": "Pendiente OC",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "shelter": {
+            "status": "Fabricación",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-12-04",
+            "brand": "",
+            "notes": ""
+          },
+          "inversores": {
+            "status": "Pendiente OC",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "reconectador": {
+            "status": "Pendiente OC",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          }
+        },
+        "paymentMilestones": [
+          {
+            "id": "hm-6",
+            "name": "Hito instalación",
+            "valueCop": 0,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          }
+        ],
+        "comments": []
+      },
+      {
+        "id": "proj-1789153253774-8iud",
+        "xm": "",
+        "xmUrl": "",
+        "name": "Heliconias 3",
+        "fpo": "",
+        "cod": "",
+        "creg": "2027-01-07",
+        "connectionState": "DD",
+        "gridConnected": false,
+        "gridConnectionDate": "2026-09-18",
+        "capexCop": 0,
+        "capexUsd": 0,
+        "trmProyecto": 0,
+        "bacCOP": 0,
+        "bacUSD": 0,
+        "acCOP": 0,
+        "acUSD": 0,
+        "cpiAnterior": 0,
+        "realProgress": 0,
+        "scheduledProgress": 36,
+        "gap": -36,
+        "previousGap": 0,
+        "status": "Atrasado Crítico",
+        "notes": "",
+        "manager": "Sodia",
+        "residenteCivil": "",
+        "residenteElectrico": "",
+        "operadorRed": "ESSA (Santander)",
+        "equipment": {
+          "paneles": {
+            "status": "No pedido",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "trackers": {
+            "status": "Fabricación",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-11-20",
+            "brand": "",
+            "notes": ""
+          },
+          "shelter": {
+            "status": "Fabricación",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-12-04",
+            "brand": "",
+            "notes": ""
+          },
+          "inversores": {
+            "status": "Pendiente OC",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "reconectador": {
+            "status": "Pendiente OC",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          }
+        },
+        "paymentMilestones": [
+          {
+            "id": "hm-6",
+            "name": "Hito instalación",
+            "valueCop": 0,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          }
+        ],
+        "comments": []
+      }
+    ]
+  },
+  {
+    "id": "port-1789096480087",
+    "name": "BIOFERMIL",
+    "code": "BIOFERMIL",
+    "atc": "Ander",
+    "description": "",
+    "projects": [
+      {
+        "id": "proj-1789156767000-eulo",
+        "xm": "https://media.discordapp.net/attachments/1416440931833614486/1549821514872913930/image.png?ex=6aac1743&is=6aaac5c3&hm=1534a0701417736a9adf6d8dd3d47a65f597d06c5771a1df291e00e43bbddcfd&=&format=webp&quality=lossless&width=1536&height=773",
+        "xmUrl": "",
+        "name": "Villa sol 1",
+        "fpo": "2026-10-02",
+        "cod": "2026-10-19",
+        "creg": "2026-10-12",
+        "connectionState": "Montaje",
+        "gridConnected": false,
+        "gridConnectionDate": "",
+        "capexCop": 3443975234,
+        "capexUsd": 0,
+        "trmProyecto": 0,
+        "bacCOP": 2790459167,
+        "bacUSD": 0,
+        "acCOP": 2033481901,
+        "acUSD": 0,
+        "cpiAnterior": 0,
+        "realProgress": 69.17,
+        "scheduledProgress": 96.73,
+        "gap": -27.56,
+        "previousGap": 0,
+        "status": "Atrasado Crítico",
+        "notes": "",
+        "manager": "",
+        "residenteCivil": "",
+        "residenteElectrico": "",
+        "operadorRed": "",
+        "equipment": {
+          "paneles": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "trackers": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "shelter": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "inversores": {
+            "status": "En sitio",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "reconectador": {
+            "status": "En sitio",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          }
+        },
+        "paymentMilestones": [
+          {
+            "id": "hm-6",
+            "name": "Anticipo",
+            "valueCop": 860993808.5,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1789157001055-sgx",
+            "name": "Hito 2 paneles e inversores",
+            "valueCop": 860993808.5,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1789157001639-adx",
+            "name": "hito 3 equipos principales en proyecto",
+            "valueCop": 344397523.4,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1789157002870-cb3",
+            "name": "Hito 4 nstalacion de estructura",
+            "valueCop": 344397523.4,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1789157004006-gth",
+            "name": "Hito 5 Instalacion de proyecto",
+            "valueCop": 344397523.4,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1789157004919-c5o",
+            "name": "Hito 6 instalacion completa del proyecto",
+            "valueCop": 688795046.8,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          }
+        ],
+        "comments": [
+          {
+            "id": "cmt-1790632491228-3tx2",
+            "proyectoId": "proj-1789156767000-eulo",
+            "restriccion": "Suministro",
+            "comentario": "Cambio de cableado AC",
+            "texto": "Cambio de cableado AC",
+            "responsable": "Laura",
+            "autor": "Laura",
+            "estado": "Pendiente",
+            "notas": "Cuando se estaria haciendo y que hace falta?",
+            "respuesta": "",
+            "fecha": "2026-09-28T21:54:51.228Z",
+            "fechaUltimaEdicion": "2026-09-28T21:56:10.878Z"
+          },
+          {
+            "id": "cmt-1790026633585-7u3h",
+            "proyectoId": "proj-1789156767000-eulo",
+            "restriccion": "Montaje",
+            "comentario": "Sistemas y pruebas",
+            "texto": "Sistemas y pruebas",
+            "responsable": "Sebastian / Laura",
+            "autor": "Sebastian / Laura",
+            "estado": "En revisión",
+            "notas": "Finalizar el sistema de puesta a tierra (SPT) en inversores y trackers, y realizar las pruebas a los cables MT y BT",
+            "respuesta": "Terminan el 28 de spetiembre",
+            "fecha": "2026-09-21T21:37:13.585Z",
+            "fechaUltimaEdicion": "2026-09-28T21:55:07.276Z"
+          },
+          {
+            "id": "cmt-1789424656586-4dsq",
+            "proyectoId": "proj-1789156767000-eulo",
+            "restriccion": "Montaje",
+            "comentario": "Cajas de paso DC",
+            "texto": "Cajas de paso DC",
+            "responsable": "Laura",
+            "autor": "Laura",
+            "estado": "Completada",
+            "notas": "Cual seria la fecha para completar la instalación y fundida de las cajas de paso DC?",
+            "respuesta": "",
+            "fecha": "2026-09-14T22:24:16.586Z",
+            "fechaUltimaEdicion": "2026-09-21T21:32:33.424Z"
+          },
+          {
+            "id": "cmt-1789424598921-x64a",
+            "proyectoId": "proj-1789156767000-eulo",
+            "restriccion": "Montaje",
+            "comentario": "Conexión de inversores",
+            "texto": "Conexión de inversores",
+            "responsable": "Laura",
+            "autor": "Laura",
+            "estado": "Completada",
+            "notas": "Como avanzan con el peinado, conexionado y terminación general de las conexiones en los inversores",
+            "respuesta": "",
+            "fecha": "2026-09-14T22:23:18.922Z",
+            "fechaUltimaEdicion": "2026-09-21T21:32:40.957Z"
+          },
+          {
+            "id": "cmt-1789424553466-vyfe",
+            "proyectoId": "proj-1789156767000-eulo",
+            "restriccion": "Montaje",
+            "comentario": "Línea de Media Tensión (MT)",
+            "texto": "Línea de Media Tensión (MT)",
+            "responsable": "Laura",
+            "autor": "Laura",
+            "estado": "Completada",
+            "notas": "Hay fecha proyectada para temrinar el montaje de la Linea MT?",
+            "respuesta": "",
+            "fecha": "2026-09-14T22:22:33.466Z",
+            "fechaUltimaEdicion": "2026-09-21T21:39:55.302Z"
+          },
+          {
+            "id": "cmt-1789424493939-dd2w",
+            "proyectoId": "proj-1789156767000-eulo",
+            "restriccion": "Logística",
+            "comentario": "Avería de transporte",
+            "texto": "Avería de transporte",
+            "responsable": "Erika",
+            "autor": "Erika",
+            "estado": "Completada",
+            "notas": "La camioneta asignada al proyecto presenta fallas mecánicas, lo que dificulta los traslados y la logística en campo",
+            "respuesta": "",
+            "fecha": "2026-09-14T22:21:33.939Z",
+            "fechaUltimaEdicion": "2026-09-21T21:33:47.863Z"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "port-1789097410830",
+    "name": "SIA/SOLÉ",
+    "code": "SIA",
+    "atc": "Ander",
+    "description": "",
+    "projects": [
+      {
+        "id": "proj-1789158139442-ohlg",
+        "xm": "",
+        "xmUrl": "",
+        "name": "Galapa 1",
+        "fpo": "2026-12-28",
+        "cod": "2027-01-13",
+        "creg": "2027-01-24",
+        "connectionState": "Montaje",
+        "gridConnected": false,
+        "gridConnectionDate": "",
+        "capexCop": 0,
+        "capexUsd": 0,
+        "trmProyecto": 4020,
+        "bacCOP": 2967512067,
+        "bacUSD": 0,
+        "acCOP": 0,
+        "acUSD": 0,
+        "cpiAnterior": 0,
+        "realProgress": 89.37,
+        "scheduledProgress": 92.18,
+        "gap": -2.81,
+        "previousGap": -20,
+        "status": "Rezago Leve",
+        "notes": "",
+        "manager": "Elian",
+        "residenteCivil": "",
+        "residenteElectrico": "Camilo",
+        "operadorRed": "",
+        "equipment": {
+          "paneles": {
+            "status": "En sitio",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "trackers": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "shelter": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          },
+          "inversores": {
+            "status": "En sitio",
+            "progress": 0,
+            "edt": "",
+            "eta": "2026-09-04",
+            "brand": "",
+            "notes": ""
+          },
+          "reconectador": {
+            "status": "Instalado",
+            "progress": 0,
+            "edt": "",
+            "eta": "",
+            "brand": "",
+            "notes": ""
+          }
+        },
+        "paymentMilestones": [
+          {
+            "id": "hm-5",
+            "name": "Anticipo",
+            "valueCop": 577577439,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1789240889835-v9e",
+            "name": "Ingenieria",
+            "valueCop": 592981293,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1789240891130-2gs",
+            "name": "Equipos en en puerto",
+            "valueCop": 425686500,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Cobrado",
+            "submittedAt": ""
+          },
+          {
+            "id": "hm-1789240891939-b12",
+            "name": "Instalacion paneles estructura",
+            "valueCop": 204758781,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "saldoPendienteCop": 160000000,
+            "saldoPendienteUsd": 0,
+            "status": "Saldo Pendiente",
+            "submittedAt": "2026-09-14"
+          },
+          {
+            "id": "hm-1789240892618-4d5",
+            "name": "Instalacion completa",
+            "valueCop": 204758781,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "saldoPendienteCop": 0,
+            "saldoPendienteUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": "2026-09-14"
+          },
+          {
+            "id": "hm-1789240988395-a65",
+            "name": "legalizacion",
+            "valueCop": 102379390,
+            "valueUsd": 0,
+            "percentageCop": 0,
+            "percentageUsd": 0,
+            "status": "Por cobrar",
+            "submittedAt": ""
+          }
+        ],
+        "comments": [
+          {
+            "id": "cmt-1790027283252-5mw1",
+            "proyectoId": "proj-1789158139442-ohlg",
+            "restriccion": "OR/CREG",
+            "comentario": "Gestión con Operador de Red",
+            "texto": "Gestión con Operador de Red",
+            "responsable": "Elian",
+            "autor": "Elian",
+            "estado": "En revisión",
+            "notas": "Pendiente definir la visita con el operador de red para evaluar la nueva ruta de MT hacia el punto de conexión",
+            "respuesta": "",
+            "fecha": "2026-09-21T21:48:03.252Z",
+            "fechaUltimaEdicion": null
+          },
+          {
+            "id": "cmt-1789582781981-bob7",
+            "proyectoId": "proj-1789158139442-ohlg",
+            "restriccion": "Diseño",
+            "comentario": "Linea de MT",
+            "texto": "Linea de MT",
+            "responsable": "Andres Julian",
+            "autor": "Andres Julian",
+            "estado": "En revisión",
+            "notas": "Se va a levantar información en campo del ramal propuesto para que diseño valide la red y tome las consideraciones técnicas necesarias",
+            "respuesta": "",
+            "fecha": "2026-09-16T18:19:41.982Z",
+            "fechaUltimaEdicion": "2026-09-16T18:19:44.957Z"
+          },
+          {
+            "id": "cmt-1789498344230-qcci",
+            "proyectoId": "proj-1789158139442-ohlg",
+            "restriccion": "Montaje",
+            "comentario": "Cableado DC",
+            "texto": "Cableado DC",
+            "responsable": "Elian",
+            "autor": "Elian",
+            "estado": "Completada",
+            "notas": "Cuando inician el seriado de paneles?",
+            "respuesta": "Esta semana se estaría iniciando la instalación del cableado DC con los carretos de cable sobrante que nos fueron enviados desde otro proyectos.",
+            "fecha": "2026-09-15T18:52:24.230Z",
+            "fechaUltimaEdicion": "2026-09-21T21:49:24.508Z"
+          },
+          {
+            "id": "cmt-1789498312630-aawj",
+            "proyectoId": "proj-1789158139442-ohlg",
+            "restriccion": "Montaje",
+            "comentario": "Sistema de Puesta a Tierra",
+            "texto": "Sistema de Puesta a Tierra",
+            "responsable": "Elian",
+            "autor": "Elian",
+            "estado": "Completada",
+            "notas": "Cuando proyectan la fecha para terminar el SPT?",
+            "respuesta": "Se recibió el suministro del SPT",
+            "fecha": "2026-09-15T18:51:52.630Z",
+            "fechaUltimaEdicion": "2026-09-21T21:46:58.478Z"
+          },
+          {
+            "id": "cmt-1789498263174-biql",
+            "proyectoId": "proj-1789158139442-ohlg",
+            "restriccion": "Montaje",
+            "comentario": "Montaje de inversores",
+            "texto": "Montaje de inversores",
+            "responsable": "Elian",
+            "autor": "Elian",
+            "estado": "En revisión",
+            "notas": "Se instalaron los inversores?",
+            "respuesta": "Queda pendiente la cubierta",
+            "fecha": "2026-09-15T18:51:03.174Z",
+            "fechaUltimaEdicion": "2026-09-21T21:51:02.692Z"
+          },
+          {
+            "id": "cmt-1789498210670-epuq",
+            "proyectoId": "proj-1789158139442-ohlg",
+            "restriccion": "Suministro",
+            "comentario": "Torqueado de estructuras",
+            "texto": "Torqueado de estructuras",
+            "responsable": "Elian",
+            "autor": "Elian",
+            "estado": "Completada",
+            "notas": "Cuando finalizan el torqueado de los trackers?",
+            "respuesta": "Finaliza el  18 de septiembre",
+            "fecha": "2026-09-15T18:50:10.670Z",
+            "fechaUltimaEdicion": "2026-09-21T21:45:39.436Z"
+          },
+          {
+            "id": "cmt-1789498163999-b04p",
+            "proyectoId": "proj-1789158139442-ohlg",
+            "restriccion": "Montaje",
+            "comentario": "Fundida de micropilotes",
+            "texto": "Fundida de micropilotes",
+            "responsable": "Elian",
+            "autor": "Elian",
+            "estado": "Completada",
+            "notas": "Como van con la fundida de los micropilotes restantes para las hincas en las zonas de compostaje?",
+            "respuesta": "",
+            "fecha": "2026-09-15T18:49:23.999Z",
+            "fechaUltimaEdicion": "2026-09-15T19:12:36.133Z"
+          },
+          {
+            "id": "cmt-1789498113607-00gw",
+            "proyectoId": "proj-1789158139442-ohlg",
+            "restriccion": "Suministro",
+            "comentario": "Llegada de cableado AC",
+            "texto": "Llegada de cableado AC",
+            "responsable": "andrea",
+            "autor": "andrea",
+            "estado": "Pendiente",
+            "notas": "Se tiene fecha de legada del cable AC?",
+            "respuesta": "",
+            "fecha": "2026-09-15T18:48:33.607Z",
+            "fechaUltimaEdicion": "2026-09-21T21:47:09.476Z"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "port-1789786991425",
+    "name": "SolSkandia",
+    "code": "Skandia",
+    "atc": "Carlos",
+    "description": "",
+    "projects": []
+  },
+  {
+    "id": "port-1789787012882",
+    "name": "The Sun Factory",
+    "code": "CFM",
+    "atc": "Carlos",
+    "description": "",
+    "projects": []
+  },
+  {
+    "id": "port-1789787050154",
+    "name": "Energea",
+    "code": "Energea",
+    "atc": "Carlos",
+    "description": "",
+    "projects": []
+  },
+  {
+    "id": "port-1790099236719",
+    "name": "PORTAFOLIOS DE PRUEBA",
+    "code": "PORT-01",
+    "atc": "PRUEBA",
+    "description": "",
+    "projects": []
+  }
+]

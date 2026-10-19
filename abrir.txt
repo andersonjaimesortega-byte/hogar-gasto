@@ -1,0 +1,10 @@
+cd "C:\Users\Windows 11\Desktop\PMO"
+
+npm run dev
+
+http://localhost:5173
+
+
+mejoras
+- En las tarjetas principales de cada portafolio se podría optimizar el espacio de la tarjeta de estado de cronograma y conexión de red
+- 
